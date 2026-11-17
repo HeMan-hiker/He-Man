@@ -233,7 +233,18 @@ let state = {sect:"all", grp:"all", ty:"전체", pl:"all", cat:"전체", seg:"�
 const el = id => document.getElementById(id);
 const fmt = n => (n||0).toLocaleString("ko-KR");
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-function ytUrl(id){ return "https://www.youtube.com/watch?v=" + encodeURIComponent(id); }
+/* 유튜브 링크: 안드로이드에서는 유튜브 앱으로 직행(intent://), 그 외에는 웹 주소 */
+const IS_ANDROID = /Android/i.test(navigator.userAgent);
+function ytWebUrl(id){ return "https://www.youtube.com/watch?v=" + encodeURIComponent(id); }
+function ytIntentUrl(id){
+  /* S.browser_fallback_url: 앱이 없거나 intent를 처리하지 못하면 웹 주소로 자동 폴백 */
+  return "intent://www.youtube.com/watch?v=" + encodeURIComponent(id)
+       + "#Intent;package=com.google.android.youtube;scheme=https;S.browser_fallback_url="
+       + encodeURIComponent(ytWebUrl(id)) + ";end;";
+}
+function ytUrl(id){ return IS_ANDROID ? ytIntentUrl(id) : ytWebUrl(id); }
+/* intent://는 같은 탭에서 열려야 빈 탭이 생기지 않으므로 안드로이드에서는 target을 두지 않는다 */
+const YT_LINK_ATTRS = IS_ANDROID ? ' rel="noopener noreferrer"' : ' target="_blank" rel="noopener noreferrer"';
 
 function countBy(fn){
   const m = {};
@@ -320,7 +331,7 @@ function card(d){
   const pls = d.pl;
   const plTxt = pls.length ? (pls.length > 1 ? esc(pls[0]) + " +" + (pls.length-1) : esc(pls[0])) : "";
   const grp = d.g && GROUP[d.g] ? `<span class="tag ${d.sg.indexOf("cm")>=0?"cmev":"ev"}">${GROUP[d.g]}</span>` : "";
-  return `<a class="card${isTrail?" trail":""}${evCls}" href="${ytUrl(d.id)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(d.t)}">
+  return `<a class="card${isTrail?" trail":""}${evCls}" href="${ytUrl(d.id)}"${YT_LINK_ATTRS} aria-label="${esc(d.t)}">
     ${d.kl?`<span class="badge">${esc(d.kl)}</span>`:`<span></span>`}
     <div class="t">${esc(d.t)}</div>
     <div class="meta">
@@ -343,7 +354,7 @@ function table(rows){
     <td class="num">${d.kl||"—"}</td>
     <td class="dim">${d.r?esc(d.r):"—"}</td>
     <td class="dim">${d.pl.length?esc(d.pl.join(", ")):"—"}</td>
-    <td class="title"><a href="${ytUrl(d.id)}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;display:block">${esc(d.t)}</a></td>
+    <td class="title"><a href="${ytUrl(d.id)}"${YT_LINK_ATTRS} style="color:inherit;text-decoration:none;display:block">${esc(d.t)}</a></td>
     <td class="dim">${d.d||"—"}</td>
     <td class="dim">${d.u||"—"}</td>
     <td class="num">${fmt(d.v)}</td>
@@ -382,6 +393,22 @@ document.addEventListener("click", e => {
   if(g){ state.grp = g.getAttribute("data-grp"); state.limit=60; buildFilters(); render(); return; }
   if(cardBtn){ pickSect(cardBtn.getAttribute("data-sect")); return; }
 });
+/* 안드로이드에서 intent://를 처리하지 못하는 브라우저를 위한 2차 폴백:
+   클릭 후 1.5초 안에 유튜브 앱(탭 전환)이 뜨지 않으면 웹 주소로 이동한다. */
+if(IS_ANDROID){
+  document.addEventListener("click", e => {
+    const a = e.target && e.target.closest ? e.target.closest('a[href^="intent://"]') : null;
+    if(!a) return;
+    const m = a.getAttribute("href").match(/[?&]v=([^#&]+)/);
+    if(!m) return;
+    let id = m[1];
+    try{ id = decodeURIComponent(id); }catch(_){}
+    setTimeout(() => {
+      if(document.visibilityState === "hidden") return; /* 유튜브 앱이 열려 있음 */
+      location.href = ytWebUrl(id);
+    }, 1500);
+  }, false);
+}
 el("q").addEventListener("input", e => { state.q = e.target.value; state.limit=60; render(); });
 el("sort").addEventListener("change", e => { state.sort = e.target.value; render(); });
 el("pl").addEventListener("change", e => { state.pl = e.target.value; state.limit=60; render(); });
