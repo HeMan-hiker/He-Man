@@ -169,11 +169,17 @@ footer a:active{color:var(--muted)}
      비워두면 latest.json 만 읽어서 동작합니다.            */
   var APPS_SCRIPT_URL = "";
 
-  var MAX_AGE_MS = 24 * 60 * 60 * 1000;   // 24시간 지난 세션은 자동 이동 안 함
+  var MAX_AGE_MS = 24 * 60 * 60 * 1000;   // 24시간 지난 세션은 자동 이동 안 함 (?maxage=72 로 조절)
   var COUNTDOWN_SEC = 2;                  // 자동 이동까지 대기
   var POLL_MS = 30000;                    // 세션 확인 주기
 
   var ALLOWED_HOSTS = ["livetrack.garmin.com", "connect.garmin.com"];
+
+  // 장거리 레이스용: ?maxage=72 처럼 시간 단위로 늘릴 수 있음 (1~168시간)
+  try {
+    var _ma = parseFloat(new URLSearchParams(window.location.search).get("maxage"));
+    if (isFinite(_ma) && _ma >= 1 && _ma <= 168) MAX_AGE_MS = _ma * 60 * 60 * 1000;
+  } catch (e) {}
 
   var $ = function (id) { return document.getElementById(id); };
   var el = {
@@ -190,6 +196,11 @@ footer a:active{color:var(--muted)}
   var autoOn = true;       // 사용자가 자동 이동을 끌 수 있게
   var target = "";
   var busy = false;
+
+  // ?auto=0 → 자동 이동 없이 버튼만 보여줌
+  try {
+    if (new URLSearchParams(window.location.search).get("auto") === "0") autoOn = false;
+  } catch (e) {}
 
   /* ── 유틸 ─────────────────────────────────────────────── */
   function esc(s) {
@@ -411,6 +422,7 @@ footer a:active{color:var(--muted)}
     var url = payload && payload.url ? payload.url : "";
     var t = payload ? ts(payload.updatedAt) : NaN;
     var fresh = url && !isNaN(t) && (Date.now() - t) <= MAX_AGE_MS;
+    var maxH = Math.round(MAX_AGE_MS / 3600000);
 
     clearActions();
     stopCountdown();
@@ -455,7 +467,7 @@ footer a:active{color:var(--muted)}
     if (url && !fresh) {
       target = url;
       setPill("warn", "지난 세션");
-      el.title.textContent = "마지막 세션이 24시간 넘었습니다";
+      el.title.textContent = "마지막 세션이 " + maxH + "시간 넘었습니다";
       el.desc.textContent = "새 세션이 시작되면 자동으로 연결됩니다. 지난 기록을 보려면 아래 버튼을 누르세요.";
       showMeta();
       button("지난 세션 열기", "primary", go);
