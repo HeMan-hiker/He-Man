@@ -21,6 +21,8 @@
     <iframe id="f390" src="./" width="390" height="844" scrolling="no"></iframe></div>
   <div class="dev"><b>412 × 915</b>
     <iframe id="f412" src="./" width="412" height="915" scrolling="no"></iframe></div>
+  <div class="dev"><b>980 = 데스크톱 모드 흉내 (기기 411px)</b>
+    <iframe id="f980" src="./" width="980" height="844" scrolling="no"></iframe></div>
 </div>
 <pre id="log">측정 중…</pre>
 <script>
@@ -52,9 +54,24 @@ function probe(id){
 }
 window.addEventListener("load", function(){
   setTimeout(function(){
+    // 데스크톱 뷰포트로 열린 경우 페이지가 스스로 거는 zoom (411px 기기 기준)
+    try {
+      var d9 = document.getElementById("f980").contentDocument;
+      d9.documentElement.style.zoom = (980/411).toFixed(3);
+    } catch (e) {}
+    setTimeout(function(){
     var res = [probe("f390"), probe("f412")];
+    try {
+      var d9 = document.getElementById("f980").contentDocument;
+      res.push({id:"f980", viewport: "980x844", zoom: d9.documentElement.style.zoom,
+        scrollWidth: d9.documentElement.scrollWidth, clientWidth: d9.documentElement.clientWidth,
+        wrapVisualW: Math.round(d9.getElementById("wrap").getBoundingClientRect().width),
+        h1: getComputedStyle(d9.querySelector("h1")).fontSize,
+        bodyLayoutW: d9.body.clientWidth});
+    } catch (e) {}
     document.getElementById("log").textContent = JSON.stringify(res, null, 1);
-    document.title = "MCHECK " + res.map(function(r){return r.id+":"+r.viewport+" sw"+r.scrollWidth+"/"+r.clientWidth+" wrap"+r.wrapWidth;}).join(" | ");
+    document.title = "MCHECK " + res.map(function(r){return r.id+":"+r.viewport+" sw"+r.scrollWidth+"/"+r.clientWidth+" wrap"+(r.wrapWidth||r.wrapVisualW);}).join(" | ");
+    }, 400);
   }, 1500);
 });
 </script>
