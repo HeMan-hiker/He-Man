@@ -1944,6 +1944,7 @@ footer a{color:var(--dim);text-decoration:none}
   }
 
   function updateCheerHint() {
+    if (phase === "loading") return;   // 아직 세션을 모를 때 '비활동'으로 단정하지 않는다
     var s = state.session;
     var live = computeLive();
     if (el.cheerCard) el.cheerCard.classList.toggle("guest-mode", !live);
