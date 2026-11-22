@@ -1491,7 +1491,7 @@ footer a{color:var(--dim);text-decoration:none}
       btn.textContent = oldLabel;
       if (err && err.message === "old-script") {
         state.canRename = false;
-        rnNote("아직 새 버전 스크립트가 배포되지 않았습니다. apps-script.txt의 새 코드를 붙여넣고 「새 버전」으로 배포해 주세요.", true);
+        rnNote("저장하지 못했습니다. v3 스크립트를 「새 버전」으로 배포했는지, 웹앱 주소가 맞는지 확인해 주세요. (배포 전이라면 이름 변경은 아직 동작하지 않습니다)", true);
       } else {
         rnNote("저장하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.", true);
       }
