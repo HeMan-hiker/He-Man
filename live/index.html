@@ -473,6 +473,22 @@ footer a{color:var(--dim);text-decoration:none}
     window.open(state.url, "_blank", "noopener");
   }
 
+  function computeLive() {
+    var now = Date.now();
+    var s = state.session || null;
+    if (s && s.id) {
+      if (s.active === true) return true;
+      if (s.active === false) return false;
+      var endT = ts(s.end), startT = ts(s.start);
+      return !isNaN(endT) ? endT > now : (!isNaN(startT) && now - startT < MAX_AGE_MS);
+    }
+    if (isLiveTrackUrl(state.url)) {
+      var t = ts(state.updatedAt);
+      return !isNaN(t) && now - t < MAX_AGE_MS;
+    }
+    return false;
+  }
+
   function renderStatus() {
     var now = Date.now();
     var s = state.session || null;
@@ -482,14 +498,10 @@ footer a{color:var(--dim);text-decoration:none}
     if (s && s.id) {
       startT = ts(s.start);
       endT = ts(s.end);
-      if (s.active === true) live = true;
-      else if (s.active === false) live = false;
-      else live = !isNaN(endT) ? endT > now : (!isNaN(startT) && now - startT < MAX_AGE_MS);
     } else if (isLiveTrackUrl(state.url)) {
-      var t = ts(state.updatedAt);
-      live = !isNaN(t) && now - t < MAX_AGE_MS;
-      startT = t;
+      startT = ts(state.updatedAt);
     }
+    live = computeLive();
 
     clearActions();
     el.hint.className = "hint";
@@ -776,7 +788,8 @@ footer a{color:var(--dim);text-decoration:none}
 
   function updateCheerHint() {
     var s = state.session;
-    if (s && s.id && s.active) {
+    var live = computeLive();
+    if (s && s.id && live) {
       if (s.caps && !s.audio) {
         el.cheerSub.textContent = "이 기기는 음성 응원을 지원하지 않습니다. 텍스트 응원을 남겨 주세요. (둘 다 드라이브에 저장됩니다)";
         el.recBtn.disabled = true;
