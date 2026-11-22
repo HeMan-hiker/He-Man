@@ -193,6 +193,154 @@ audio{width:100%;margin-top:10px;height:38px}
 }
 .play[disabled]{opacity:.55}
 .empty{font-size:12.5px;color:var(--dim);text-align:center;padding:16px 8px;border:1px dashed var(--line);border-radius:12px;margin-top:12px}
+
+/* ── 뷰 전환 · 헤더 · 삼선 메뉴 ───────────────── */
+.wrap.wide{max-width:880px}
+.view{display:flex;flex-direction:column;gap:14px}
+.hdr{display:flex;align-items:center;gap:8px}
+.hdrlink{
+  color:var(--muted);text-decoration:none;font-size:12px;font-weight:650;
+  border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:rgba(255,255,255,.02);
+}
+.iconbtn{
+  appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink);
+  width:42px;height:42px;border-radius:12px;font:inherit;font-size:18px;line-height:1;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:border-color .12s ease,background .12s ease,color .12s ease;
+}
+.iconbtn.sm{width:34px;height:34px;border-radius:10px;font-size:15px}
+.iconbtn:active{transform:scale(.97)}
+.iconbtn[aria-expanded="true"],.iconbtn.on{border-color:rgba(123,216,143,.5);color:var(--trail);background:rgba(123,216,143,.1)}
+.drawer-back{position:fixed;inset:0;background:rgba(4,8,6,.6);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s ease}
+.drawer-back.on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;left:0;bottom:0;width:min(86vw,332px);z-index:61;display:flex;flex-direction:column;gap:5px;
+  padding:14px 14px calc(20px + env(safe-area-inset-bottom));overflow-y:auto;
+  background:linear-gradient(180deg,#141d18,#101815);border-right:1px solid var(--line);
+  box-shadow:18px 0 50px -24px #000;transform:translateX(-104%);transition:transform .22s ease;
+}
+.drawer.on{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 2px 8px}
+.drawer-head span{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:750}
+.dnav{
+  display:flex;align-items:center;gap:8px;padding:12px 11px;border-radius:11px;border:1px solid transparent;
+  color:var(--ink);text-decoration:none;font-size:14px;font-weight:650;line-height:1.35;
+}
+.dnav:hover{background:rgba(255,255,255,.04)}
+.dnav.on{border-color:rgba(123,216,143,.35);background:rgba(123,216,143,.1);color:var(--trail)}
+.dnav .dn{
+  margin-left:auto;font-size:11px;font-weight:750;color:var(--trail);
+  border:1px solid rgba(123,216,143,.3);background:rgba(123,216,143,.1);border-radius:99px;padding:0 7px;line-height:18px;
+}
+.dlabel{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:750;margin:12px 4px 3px}
+.dacts{display:flex;flex-direction:column;gap:5px}
+.dact{
+  appearance:none;text-align:left;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:10px;
+  padding:9px 11px;color:var(--ink);font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px;
+}
+.dact:hover{border-color:#3f5a4b;background:rgba(123,216,143,.07)}
+.dact b{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.dact span{font-size:11px;color:var(--dim)}
+.dempty{font-size:12px;color:var(--dim);margin:2px 4px}
+
+/* ── 활동별 아카이브 뷰 ───────────────────────── */
+.arc-head{padding:6px 2px 0;display:flex;flex-direction:column;gap:7px;align-items:flex-start}
+.arc-h1{margin:0;font-size:clamp(19px,4.6vw,24px);letter-spacing:-.02em;line-height:1.3}
+.arc-sub{margin:0;font-size:12.5px;color:var(--dim);line-height:1.5}
+.filters{
+  position:sticky;top:0;z-index:20;display:flex;flex-direction:column;gap:8px;
+  padding:10px 6px;margin:0 -6px;
+  background:linear-gradient(180deg,rgba(15,21,18,.985),rgba(15,21,18,.93));
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+}
+.searchbox{position:relative;display:block}
+.searchbox svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--dim)}
+.searchbox input{
+  width:100%;padding:11px 13px 11px 36px;border-radius:11px;border:1px solid var(--line);
+  background:rgba(255,255,255,.03);color:var(--ink);font:inherit;font-size:14px;outline:none;
+}
+.searchbox input:focus{border-color:rgba(123,216,143,.55);background:rgba(123,216,143,.05)}
+.frow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.sel{
+  appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink);
+  font:inherit;font-size:12.5px;font-weight:650;border-radius:999px;padding:8px 12px;min-height:34px;cursor:pointer;
+}
+.frow .chips{margin-top:0}
+input[type=password]{
+  width:100%;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:11px;
+  color:var(--ink);font:inherit;font-size:15px;padding:12px 13px;outline:none;
+}
+input[type=password]:focus{border-color:rgba(123,216,143,.55);background:rgba(123,216,143,.05)}
+.actgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:12px;margin-top:2px}
+.act{
+  position:relative;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
+  border-left:3px solid #33463b;border-radius:13px;overflow:hidden;
+  transition:transform .12s ease,border-color .12s ease,background .12s ease;
+}
+.act:hover{transform:translateY(-1px);border-color:#3f5a4b;background:linear-gradient(180deg,#1c2721,#18211c)}
+.act.has-audio{border-left-color:var(--sky)}
+.act.pending{border-left-color:var(--sand)}
+.act-main{
+  appearance:none;border:0;background:transparent;color:inherit;font:inherit;text-align:left;
+  display:flex;flex-direction:column;gap:7px;padding:13px 13px 10px;cursor:pointer;width:100%;
+}
+.atop{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--dim)}
+.ad{letter-spacing:.02em;font-weight:650}
+.astat{font-variant-numeric:tabular-nums}
+.an{
+  font-size:15px;font-weight:750;letter-spacing:-.01em;line-height:1.36;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;
+}
+.an.custom{color:#dff5e4}
+.ab{display:flex;gap:5px;flex-wrap:wrap}
+.ab .b{font-size:10.5px;font-weight:750;border:1px solid var(--line);border-radius:99px;padding:1px 8px;color:var(--dim)}
+.ab .b.a{border-color:rgba(142,202,230,.3);color:var(--sky)}
+.ab .b.t{border-color:rgba(123,216,143,.28);color:#9ee0ad}
+.aprev{
+  font-size:12.5px;color:var(--muted);line-height:1.45;word-break:break-word;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.afoot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 11px 10px;border-top:1px solid rgba(255,255,255,.05);margin-top:auto}
+.ameta{font-size:10.5px;color:var(--dim)}
+.edit{
+  appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);
+  border-radius:99px;padding:4px 9px;font:inherit;font-size:11px;font-weight:700;cursor:pointer;min-height:28px;
+}
+.edit:hover{border-color:rgba(232,213,168,.45);color:var(--sand)}
+
+/* ── 모달 · 토스트 ───────────────────────────── */
+.modal{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(6,10,8,.74);backdrop-filter:blur(4px)}
+.modal.on{display:flex}
+.modal-box{
+  width:100%;max-width:640px;max-height:88vh;overflow-y:auto;
+  background:#141d18;border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+.modal-box.narrow{max-width:430px}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.mh-main{min-width:0}
+.modal-head h2{margin:0;font-size:17px;line-height:1.35;letter-spacing:-.01em;word-break:break-word}
+.mh-sub{display:block;font-size:11.5px;color:var(--dim);margin-top:3px}
+.modal-desc{margin:0 0 12px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.modal-actions{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.btn-group{display:flex;gap:8px;flex-wrap:wrap}
+.btn.sm{min-height:40px;padding:10px 14px;font-size:13px;width:auto;flex:0 0 auto}
+a.btn{text-decoration:none}
+.rnorig{font-size:11.5px;color:var(--dim);margin:0 0 10px;line-height:1.45}
+.rnnote{font-size:12px;min-height:18px;margin:8px 0 0;color:var(--muted);line-height:1.5}
+.rnnote.warn{color:#f0b8a6}
+.modal .field{margin-top:10px}
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translate(-50%,12px);z-index:90;
+  background:rgba(24,33,28,.98);border:1px solid var(--line);color:var(--ink);padding:11px 17px;border-radius:999px;
+  font-size:13px;font-weight:650;box-shadow:0 10px 30px rgba(0,0,0,.45);opacity:0;pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease;max-width:calc(100vw - 32px);text-align:center;line-height:1.4;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+body.noscroll{overflow:hidden}
+@media (max-width:430px){.actgrid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.drawer{transition:none}}
 footer{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--dim);padding:4px 4px 0}
 footer a{color:var(--dim);text-decoration:none}
 @media (prefers-reduced-motion:reduce){
@@ -202,15 +350,20 @@ footer a{color:var(--dim);text-decoration:none}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="wrap">
   <header>
     <div class="brand">
       <div class="mark">H</div>
       <div><b>히맨_He-Man</b><span>LiveTrack</span></div>
     </div>
-    <a href="../">아카이브</a>
+    <div class="hdr">
+      <a class="hdrlink" href="../" title="유튜브 영상 아카이브">유튜브</a>
+      <button class="iconbtn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-controls="drawer" aria-expanded="false">☰</button>
+    </div>
   </header>
 
+  <!-- ── 라이브 뷰 ───────────────────────────── -->
+  <div class="view" id="viewLive">
   <!-- 1) 라이브 상태 -->
   <section class="card hero" id="statusCard">
     <span class="pill off" id="pill"><i class="dot"></i><span id="pillText">확인 중</span></span>
@@ -264,20 +417,107 @@ footer a{color:var(--dim);text-decoration:none}
     <div class="result" id="result" hidden></div>
   </section>
 
-  <!-- 3) 아카이브 — 활동(세션)별 -->
-  <section class="card" id="archiveCard">
-    <h2>📥 받은 응원 아카이브 <span class="count" id="msgCountBadge" hidden>0</span></h2>
-    <p class="sub" id="archiveSub">레이스가 끝나도 여기에 그대로 남습니다.</p>
-    <div class="chips" id="chips" role="group" aria-label="활동 선택" hidden></div>
-    <div class="groups" id="groups"></div>
-    <div class="empty" id="msgsEmpty">아직 도착한 응원이 없습니다.</div>
+  <!-- 3) 최근 받은 응원 미리보기 -->
+  <section class="card" id="recentCard">
+    <h2>📥 최근 받은 응원 <span class="count" id="recentBadge" hidden>0</span></h2>
+    <p class="sub" id="recentSub">레이스가 끝나도 여기에 그대로 남습니다.</p>
+    <div class="msgs" id="recentList"></div>
+    <div class="empty" id="recentEmpty">아직 도착한 응원이 없습니다.</div>
+    <button class="btn ghost" id="goArchive" type="button" style="width:100%;margin-top:12px" hidden>📂 활동별 응원 아카이브 전체 보기</button>
   </section>
+  </div><!-- /viewLive -->
+
+  <!-- ── 활동별 아카이브 뷰 ──────────────────── -->
+  <div class="view" id="viewArchive" hidden>
+    <div class="arc-head">
+      <span class="pill off"><i class="dot"></i>응원 아카이브</span>
+      <h1 class="arc-h1">📂 활동별 응원 아카이브</h1>
+      <p class="arc-sub" id="arcSub">활동(세션)별로 모은 응원입니다.</p>
+    </div>
+    <div class="filters" id="filters" hidden>
+      <label class="searchbox">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="arcQ" type="search" placeholder="활동명·보낸사람·내용 검색" autocomplete="off" enterkeyhint="search" aria-label="응원 검색">
+      </label>
+      <div class="frow">
+        <select class="sel" id="arcYear" aria-label="연도 선택" hidden></select>
+        <div class="chips" id="arcTypes" role="group" aria-label="응원 유형"></div>
+      </div>
+    </div>
+    <div class="actgrid" id="actGrid"></div>
+    <div class="empty" id="arcEmpty" hidden>조건에 맞는 활동이 없습니다.</div>
+  </div><!-- /viewArchive -->
 
   <footer>
     <span>고정 링크 · <a href="../garmin/">러닝 기록</a></span>
     <span id="checked">—</span>
   </footer>
 </div>
+
+<!-- ── 삼선(☰) 메뉴 ───────────────────────── -->
+<div class="drawer-back" id="drawerBack"></div>
+<nav class="drawer" id="drawer" aria-hidden="true" aria-label="사이트 메뉴">
+  <div class="drawer-head">
+    <span>메뉴</span>
+    <button class="iconbtn sm" id="drawerClose" type="button" aria-label="메뉴 닫기">×</button>
+  </div>
+  <a class="dnav" id="navLive" href="#/live">📡 현재 라이브 &amp; 응원</a>
+  <a class="dnav" id="navArchive" href="#/archive">📂 활동별 응원 아카이브 <span class="dn" id="navArcCount" hidden></span></a>
+  <div class="dlabel">최근 활동</div>
+  <div class="dacts" id="drawerActs"></div>
+  <div class="dlabel">바로가기</div>
+  <a class="dnav" href="../">📺 유튜브 아카이브</a>
+  <a class="dnav" href="../garmin/">📊 가민 대시보드</a>
+  <p class="dempty" style="margin-top:14px">응원은 히맨 님 Google Drive에 영구 저장됩니다.</p>
+</nav>
+
+<!-- ── 활동 상세 모달 ──────────────────────── -->
+<div class="modal" id="actModal" role="dialog" aria-modal="true" aria-labelledby="actTitle" aria-hidden="true">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="mh-main">
+        <h2 id="actTitle">활동</h2>
+        <span class="mh-sub" id="actMeta"></span>
+      </div>
+      <button class="iconbtn sm" id="actClose" type="button" aria-label="닫기">×</button>
+    </div>
+    <div class="msgs" id="actMsgs"></div>
+    <div class="modal-actions">
+      <div class="btn-group">
+        <button class="btn ghost sm" id="actRename" type="button">✏️ 이름 수정</button>
+        <a class="btn ghost sm" id="actSession" href="#" target="_blank" rel="noopener noreferrer" hidden>세션 열기 ↗</a>
+      </div>
+      <span class="ameta">가민 LiveTrack 세션</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 이름(대회명) 수정 모달 ───────────────── -->
+<div class="modal" id="renameModal" role="dialog" aria-modal="true" aria-labelledby="rnTitle" aria-hidden="true">
+  <div class="modal-box narrow">
+    <div class="modal-head">
+      <h2 id="rnTitle">✏️ 활동 이름 수정</h2>
+      <button class="iconbtn sm" id="rnClose" type="button" aria-label="닫기">×</button>
+    </div>
+    <p class="modal-desc">가민이 붙인 임시 이름 대신 <b>실제 대회명</b>을 넣어 두면 카드와 메뉴에 그 이름으로 나옵니다. 이름을 비우고 저장하면 자동 이름으로 돌아갑니다.</p>
+    <p class="rnorig" id="rnOrig"></p>
+    <div class="field">
+      <label for="rnName">새 활동명</label>
+      <input id="rnName" type="text" maxlength="60" placeholder="예: 2026 장수트레일레이스 100M" autocomplete="off" enterkeyhint="done">
+    </div>
+    <div class="field">
+      <label for="rnPin">관리자 비밀번호</label>
+      <input id="rnPin" type="password" maxlength="40" placeholder="앱스스크립트에 설정한 비밀번호" autocomplete="off" enterkeyhint="done">
+    </div>
+    <p class="rnnote" id="rnNote"></p>
+    <div class="modal-actions">
+      <button class="btn ghost sm" id="rnCancel" type="button">취소</button>
+      <button class="btn primary sm" id="rnSave" type="button">저장</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <noscript>
   <div class="wrap"><p class="desc">이 페이지는 자바스크립트가 필요합니다. 브라우저에서 자바스크립트를 켜 주세요.</p></div>
@@ -314,14 +554,28 @@ footer a{color:var(--dim);text-decoration:none}
     recTime: $("recTime"), recBar: $("recBar"), recBtn: $("recBtn"), recNote: $("recNote"),
     recPreview: $("recPreview"), recActions: $("recActions"), recAgain: $("recAgain"), recSend: $("recSend"),
     msgText: $("msgText"), msgCount: $("msgCount"), textSend: $("textSend"),
-    result: $("result"), groups: $("groups"), chips: $("chips"),
-    archiveSub: $("archiveSub"), msgsEmpty: $("msgsEmpty"), msgCountBadge: $("msgCountBadge")
+    result: $("result"),
+    recentList: $("recentList"), recentBadge: $("recentBadge"), recentSub: $("recentSub"),
+    recentEmpty: $("recentEmpty"), goArchive: $("goArchive"),
+    wrap: $("wrap"), viewLive: $("viewLive"), viewArchive: $("viewArchive"),
+    menuBtn: $("menuBtn"), drawer: $("drawer"), drawerBack: $("drawerBack"), drawerClose: $("drawerClose"),
+    navLive: $("navLive"), navArchive: $("navArchive"), navArcCount: $("navArcCount"), drawerActs: $("drawerActs"),
+    filters: $("filters"), arcSub: $("arcSub"), arcQ: $("arcQ"), arcYear: $("arcYear"),
+    arcTypes: $("arcTypes"), actGrid: $("actGrid"), arcEmpty: $("arcEmpty"),
+    actModal: $("actModal"), actTitle: $("actTitle"), actMeta: $("actMeta"), actMsgs: $("actMsgs"),
+    actSession: $("actSession"), actRename: $("actRename"), actClose: $("actClose"),
+    renameModal: $("renameModal"), rnName: $("rnName"), rnPin: $("rnPin"), rnNote: $("rnNote"),
+    rnSave: $("rnSave"), rnCancel: $("rnCancel"), rnClose: $("rnClose"), rnOrig: $("rnOrig"),
+    toast: $("toast")
   };
 
   var endpoint = "";
   var gateKey = "";
   var payload = null;        // latest.json 원본
-  var state = { url: "", updatedAt: "", subject: "", session: null, messages: [] };
+  var state = {
+    url: "", updatedAt: "", subject: "", session: null, messages: [],
+    names: {}, canRename: false, actsCache: null
+  };
   var phase = "loading";
   var busy = false;
   var audioEnabled = true;   // 기기가 음성을 지원하는지 (모르면 true)
@@ -629,7 +883,6 @@ footer a{color:var(--dim);text-decoration:none}
 
   /* ── 아카이브 · 활동(세션)별 ───────────────────────────── */
   var SESSION_RE = /livetrack\.garmin\.com\/session\/([0-9a-fA-F-]{36})/;
-  var archiveFilter = "all";
 
   function sessionIdOf(u) {
     var m = SESSION_RE.exec(String(u || ""));
@@ -702,7 +955,7 @@ footer a{color:var(--dim);text-decoration:none}
     function make(key, sid, url, title) {
       return {
         key: key, sid: sid || "", url: url || "", title: title || "",
-        days: {}, msgs: [], audio: 0, text: 0, latest: -Infinity, pending: false
+        days: {}, msgs: [], audio: 0, text: 0, latest: -Infinity, pending: false, aliases: []
       };
     }
     function add(g, m) {
@@ -764,6 +1017,14 @@ footer a{color:var(--dim);text-decoration:none}
       g.multiDay = days.length > 1;
       g.msgs.sort(function (a, b) { return (kstMs(b.timeKst) || 0) - (kstMs(a.timeKst) || 0); });
       if (!isFinite(g.latest)) g.latest = 0;
+      // 이름(대회명) 저장 키 후보 — 세션주소 유무로 묶음이 바뀌어도 같은 이름을 찾도록 같이 둔다
+      var al = [];
+      if (g.sid) al.push(g.sid, "s:" + g.sid);
+      days.forEach(function (d) {
+        al.push("d:" + d + "|" + (g.title || ""));
+        if (g.title) al.push("d:" + d + "|");
+      });
+      g.aliases = al.filter(function (k, i) { return k && k !== g.key && al.indexOf(k) === i; });
     });
     groups.sort(function (a, b) {
       if (a.pending !== b.pending) return a.pending ? 1 : -1;   // '일반 응원'은 활동 목록 맨 뒤로
@@ -772,120 +1033,547 @@ footer a{color:var(--dim);text-decoration:none}
     return groups;
   }
 
-  function renderArchive() {
-    var list = state.messages || [];
-    var groups = buildActivities(list);
-    var total = list.length;
+  /* ── 활동 이름(대회명) · 필터 · 카드 그리드 ─────────────── */
+  var LS_NAMES = "lt_names";
+  var arc = { q: "", year: "all", type: "all" };
+  var currentAct = null;
+  var renameTarget = null;
+  var wantKey = "";
+  var toastTimer = null;
 
-    el.msgCountBadge.textContent = String(total);
-    el.msgCountBadge.hidden = total === 0;
-    el.msgsEmpty.hidden = total !== 0;
-    el.chips.innerHTML = "";
-    el.groups.innerHTML = "";
+  function readLocalNames() {
+    try {
+      var raw = localStorage.getItem(LS_NAMES);
+      var o = raw ? JSON.parse(raw) : null;
+      return o && typeof o === "object" ? o : {};
+    } catch (e) { return {}; }
+  }
+  function writeLocalNames(o) {
+    try { localStorage.setItem(LS_NAMES, JSON.stringify(o || {})); } catch (e) {}
+  }
+  /** 서버(sessionNames) 우선, 아직 못 받은 키는 이 브라우저 저장값으로 채운다 */
+  function mergeNames(remoteNames, localNames) {
+    var out = {};
+    if (localNames && typeof localNames === "object") {
+      for (var k in localNames) if (typeof localNames[k] === "string") out[k] = localNames[k];
+    }
+    if (remoteNames && typeof remoteNames === "object") {
+      for (var k2 in remoteNames) if (typeof remoteNames[k2] === "string") out[k2] = remoteNames[k2];
+    }
+    return out;
+  }
+  function customName(g) {
+    if (!g) return "";
+    var map = state.names || {};
+    var keys = [g.key].concat(g.aliases || []);
+    for (var i = 0; i < keys.length; i++) {
+      var v = map[keys[i]];
+      if (typeof v === "string" && v.trim()) return v.trim();
+    }
+    return "";
+  }
+  function activityName(g) {
+    if (!g) return "LiveTrack 활동";
+    if (g.pending) return "일반 응원";
+    return customName(g) || g.title || "LiveTrack 활동";
+  }
+  function activities() {
+    if (!state.actsCache) state.actsCache = buildActivities(state.messages || []);
+    return state.actsCache;
+  }
+  function findActivity(key) {
+    var list = activities();
+    for (var i = 0; i < list.length; i++) if (list[i].key === key) return list[i];
+    return null;
+  }
+  function toast(text, ms) {
+    if (!el.toast) return;
+    el.toast.textContent = text;
+    el.toast.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.toast.classList.remove("on"); }, ms || 2600);
+  }
+  function syncScroll() {
+    var lock = (el.drawer && el.drawer.classList.contains("on")) ||
+      (el.actModal && el.actModal.classList.contains("on")) ||
+      (el.renameModal && el.renameModal.classList.contains("on"));
+    document.body.classList.toggle("noscroll", !!lock);
+  }
+
+  /* ── 뷰 전환 · 해시 라우팅 ──────────────────────────────── */
+  function setView(v) {
+    var isArc = v === "archive";
+    if (el.viewLive) el.viewLive.hidden = isArc;
+    if (el.viewArchive) el.viewArchive.hidden = !isArc;
+    if (el.wrap) el.wrap.classList.toggle("wide", isArc);
+    document.title = isArc ? "활동별 응원 아카이브 · 히맨_He-Man" : "LiveTrack · 히맨_He-Man";
+    if (el.navLive) el.navLive.classList.toggle("on", !isArc);
+    if (el.navArchive) el.navArchive.classList.toggle("on", isArc);
+  }
+  function setHash(h) {
+    if (window.location.hash === h) return;
+    try { window.location.hash = h; } catch (e) {}
+  }
+  function route() {
+    var h = window.location.hash || "";
+    var m = /^#\/archive(?:\/(.+))?$/.exec(h);
+    if (m) {
+      setView("archive");
+      var k = "";
+      if (m[1]) { try { k = decodeURIComponent(m[1]); } catch (e) { k = m[1]; } }
+      if (k) {
+        if (currentAct && currentAct.key === k) return;
+        if (findActivity(k)) openActivity(k, false);
+        else wantKey = k;
+      } else if (currentAct) {
+        closeActivity(false);
+      }
+      return;
+    }
+    setView("live");
+    if (currentAct) closeActivity(false);
+  }
+
+  /* ── 삼선 메뉴 ──────────────────────────────────────────── */
+  function openMenu() {
+    el.drawer.classList.add("on");
+    el.drawerBack.classList.add("on");
+    el.menuBtn.setAttribute("aria-expanded", "true");
+    el.drawer.setAttribute("aria-hidden", "false");
+    syncScroll();
+  }
+  function closeMenu() {
+    el.drawer.classList.remove("on");
+    el.drawerBack.classList.remove("on");
+    el.menuBtn.setAttribute("aria-expanded", "false");
+    el.drawer.setAttribute("aria-hidden", "true");
+    syncScroll();
+  }
+  function renderDrawerActs() {
+    var list = activities().filter(function (g) { return !g.pending; }).slice(0, 6);
+    el.drawerActs.innerHTML = "";
+    if (!list.length) {
+      var p = document.createElement("p");
+      p.className = "dempty";
+      p.textContent = "아직 활동이 없습니다.";
+      el.drawerActs.appendChild(p);
+      return;
+    }
+    list.forEach(function (g) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "dact";
+      b.setAttribute("data-dact", g.key);
+      var di = dayInfo(g.day);
+      var bEl = document.createElement("b");
+      bEl.textContent = activityName(g);
+      var sEl = document.createElement("span");
+      sEl.textContent = (di.full || "날짜 없음") + " · 음성 " + g.audio + " · 텍스트 " + g.text;
+      b.appendChild(bEl);
+      b.appendChild(sEl);
+      b.addEventListener("click", function () {
+        closeMenu();
+        setView("archive");
+        openActivity(g.key, true);
+      });
+      el.drawerActs.appendChild(b);
+    });
+  }
+
+  /* ── 라이브 뷰: 최근 응원 미리보기 ──────────────────────── */
+  function renderLiveRecent() {
+    var list = (state.messages || []).slice();
+    list.sort(function (a, b) { return (kstMs(b.timeKst) || 0) - (kstMs(a.timeKst) || 0); });
+    var total = list.length;
+    el.recentBadge.textContent = String(total);
+    el.recentBadge.hidden = total === 0;
+    el.recentList.innerHTML = "";
+    el.recentEmpty.hidden = total !== 0;
+    el.goArchive.hidden = total === 0;
+    list.slice(0, 3).forEach(function (m) { el.recentList.appendChild(msgNode(m, true)); });
+    el.recentSub.textContent = total
+      ? "최근 " + Math.min(3, total) + "개만 보여 드립니다 · 전체 " + total + "개"
+      : "레이스가 끝나도 여기에 그대로 남습니다.";
+  }
+
+  /* ── 아카이브 뷰: 필터 + 활동 카드 ─────────────────────── */
+  function yearOf(g) {
+    var d = g.day;
+    if (!d && g.msgs.length) d = kstDate(g.msgs[0].timeKst);
+    return d ? d.slice(0, 4) : "";
+  }
+  function renderYears(groups) {
+    var set = {};
+    groups.forEach(function (g) { var y = yearOf(g); if (y) set[y] = true; });
+    var years = Object.keys(set).sort().reverse();
+    if (years.length < 2) {
+      el.arcYear.hidden = true;
+      arc.year = "all";
+      return;
+    }
+    el.arcYear.hidden = false;
+    el.arcYear.innerHTML = "";
+    var all = document.createElement("option");
+    all.value = "all";
+    all.textContent = "모든 연도";
+    el.arcYear.appendChild(all);
+    years.forEach(function (y) {
+      var o = document.createElement("option");
+      o.value = y;
+      o.textContent = y + "년";
+      el.arcYear.appendChild(o);
+    });
+    if (arc.year !== "all" && !set[arc.year]) arc.year = "all";
+    el.arcYear.value = arc.year;
+  }
+  function renderTypes() {
+    var defs = [["all", "전체"], ["audio", "🎙️ 음성 포함"], ["text", "💬 텍스트만"]];
+    el.arcTypes.innerHTML = "";
+    defs.forEach(function (d) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.setAttribute("data-type", d[0]);
+      b.setAttribute("aria-pressed", arc.type === d[0] ? "true" : "false");
+      var t = document.createElement("span");
+      t.className = "t";
+      t.textContent = d[1];
+      b.appendChild(t);
+      el.arcTypes.appendChild(b);
+    });
+  }
+  function matchType(g) {
+    if (arc.type === "audio") return g.audio > 0;
+    if (arc.type === "text") return g.text > 0;
+    return true;
+  }
+  function matchQuery(g, q) {
+    if (!q) return true;
+    if ((activityName(g) + " " + (g.title || "")).toLowerCase().indexOf(q) >= 0) return true;
+    for (var i = 0; i < g.msgs.length; i++) {
+      var m = g.msgs[i];
+      if ((String(m.from || "") + " " + String(m.content || "")).toLowerCase().indexOf(q) >= 0) return true;
+    }
+    return false;
+  }
+  function renderArchive() {
+    var groups = activities();
+    var total = (state.messages || []).length;
+    var totalAudio = 0;
+    groups.forEach(function (g) { totalAudio += g.audio; });
+
+    if (el.navArcCount) {
+      el.navArcCount.textContent = total ? String(total) : "";
+      el.navArcCount.hidden = !total;
+    }
 
     if (!total) {
-      el.chips.hidden = true;
-      el.archiveSub.textContent = "레이스가 끝나도 여기에 그대로 남습니다.";
+      el.filters.hidden = true;
+      el.actGrid.innerHTML = "";
+      el.arcEmpty.hidden = true;
+      el.arcSub.textContent = "아직 도착한 응원이 없습니다. 라이브 중에 보낸 응원이 여기에 활동별로 쌓입니다.";
       return;
     }
 
-    var audioN = 0;
-    groups.forEach(function (g) { audioN += g.audio; });
-    el.archiveSub.textContent = "활동 " + groups.length + "개 · 음성 " + audioN + "개 · 텍스트 " + (total - audioN) + "개";
+    el.filters.hidden = false;
+    renderYears(groups);
+    renderTypes();
 
-    var known = { all: true };
-    groups.forEach(function (g) { known[g.key] = true; });
-    if (!known[archiveFilter]) archiveFilter = "all";
-
-    el.chips.hidden = false;
-    el.chips.appendChild(chipNode("전체", total, "all"));
-    groups.forEach(function (g) {
-      var label;
-      if (g.pending) {
-        label = "일반 응원";
-      } else {
-        var di = dayInfo(g.day);
-        label = di.short
-          ? (g.title ? di.short + " · " + g.title : di.short)
-          : (g.title || "LiveTrack 활동");
-      }
-      el.chips.appendChild(chipNode(label, g.msgs.length, g.key));
+    var q = String(arc.q || "").trim().toLowerCase();
+    var shown = groups.filter(function (g) {
+      if (arc.year !== "all" && yearOf(g) !== arc.year) return false;
+      if (!matchType(g)) return false;
+      return matchQuery(g, q);
     });
 
-    var shown = groups;
-    if (archiveFilter !== "all") {
-      shown = groups.filter(function (g) { return g.key === archiveFilter; });
-      if (!shown.length) { archiveFilter = "all"; shown = groups; }
+    if (shown.length === groups.length) {
+      el.arcSub.textContent = "활동 " + groups.length + "개 · 음성 " + totalAudio + "개 · 텍스트 " + (total - totalAudio) + "개";
+    } else {
+      var a = 0, t = 0;
+      shown.forEach(function (g) { a += g.audio; t += g.text; });
+      el.arcSub.textContent = "활동 " + shown.length + "/" + groups.length + "개 · 음성 " + a + " · 텍스트 " + t;
     }
-    shown.forEach(function (g) { el.groups.appendChild(groupNode(g)); });
+
+    el.actGrid.innerHTML = "";
+    shown.forEach(function (g) { el.actGrid.appendChild(activityCard(g)); });
+    el.arcEmpty.hidden = shown.length !== 0;
+    el.arcEmpty.textContent = "조건에 맞는 활동이 없습니다. 검색어나 필터를 바꿔 보세요.";
   }
 
-  function chipNode(label, count, key) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.className = "chip";
-    b.setAttribute("data-key", key);
-    b.setAttribute("aria-pressed", archiveFilter === key ? "true" : "false");
-    b.title = label + " · 응원 " + count + "개";
-    var t = document.createElement("span");
-    t.className = "t";
-    t.textContent = label;
-    b.appendChild(t);
-    var n = document.createElement("span");
-    n.className = "n";
-    n.textContent = count + "개";
-    b.appendChild(n);
-    return b;
-  }
+  function activityCard(g) {
+    var card = document.createElement("div");
+    card.className = "act" + (g.audio ? " has-audio" : "") + (g.pending ? " pending" : "");
 
-  function groupNode(g) {
-    var wrap = document.createElement("div");
-    wrap.className = "group" + (g.pending ? " pending" : "");
-
-    var head = document.createElement("div");
-    head.className = "grouphead";
+    var main = document.createElement("button");
+    main.type = "button";
+    main.className = "act-main";
+    main.setAttribute("data-act", g.key);
+    main.setAttribute("aria-label", activityName(g) + " 응원 " + g.msgs.length + "개 보기");
 
     var top = document.createElement("div");
-    top.className = "gtop";
+    top.className = "atop";
+    var d = document.createElement("span");
+    d.className = "ad";
+    var di = dayInfo(g.day);
+    d.textContent = g.pending ? "라이브 밖" : (di.full || "날짜 없음");
+    var st = document.createElement("span");
+    st.className = "astat";
+    st.textContent = g.latest ? relTime(g.latest) : "";
+    top.appendChild(d);
+    top.appendChild(st);
+    main.appendChild(top);
 
-    var dateEl = document.createElement("div");
-    dateEl.className = "gdate";
-    if (g.pending) dateEl.textContent = "일반 응원";
-    else if (g.day) dateEl.textContent = dayInfo(g.day).full;
-    else dateEl.textContent = "LiveTrack 활동";
-    top.appendChild(dateEl);
+    var nm = document.createElement("div");
+    nm.className = "an" + (customName(g) ? " custom" : "");
+    nm.textContent = activityName(g);
+    main.appendChild(nm);
 
-    var titleEl = document.createElement("div");
-    titleEl.className = "gtitle";
-    titleEl.textContent = g.pending ? "라이브 밖에서 보낸 응원" : (g.title || "LiveTrack 활동");
-    titleEl.title = titleEl.textContent;
-    top.appendChild(titleEl);
+    var badges = document.createElement("div");
+    badges.className = "ab";
+    var b1 = document.createElement("span");
+    b1.className = "b a";
+    b1.textContent = "음성 " + g.audio;
+    var b2 = document.createElement("span");
+    b2.className = "b t";
+    b2.textContent = "텍스트 " + g.text;
+    badges.appendChild(b1);
+    badges.appendChild(b2);
+    main.appendChild(badges);
 
-    if (g.url) {
-      var a = document.createElement("a");
-      a.className = "glink";
-      a.href = g.url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.textContent = "세션 열기";
-      a.title = "가민 LiveTrack 세션 페이지";
-      top.appendChild(a);
+    var prev = g.msgs[0];
+    var pv = document.createElement("div");
+    pv.className = "aprev";
+    var pvText = prev ? String(prev.content || (prev.type === "audio" ? "🎙️ 음성 응원" : "")).replace(/\s+/g, " ") : "";
+    pv.textContent = pvText ? "“" + pvText + "”" : "";
+    main.appendChild(pv);
+
+    card.appendChild(main);
+
+    var foot = document.createElement("div");
+    foot.className = "afoot";
+    var meta = document.createElement("span");
+    meta.className = "ameta";
+    meta.textContent = g.latest ? "최근 " + fmtHm(g.latest) : "";
+    foot.appendChild(meta);
+
+    if (!g.pending) {
+      var ed = document.createElement("button");
+      ed.type = "button";
+      ed.className = "edit";
+      ed.setAttribute("data-edit", g.key);
+      ed.title = "관리자 비밀번호로 활동 이름(대회명)을 바꿉니다";
+      ed.textContent = "✏️ 이름 수정";
+      foot.appendChild(ed);
     }
-    head.appendChild(top);
+    card.appendChild(foot);
+    return card;
+  }
 
-    var meta = document.createElement("div");
-    meta.className = "gmeta";
-    meta.innerHTML = '<span class="b a">음성 ' + g.audio + '</span>' +
-      '<span class="b t">텍스트 ' + g.text + '</span>' +
-      (g.latest ? '<span class="w">최근 ' + esc(fmtHm(g.latest)) + '</span>' : "");
-    head.appendChild(meta);
-    wrap.appendChild(head);
+  /* ── 활동 상세 모달 ────────────────────────────────────── */
+  function openActivity(key, pushHash) {
+    var g = key ? findActivity(key) : null;
+    if (!g) return;
+    currentAct = g;
+    var di = dayInfo(g.day);
+    el.actTitle.textContent = activityName(g);
+    el.actMeta.textContent = (g.pending ? "라이브 밖에서 보낸 응원" : (di.full || "날짜 없음")) +
+      (g.latest ? " · 최근 " + clockFor(g.latest, true) : "") +
+      " · 음성 " + g.audio + " · 텍스트 " + g.text;
+    el.actMsgs.innerHTML = "";
+    g.msgs.forEach(function (m) { el.actMsgs.appendChild(msgNode(m, g.multiDay)); });
+    el.actSession.hidden = !g.url;
+    if (g.url) el.actSession.href = g.url;
+    el.actRename.hidden = !!g.pending;
+    el.actModal.classList.add("on");
+    el.actModal.setAttribute("aria-hidden", "false");
+    syncScroll();
+    if (pushHash) setHash("#/archive/" + encodeURIComponent(g.key));
+  }
+  function closeActivity(updateHash) {
+    currentAct = null;
+    el.actModal.classList.remove("on");
+    el.actModal.setAttribute("aria-hidden", "true");
+    syncScroll();
+    if (updateHash !== false) setHash("#/archive");
+  }
 
-    var box = document.createElement("div");
-    box.className = "msgs";
-    g.msgs.forEach(function (m) { box.appendChild(msgNode(m, g.multiDay)); });
-    wrap.appendChild(box);
-    return wrap;
+  /* ── 이름(대회명) 수정 모달 ────────────────────────────── */
+  function rnNote(text, isErr) {
+    el.rnNote.textContent = text || "";
+    el.rnNote.className = "rnnote" + (isErr ? " warn" : "");
+  }
+  function openRename(g) {
+    if (!g || g.pending) return;
+    renameTarget = g;
+    el.rnName.value = customName(g) || g.title || "";
+    el.rnPin.value = "";
+    el.rnOrig.textContent = "가민 기본 이름: " + (g.title || "LiveTrack 활동");
+    if (!state.canRename) {
+      rnNote("지금 연결된 스크립트는 이름 저장을 지원하지 않습니다. 앱스스크립트에 새 코드를 붙여넣고 「새 버전」으로 배포하면 저장됩니다.", true);
+    } else {
+      rnNote("");
+    }
+    el.renameModal.classList.add("on");
+    el.renameModal.setAttribute("aria-hidden", "false");
+    syncScroll();
+    setTimeout(function () { try { el.rnName.focus(); } catch (e) {} }, 60);
+  }
+  function closeRename() {
+    renameTarget = null;
+    el.renameModal.classList.remove("on");
+    el.renameModal.setAttribute("aria-hidden", "true");
+    syncScroll();
+  }
+  function submitRename() {
+    var g = renameTarget;
+    if (!g) return;
+    var name = String(el.rnName.value || "").replace(/\s+/g, " ").trim().slice(0, 60);
+    var pin = String(el.rnPin.value || "");
+    if (!pin) {
+      rnNote("관리자 비밀번호를 입력해 주세요.", true);
+      try { el.rnPin.focus(); } catch (e) {}
+      return;
+    }
+    if (!endpoint) {
+      rnNote("서버 주소가 연결되지 않았습니다. 잠시 뒤 다시 시도해 주세요.", true);
+      return;
+    }
+    var btn = el.rnSave;
+    var oldLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "저장 중…";
+    rnNote("");
+    var body = {
+      action: "renameSession",
+      sessionKey: g.key,
+      aliases: g.aliases || [],
+      sessionId: g.sid || "",
+      name: name,
+      pin: pin,
+      msgId: randId()
+    };
+    postCheer(body).then(function (d) {
+      btn.disabled = false;
+      btn.textContent = oldLabel;
+      if (!d || d.action !== "renameSession") {
+        state.canRename = false;
+        rnNote("아직 이름 변경을 지원하지 않는 스크립트입니다. apps-script.txt의 새 코드를 붙여넣고 「새 버전」으로 배포한 뒤 다시 시도해 주세요.", true);
+        return;
+      }
+      if (d.ok && d.renamed) {
+        state.names = (d.sessionNames && typeof d.sessionNames === "object") ? d.sessionNames : {};
+        writeLocalNames(state.names);
+        closeRename();
+        renderAll();
+        toast(name ? "이름을 저장했습니다" : "기본 이름으로 되돌렸습니다");
+        if (d.pinDefault) {
+          toast("기본 비밀번호(0000)로 저장되었습니다. setupPin('새 비번')으로 바꿔 주세요.", 4200);
+        }
+        return;
+      }
+      rnNote(String(d.error || "저장하지 못했습니다."), true);
+    }).catch(function (err) {
+      btn.disabled = false;
+      btn.textContent = oldLabel;
+      if (err && err.message === "old-script") {
+        state.canRename = false;
+        rnNote("아직 새 버전 스크립트가 배포되지 않았습니다. apps-script.txt의 새 코드를 붙여넣고 「새 버전」으로 배포해 주세요.", true);
+      } else {
+        rnNote("저장하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.", true);
+      }
+    });
+  }
+
+  /* ── 전체 다시 그리기 ──────────────────────────────────── */
+  function renderAll() {
+    state.actsCache = null;
+    renderLiveRecent();
+    renderArchive();
+    renderDrawerActs();
+    if (currentAct && !player.playingId) {
+      var g = findActivity(currentAct.key);
+      if (g) openActivity(g.key, false);
+      else closeActivity(false);
+    }
+    if (wantKey) {
+      var w = findActivity(wantKey);
+      if (w) { wantKey = ""; openActivity(w.key, false); }
+      else if ((state.messages || []).length) { wantKey = ""; toast("그 활동을 찾지 못했습니다."); }
+    }
+  }
+
+  /* ── 메뉴·필터·모달 연결 ───────────────────────────────── */
+  function bindUI() {
+    // 메뉴
+    el.menuBtn.addEventListener("click", function () {
+      if (el.drawer.classList.contains("on")) closeMenu(); else openMenu();
+    });
+    el.drawerBack.addEventListener("click", closeMenu);
+    el.drawerClose.addEventListener("click", closeMenu);
+    [el.navLive, el.navArchive].forEach(function (a) {
+      a.addEventListener("click", function () { closeMenu(); });
+    });
+
+    // 활동 카드 / 이름 수정
+    el.actGrid.addEventListener("click", function (ev) {
+      var n = ev.target;
+      while (n && n !== el.actGrid && !(n.getAttribute && (n.getAttribute("data-act") || n.getAttribute("data-edit")))) {
+        n = n.parentNode;
+      }
+      if (!n || n === el.actGrid) return;
+      var editKey = n.getAttribute("data-edit");
+      if (editKey) { openRename(findActivity(editKey)); return; }
+      openActivity(n.getAttribute("data-act"), true);
+    });
+
+    // 필터
+    el.arcQ.addEventListener("input", function () {
+      arc.q = el.arcQ.value || "";
+      renderArchive();
+    });
+    el.arcYear.addEventListener("change", function () {
+      arc.year = el.arcYear.value || "all";
+      renderArchive();
+    });
+    el.arcTypes.addEventListener("click", function (ev) {
+      var n = ev.target;
+      while (n && n !== el.arcTypes && !(n.getAttribute && n.getAttribute("data-type"))) n = n.parentNode;
+      if (!n || n === el.arcTypes) return;
+      arc.type = n.getAttribute("data-type") || "all";
+      renderArchive();
+    });
+
+    // 활동 상세 모달
+    el.actClose.addEventListener("click", function () { closeActivity(); });
+    el.actModal.addEventListener("click", function (ev) {
+      if (ev.target === el.actModal) closeActivity();
+    });
+    el.actRename.addEventListener("click", function () {
+      if (currentAct) openRename(currentAct);
+    });
+
+    // 이름 수정 모달
+    el.rnClose.addEventListener("click", closeRename);
+    el.rnCancel.addEventListener("click", closeRename);
+    el.rnSave.addEventListener("click", submitRename);
+    el.renameModal.addEventListener("click", function (ev) {
+      if (ev.target === el.renameModal) closeRename();
+    });
+    el.rnName.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter") { ev.preventDefault(); el.rnPin.focus(); }
+    });
+    el.rnPin.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter") { ev.preventDefault(); submitRename(); }
+    });
+
+    // 휴대폰 뒤로가기/해시
+    window.addEventListener("hashchange", route);
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key !== "Escape") return;
+      if (el.renameModal.classList.contains("on")) { closeRename(); return; }
+      if (el.actModal.classList.contains("on")) { closeActivity(); return; }
+      if (el.drawer.classList.contains("on")) closeMenu();
+    });
   }
 
   function msgNode(m, withDate) {
@@ -932,15 +1620,6 @@ footer a{color:var(--dim);text-decoration:none}
     row.appendChild(foot);
     return row;
   }
-
-  el.chips.addEventListener("click", function (ev) {
-    var n = ev.target;
-    while (n && n !== el.chips && !(n.getAttribute && n.getAttribute("data-key"))) n = n.parentNode;
-    if (!n || n === el.chips) return;
-    archiveFilter = n.getAttribute("data-key") || "all";
-    renderArchive();
-    try { el.chips.scrollIntoView({ block: "nearest" }); } catch (e) {}
-  });
 
   function playAudio(m, btn) {
     if (!endpoint) return;
@@ -1043,12 +1722,18 @@ footer a{color:var(--dim);text-decoration:none}
         }
         state.session = remote.session && remote.session.id ? remote.session : null;
         state.messages = Array.isArray(remote.messages) ? remote.messages : [];
+        state.names = mergeNames(remote.sessionNames, readLocalNames());
+        state.canRename = Array.isArray(remote.features)
+          ? remote.features.indexOf("renameSession") >= 0
+          : false;
         if (state.session && typeof state.session.audio === "boolean" && state.session.caps) {
           audioEnabled = state.session.audio !== false;
         }
       } else {
         state.session = null;
         state.messages = state.messages || [];
+        state.names = mergeNames(null, readLocalNames());
+        state.canRename = false;
       }
 
       state.url = url;
@@ -1058,7 +1743,7 @@ footer a{color:var(--dim);text-decoration:none}
       busy = false;
       el.checked.textContent = clock() ? clock() + " 확인" : "";
       renderStatus();
-      renderArchive();
+      renderAll();
       updateCheerHint();
     }).catch(function () {
       busy = false;
@@ -1433,6 +2118,11 @@ footer a{color:var(--dim);text-decoration:none}
   } catch (e) {}
   el.fromName.addEventListener("blur", function () { nameValue(); });
 
+  bindUI();
+  route();
+  renderLiveRecent();
+  renderArchive();
+  renderDrawerActs();
   renderStatus();
   updateCheerHint();
   load();

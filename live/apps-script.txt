@@ -1,23 +1,38 @@
 /**
- * 가민 LiveTrack · 응원 메시지 (영구 저장 + 워치 동시 전송) · Google Apps Script v2
+ * 가민 LiveTrack · 응원 메시지 (영구 저장 + 워치 동시 전송) · Google Apps Script v3
  * ============================================================
  * 하는 일
  *   1) 1분마다 Gmail(whi2hn@gmail.com)에 온 가민 LiveTrack 메일을 찾아
  *      "https://livetrack.garmin.com/session/..." 링크를 뽑아 저장합니다. (v1 그대로)
- *   2) 웹앱으로 열면 저장된 링크 + 라이브 세션 상태 + 최근 응원 메시지 300건을 JSON으로 돌려줍니다.
+ *   2) 웹앱으로 열면 저장된 링크 + 라이브 세션 상태 + 최근 응원 메시지 300건 + 활동 이름표(sessionNames)를
+ *      JSON으로 돌려줍니다.
  *      (메시지마다 sessionUrl 도 함께 — 페이지가 활동(세션)별로 묶어 보여 줍니다)
  *      → https://heman-hiker.github.io/He-Man/live/ 가 이 JSON을 받아 표시합니다.
  *   3) 관전자가 페이지에서 보낸 음성/텍스트 응원을
  *        (a) 내 Google Drive 폴더 + 스프레드시트에 영구 저장하고
  *        (b) 동시에 가민 LiveTrack 관전자 메시지 API로 쏘아 워치 스피커로 재생되게 합니다.
+ *   4) v3 — 활동 이름(실제 대회명) 바꾸기
+ *        페이지의 「✏️ 이름 수정」 → POST {action:'renameSession', sessionKey, name, pin}
+ *        · 관리자 비밀번호가 맞아야만 저장합니다. (아래 'ADMIN_PIN 설정' 참고)
+ *        · 저장 위치: ScriptProperties 의 sessionNames (JSON 맵 { 세션키: 이름 })
+ *        · doGet 응답의 sessionNames 로 페이지가 즉시 그 이름으로 그립니다.
+ *
+ * ADMIN_PIN 설정 (중요 — 비밀번호는 이 공개 파일에 적지 않습니다)
+ *   · 배포된 스크립트의 ScriptProperties 키 'ADMIN_PIN' 에 저장합니다.
+ *   · 편집기에서  setupPin('원하는비번')  함수를 한 번 실행하면 저장됩니다. (4자 이상)
+ *     또는 프로젝트 설정 → 스크립트 속성 → ADMIN_PIN = 원하는비번  을 직접 추가해도 됩니다.
+ *   · ADMIN_PIN 을 아직 정하지 않았다면 초기 비밀번호 '0000' 이 허용됩니다.
+ *     (페이지에 저장 후 "기본 비밀번호입니다" 안내가 뜨니, 꼭 setupPin('새비번') 으로 바꾸세요.)
+ *   · 비밀번호를 5분에 8번 틀리면 5분 동안 잠깁니다.
  *
  * 설치 (5분)
  *   1. https://script.google.com → 기존 프로젝트 열기(없으면 새 프로젝트) → 이 파일 내용 전체를 Code.gs에 붙여넣기 → 저장
  *   2. 함수 목록에서 [setup] 선택 → 실행 → 권한 허용
  *      (Gmail 읽기 + Drive/시트 생성 + 외부 요청 권한. 1분 자동 실행 트리거 생성 + 지금 한 번 확인 + 저장 폴더 생성)
- *   3. 배포 → 배포 관리 → ✏️(수정) → 버전 "새 버전" → 배포
+ *   3. (선택) setupPin('원하는비번') 실행 → 활동 이름을 바꿀 때 쓸 비밀번호 저장
+ *   4. 배포 → 배포 관리 → ✏️(수정) → 버전 "새 버전" → 배포
  *      (⚠️ "새 배포"를 만들면 URL이 바뀝니다. 반드시 기존 배포를 수정하세요.)
- *   4. 확인: 웹앱 URL 뒤에 ?probe=1 을 붙여 열면 가민 API 연결 상태가 JSON으로 나옵니다.
+ *   5. 확인: 웹앱 URL 뒤에 ?probe=1 을 붙여 열면 가민 API 연결 상태가 JSON으로 나옵니다.
  *      {"csrfOk":true, ...} 면 준비 완료.
  *
  * 가민 API 메모 (2026-11 확인)
@@ -36,6 +51,11 @@ var PROP_KEY = 'livetrack';             // { url, updatedAt, subject, messageId 
 var PROP_CHECKED = 'livetrackChecked';  // 마지막으로 메일함을 훑은 시각(ISO)
 var PROP_FOLDER = 'cheerFolderId';      // 응원 메시지 폴더 ID
 var PROP_SHEET = 'cheerSheetId';        // 응원 메시지 기록 시트 ID
+var PROP_NAMES = 'sessionNames';        // { 세션키: 실제 대회명 } JSON 맵 — 페이지의 '이름 수정'
+var PROP_PIN = 'ADMIN_PIN';             // 활동 이름을 바꿀 때 쓰는 관리자 비밀번호
+var PIN_DEFAULT = '0000';               // ADMIN_PIN 을 아직 정하지 않았을 때만 쓰는 초기 비밀번호
+var PIN_MAX_FAIL = 8;                   // 5분 안에 이만큼 틀리면 잠금
+var NAME_MAX = 60;                      // 활동 이름 최대 길이
 
 var MAX_AGE_MS = 24 * 60 * 60 * 1000;   // 24시간
 var ON_DEMAND_MS = 5 * 60 * 1000;       // 웹앱 요청 시 즉시 재확인 최소 간격
@@ -80,7 +100,9 @@ function doGet(e) {
     updatedAtKst: state.updatedAt ? formatKst(state.updatedAt) : '',
     session: liveInfo_(state),
     messages: safeMessages_(MSG_LIMIT),
-    source: 'garmin-livetrack-apps-script-v2'
+    sessionNames: sessionNames_(),          // v3 — { 세션키: 실제 대회명 }
+    features: ['renameSession'],            // v3 — 페이지가 「이름 수정」 가능 여부를 판단
+    source: 'garmin-livetrack-apps-script-v3'
   };
 
   return jsonOut(body, p.callback);
@@ -103,6 +125,18 @@ function doPost(e) {
   } catch (err) {
     res.error = '요청 해석 실패: ' + err;
     return jsonOut(res);
+  }
+
+  // v3 — 활동 이름(대회명) 변경: 응원 저장과는 별개 경로
+  if (data && String(data.action || '') === 'renameSession') {
+    try {
+      return jsonOut(handleRename_(data));
+    } catch (errName) {
+      return jsonOut({
+        action: 'renameSession', ok: false, renamed: false, error: String(errName),
+        sessionNames: sessionNames_()
+      });
+    }
   }
 
   var lock = LockService.getScriptLock();
@@ -223,11 +257,16 @@ function handleCheer_(d, res) {
   return res;
 }
 
-/** 시트 '세션' 칸에 넣을 이름 */
+/** 시트 '세션' 칸에 넣을 이름 — 직접 붙인 이름(대회명)이 있으면 그것을 쓴다 */
 function stateLabel_(sessionUrl) {
+  var s = parseSessionUrl_(sessionUrl);
+  if (s) {
+    var names = sessionNames_();
+    if (names[s.id]) return names[s.id];
+    if (names['s:' + s.id]) return names['s:' + s.id];
+  }
   var st = getState();
   if (st.subject) return st.subject;
-  var s = parseSessionUrl_(sessionUrl);
   if (!s) return '';
   var info = liveInfo_({ url: sessionUrl });
   return info && info.name ? info.name : 'LiveTrack 세션';
@@ -246,6 +285,132 @@ function garminLabel_(g) {
     case 'skipped': return '건너뜀';
     default: return '실패 — ' + (g.status || '') + (g.error ? ' ' + String(g.error).slice(0, 60) : '');
   }
+}
+
+/* ============================================================
+ * 2-1. 활동 이름(실제 대회명) 변경 — v3
+ *   페이지가 보낸 { action:'renameSession', sessionKey, aliases, sessionId, name, pin }
+ *   · pin 이 관리자 비밀번호(ADMIN_PIN)와 같아야 저장
+ *   · 이름을 비우면 그 세션키는 지워서 가민 기본 이름으로 돌아간다
+ * ============================================================ */
+
+/** 저장된 이름표 맵 { 세션키: 이름 } */
+function sessionNames_() {
+  var raw = '';
+  try { raw = PropertiesService.getScriptProperties().getProperty(PROP_NAMES) || ''; } catch (e) { return {}; }
+  if (!raw) return {};
+  try {
+    var o = JSON.parse(raw);
+    if (!o || typeof o !== 'object') return {};
+    var out = {};
+    for (var k in o) if (typeof o[k] === 'string' && o[k]) out[k] = o[k];
+    return out;
+  } catch (e) { return {}; }
+}
+
+function saveSessionNames_(map) {
+  PropertiesService.getScriptProperties().setProperty(PROP_NAMES, JSON.stringify(map || {}));
+}
+
+/** 관리자 비밀번호 — ScriptProperties 의 ADMIN_PIN, 아직 없으면 초기값 0000 */
+function adminPin_() {
+  var p = '';
+  try { p = PropertiesService.getScriptProperties().getProperty(PROP_PIN) || ''; } catch (e) {}
+  return p ? p : PIN_DEFAULT;
+}
+
+function pinIsDefault_() {
+  var p = '';
+  try { p = PropertiesService.getScriptProperties().getProperty(PROP_PIN) || ''; } catch (e) {}
+  return !p;
+}
+
+/**
+ * 편집기에서 한 번 실행: setupPin('원하는비번')
+ * 비밀번호는 이 공개 페이지(apps-script.txt)에 적지 않고 ScriptProperties 에만 저장됩니다.
+ */
+function setupPin(pin) {
+  pin = String(pin == null ? '' : pin).trim();
+  if (pin.length < 4) throw new Error('비밀번호는 4자 이상으로 정해 주세요.');
+  PropertiesService.getScriptProperties().setProperty(PROP_PIN, pin);
+  Logger.log('관리자 비밀번호 저장 완료 (길이 ' + pin.length + '자). 이제 페이지의 「✏️ 이름 수정」에서 이 비밀번호를 쓰세요.');
+  return true;
+}
+
+/** 저장 키 정리 — 제어문자 제거, 120자 제한 */
+function cleanNameKey_(s) {
+  return String(s == null ? '' : s).replace(/[\u0000-\u001F]/g, '').trim().slice(0, 120);
+}
+
+function handleRename_(d) {
+  var res = {
+    action: 'renameSession', ok: false, renamed: false, pinOk: false, locked: false,
+    pinDefault: pinIsDefault_(), sessionKey: '', name: '', sessionNames: sessionNames_(), error: ''
+  };
+
+  // 1) 비밀번호 확인 (5분에 8회 틀리면 5분 잠금)
+  var cache = CacheService.getScriptCache();
+  var lockKey = 'pinlock';
+  if (cache.get(lockKey)) {
+    res.locked = true;
+    res.error = '비밀번호를 여러 번 틀렸습니다. 5분 뒤에 다시 시도해 주세요.';
+    return res;
+  }
+  var given = String(d && d.pin != null ? d.pin : '');
+  if (given !== adminPin_()) {
+    var fails = Number(cache.get('pinfail') || 0) + 1;
+    try { cache.put('pinfail', String(fails), 300); } catch (e) {}
+    if (fails >= PIN_MAX_FAIL) { try { cache.put(lockKey, '1', 300); } catch (e) {} }
+    res.error = '비밀번호가 맞지 않습니다.' + (fails >= PIN_MAX_FAIL ? ' 5분 동안 다시 시도할 수 없습니다.' : '');
+    return res;
+  }
+  try { cache.remove('pinfail'); } catch (e) {}
+  res.pinOk = true;
+
+  // 2) 어떤 활동인지 — 페이지가 보낸 키 + 후보 키들을 함께 저장
+  var name = String(d && d.name != null ? d.name : '')
+    .replace(/[\u0000-\u001F\u007F]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, NAME_MAX);
+
+  var keys = [];
+  var mainKey = cleanNameKey_(d && d.sessionKey) || cleanNameKey_(d && d.sessionId);
+  if (mainKey) keys.push(mainKey);
+  var aliases = (d && Array.isArray(d.aliases)) ? d.aliases : [];
+  for (var i = 0; i < aliases.length && keys.length < 12; i++) {
+    var k = cleanNameKey_(aliases[i]);
+    if (k && keys.indexOf(k) < 0) keys.push(k);
+  }
+  if (!keys.length) {
+    res.error = '어떤 활동인지 알 수 없습니다 (sessionKey 없음)';
+    return res;
+  }
+
+  // 3) 저장
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(15000); } catch (e) {}
+  try {
+    var map = sessionNames_();
+    for (var j = 0; j < keys.length; j++) {
+      if (name) map[keys[j]] = name;
+      else delete map[keys[j]];
+    }
+    saveSessionNames_(map);
+    res.sessionNames = map;
+  } catch (errSave) {
+    res.error = '저장 실패: ' + errSave;
+    return res;
+  } finally {
+    try { lock.releaseLock(); } catch (e2) {}
+  }
+
+  res.ok = true;
+  res.renamed = true;
+  res.sessionKey = keys[0];
+  res.name = name;
+  Logger.log('활동 이름 변경: ' + keys[0] + ' → ' + (name || '(가민 기본 이름)'));
+  return res;
 }
 
 /* ============================================================
@@ -796,6 +961,15 @@ function setup() {
 
   checkLiveTrackMail();
   Logger.log('설정 완료 — 1분마다 메일 확인. 이제 웹앱으로 배포하세요.');
+  Logger.log(pinIsDefault_()
+    ? '관리자 비밀번호: 아직 초기값(0000)입니다. setupPin(\'원하는비번\') 을 실행해 바꿔 주세요.'
+    : '관리자 비밀번호: 설정되어 있습니다.');
+}
+
+/** 저장된 활동 이름표 보기 (편집기에서 실행) */
+function showNames() {
+  Logger.log(JSON.stringify(sessionNames_(), null, 2));
+  Logger.log(pinIsDefault_() ? '관리자 비밀번호: 초기값(0000)' : '관리자 비밀번호: 설정됨');
 }
 
 /** 저장된 상태를 로그로 보기 */
