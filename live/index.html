@@ -2134,6 +2134,7 @@ footer a{color:var(--dim);text-decoration:none}
 
   bindUI();
   route();
+  arc.q = (el.arcQ.value || "");   // 새로고침 때 브라우저가 살려 둔 검색어와 상태를 맞춘다
   renderLiveRecent();
   renderArchive();
   renderDrawerActs();
