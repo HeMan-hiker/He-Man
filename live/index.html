@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1512">
+<meta name="robots" content="noindex, nofollow">
+<title>LiveTrack · 히맨_He-Man</title>
+<meta name="description" content="히맨의 가민 LiveTrack 고정 링크. 라이브 세션이 시작되면 자동으로 연결됩니다.">
+<style>
+:root{
+  --bg:#0f1512; --bg2:#151d18; --panel:#18211c; --line:#2a3a31;
+  --ink:#eef2ed; --muted:#a3b3a7; --dim:#7c8c81;
+  --trail:#7bd88f; --trail-ink:#0b2314; --sand:#e8d5a8; --clay:#e07a5f; --sky:#8ecae6;
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100dvh;
+  background:
+    radial-gradient(1100px 480px at 12% -8%, #1d3126 0%, rgba(29,49,38,0) 62%),
+    radial-gradient(820px 380px at 102% 4%, #24312b 0%, rgba(36,49,43,0) 58%),
+    var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+  -webkit-tap-highlight-color:transparent;
+}
+.wrap{
+  max-width:520px;margin:0 auto;padding:18px 18px calc(22px + env(safe-area-inset-bottom));
+  min-height:100dvh;display:flex;flex-direction:column;gap:18px;
+}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.mark{
+  width:38px;height:38px;flex:0 0 38px;border-radius:11px;
+  background:linear-gradient(140deg,var(--trail),#3f9d63);
+  color:var(--trail-ink);display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:17px;letter-spacing:-.03em;
+  box-shadow:0 6px 18px -8px rgba(123,216,143,.9);
+}
+.brand b{display:block;font-size:14px;letter-spacing:.01em}
+.brand span{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:1px}
+header a{
+  color:var(--muted);text-decoration:none;font-size:12px;font-weight:650;
+  border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:rgba(255,255,255,.02);
+}
+header a:active{background:rgba(255,255,255,.06)}
+
+.card{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(180deg,rgba(24,33,28,.96),rgba(20,28,24,.98));
+  border:1px solid var(--line);border-radius:var(--radius);
+  padding:30px 22px 26px;gap:14px;position:relative;overflow:hidden;
+  box-shadow:0 24px 60px -40px #000, inset 0 1px 0 rgba(255,255,255,.03);
+  min-height:340px;
+}
+.card::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(320px 160px at 50% 0%, rgba(123,216,143,.14), transparent 70%);
+  opacity:.9;
+}
+.pill{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:750;
+  border:1px solid rgba(123,216,143,.35);background:rgba(123,216,143,.08);color:var(--trail);
+  padding:5px 11px;border-radius:999px;position:relative;z-index:1;
+}
+.pill.warn{border-color:rgba(232,213,168,.35);background:rgba(232,213,168,.08);color:var(--sand)}
+.pill.off{border-color:var(--line);background:rgba(255,255,255,.03);color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+.pill.live .dot{animation:pulse 1.5s ease-in-out infinite;box-shadow:0 0 0 0 rgba(123,216,143,.6)}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(123,216,143,.55)}
+  70%{box-shadow:0 0 0 8px rgba(123,216,143,0)}
+  100%{box-shadow:0 0 0 0 rgba(123,216,143,0)}
+}
+h1{
+  font-size:clamp(21px,5.6vw,26px);line-height:1.28;letter-spacing:-.02em;
+  margin:0;font-weight:750;position:relative;z-index:1;
+}
+.desc{color:var(--muted);font-size:13.5px;margin:0;max-width:34ch;position:relative;z-index:1}
+.meta{
+  font-size:12px;color:var(--dim);position:relative;z-index:1;
+  display:flex;flex-direction:column;gap:3px;align-items:center;
+  border-top:1px solid rgba(255,255,255,.05);padding-top:12px;width:100%;margin-top:2px;
+}
+.meta b{color:var(--muted);font-weight:650;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.count{
+  position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;padding:2px 0 2px;
+}
+.count em{
+  font-style:normal;font-size:58px;line-height:1;font-weight:800;color:var(--trail);
+  letter-spacing:-.04em;font-variant-numeric:tabular-nums;
+  text-shadow:0 0 34px rgba(123,216,143,.35);
+}
+.count small{font-size:11.5px;letter-spacing:.06em;color:var(--dim)}
+.bar{width:min(220px,100%);height:3px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--trail),#b9f0c4);transform-origin:left center}
+.actions{display:flex;flex-direction:column;gap:9px;width:100%;max-width:340px;position:relative;z-index:1;margin-top:2px}
+.btn{
+  appearance:none;border:0;border-radius:12px;padding:14px 16px;font:inherit;font-weight:750;font-size:15px;
+  cursor:pointer;min-height:50px;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .12s ease,filter .12s ease;
+}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:var(--trail);color:var(--trail-ink);box-shadow:0 12px 28px -14px rgba(123,216,143,.9)}
+.btn.primary:active{filter:brightness(.96)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-size:13px;min-height:44px;font-weight:650}
+.btn.ghost:active{background:rgba(255,255,255,.05)}
+.hint{font-size:11.5px;color:var(--dim);position:relative;z-index:1;min-height:16px}
+.hint.err{color:var(--clay)}
+footer{
+  display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--dim);
+  border-top:1px solid var(--line);padding-top:14px;
+}
+footer a{color:var(--dim);text-decoration:none}
+footer a:active{color:var(--muted)}
+@media (prefers-reduced-motion:reduce){
+  .pill.live .dot{animation:none}
+  .btn{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">H</div>
+      <div><b>히맨_He-Man</b><span>LiveTrack</span></div>
+    </div>
+    <a href="../">아카이브</a>
+  </header>
+
+  <main class="card">
+    <span class="pill off" id="pill"><i class="dot"></i><span id="pillText">확인 중</span></span>
+    <h1 id="title">LiveTrack 링크 확인 중…</h1>
+    <p class="desc" id="desc">가민 라이브트랙 세션을 찾고 있습니다.</p>
+    <div class="count" id="count" hidden>
+      <em id="countNum">2</em>
+      <small>초 뒤 자동으로 이동합니다</small>
+      <div class="bar"><i id="barFill"></i></div>
+    </div>
+    <div class="meta" id="meta" hidden></div>
+    <div class="actions" id="actions"></div>
+    <div class="hint" id="hint"></div>
+  </main>
+
+  <footer>
+    <span>고정 링크 · <a href="../garmin/">러닝 기록</a></span>
+    <span id="checked">—</span>
+  </footer>
+</div>
+
+<noscript>
+  <div class="wrap"><p class="desc">이 페이지는 자바스크립트가 필요합니다. 브라우저에서 자바스크립트를 켜 주세요.</p></div>
+</noscript>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ── 설정 ───────────────────────────────────────────────
+     Apps Script 웹앱 URL을 여기에 붙여 넣으면 끝.
+     (또는 live/latest.json 의 "endpoint" 값에 넣어도 됩니다.)
+     비워두면 latest.json 만 읽어서 동작합니다.            */
+  var APPS_SCRIPT_URL = "";
+
+  var MAX_AGE_MS = 24 * 60 * 60 * 1000;   // 24시간 지난 세션은 자동 이동 안 함
+  var COUNTDOWN_SEC = 2;                  // 자동 이동까지 대기
+  var POLL_MS = 30000;                    // 세션 확인 주기
+
+  var ALLOWED_HOSTS = ["livetrack.garmin.com", "connect.garmin.com"];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var el = {
+    pill: $("pill"), pillText: $("pillText"),
+    title: $("title"), desc: $("desc"),
+    count: $("count"), countNum: $("countNum"), bar: $("barFill"),
+    meta: $("meta"), actions: $("actions"), hint: $("hint"), checked: $("checked")
+  };
+
+  var endpoint = "";
+  var payload = null;      // { url, updatedAt, subject }
+  var phase = "loading";
+  var pollTimer = null, cdTimer = null;
+  var autoOn = true;       // 사용자가 자동 이동을 끌 수 있게
+  var target = "";
+  var busy = false;
+
+  /* ── 유틸 ─────────────────────────────────────────────── */
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function bust(url) {
+    return url + (url.indexOf("?") === -1 ? "?" : "&") + "_=" + Date.now();
+  }
+
+  function isLiveTrackUrl(u) {
+    if (!u || !/^https:\/\//i.test(u)) return false;
+    var host, path;
+    try {
+      var p = new URL(u);
+      host = p.hostname.toLowerCase();
+      path = p.pathname.toLowerCase();
+    } catch (e) { return false; }
+    if (ALLOWED_HOSTS.indexOf(host) === -1) return false;
+    if (host === "connect.garmin.com") return path.indexOf("livetrack") !== -1;
+    return path.length > 1;
+  }
+
+  function cleanUrl(u) {
+    if (typeof u !== "string") return "";
+    u = u.trim().replace(/&amp;/g, "&");
+    u = u.replace(/[)\].,;!]+$/, "");
+    return u;
+  }
+
+  function ts(iso) {
+    if (!iso) return NaN;
+    var t = Date.parse(iso);
+    if (!isNaN(t)) return t;
+    var n = Number(iso);
+    return isFinite(n) ? (n < 1e12 ? n * 1000 : n) : NaN;
+  }
+
+  function relTime(t) {
+    if (isNaN(t)) return "";
+    var d = Date.now() - t;
+    if (d < 0) d = 0;
+    var m = Math.floor(d / 60000);
+    if (m < 1) return "방금 전";
+    if (m < 60) return m + "분 전";
+    var h = Math.floor(m / 60);
+    if (h < 24) return h + "시간 전";
+    return Math.floor(h / 24) + "일 전";
+  }
+
+  function clock() {
+    try {
+      return new Date().toLocaleTimeString("ko-KR", {
+        hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "Asia/Seoul"
+      });
+    } catch (e) { return ""; }
+  }
+
+  function normalize(d) {
+    if (!d || typeof d !== "object") return null;
+    var url = cleanUrl(d.url);
+    if (url && !isLiveTrackUrl(url)) url = "";   // 이상한 주소로는 절대 이동하지 않음
+    return {
+      url: url,
+      updatedAt: typeof d.updatedAt === "string" ? d.updatedAt : (d.updatedAt ? String(d.updatedAt) : ""),
+      subject: typeof d.subject === "string" ? d.subject : ""
+    };
+  }
+
+  function better(a, b) {
+    if (!a) return b;
+    if (!b) return a;
+    var ta = ts(a.updatedAt), tb = ts(b.updatedAt);
+    if (a.url && !b.url) return a;
+    if (b.url && !a.url) return b;
+    if (isNaN(ta)) return b.url ? b : a;
+    if (isNaN(tb)) return a;
+    return tb >= ta ? b : a;
+  }
+
+  /* ── 네트워크 ─────────────────────────────────────────── */
+  function getJSON(url, ms) {
+    if (typeof fetch !== "function") return Promise.reject(new Error("no fetch"));
+    var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, ms || 12000) : null;
+    return fetch(bust(url), {
+      cache: "no-store", credentials: "omit", redirect: "follow",
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) {
+      if (timer) clearTimeout(timer);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    }).then(function (txt) {
+      return JSON.parse(txt);
+    }).catch(function (e) {
+      if (timer) clearTimeout(timer);
+      throw e;
+    });
+  }
+
+  // CORS가 막힐 때를 위한 JSONP 보조 경로
+  function getJSONP(url, ms) {
+    return new Promise(function (resolve, reject) {
+      var name = "ltcb_" + Math.random().toString(36).slice(2);
+      var s = document.createElement("script");
+      var done = false;
+      function finish(err, data) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        try { delete window[name]; } catch (e) { window[name] = undefined; }
+        if (s.parentNode) s.parentNode.removeChild(s);
+        if (err) reject(err); else resolve(data);
+      }
+      var timer = setTimeout(function () { finish(new Error("timeout")); }, ms || 12000);
+      window[name] = function (d) { finish(null, d || {}); };
+      s.onerror = function () { finish(new Error("script error")); };
+      s.src = bust(url + (url.indexOf("?") === -1 ? "?" : "&") + "callback=" + name);
+      document.head.appendChild(s);
+    });
+  }
+
+  function getEndpointJSON(url) {
+    return getJSON(url).catch(function (e1) {
+      return getJSONP(url).catch(function () { throw e1; });
+    });
+  }
+
+  /* ── 화면 ─────────────────────────────────────────────── */
+  function setPill(kind, text) {
+    el.pill.className = "pill " + kind;
+    el.pillText.textContent = text;
+  }
+
+  function clearActions() {
+    while (el.actions.firstChild) el.actions.removeChild(el.actions.firstChild);
+  }
+
+  function button(label, kind, onClick) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "btn " + kind;
+    b.textContent = label;
+    b.addEventListener("click", onClick);
+    el.actions.appendChild(b);
+    return b;
+  }
+
+  function stopCountdown() {
+    if (cdTimer) { clearInterval(cdTimer); cdTimer = null; }
+    el.count.hidden = true;
+    el.bar.style.transition = "none";
+    el.bar.style.transform = "scaleX(0)";
+  }
+
+  function go() {
+    if (!isLiveTrackUrl(target)) return;
+    stopCountdown();
+    window.location.replace(target);
+  }
+
+  function startCountdown() {
+    var left = COUNTDOWN_SEC;
+    el.count.hidden = false;
+    el.countNum.textContent = String(left);
+    el.bar.style.transition = "none";
+    el.bar.style.transform = "scaleX(1)";
+    // 강제 리플로우 후 애니메이션
+    void el.bar.offsetWidth;
+    el.bar.style.transition = "transform " + COUNTDOWN_SEC + "s linear";
+    el.bar.style.transform = "scaleX(0)";
+
+    clearActions();
+    button("지금 바로 이동", "primary", go);
+    button("자동 이동 취소", "ghost", function () {
+      autoOn = false;
+      stopCountdown();
+      render();
+    });
+
+    cdTimer = setInterval(function () {
+      left -= 1;
+      el.countNum.textContent = left > 0 ? String(left) : "0";
+      if (left <= 0) {
+        clearInterval(cdTimer); cdTimer = null;
+        go();
+      }
+    }, 1000);
+  }
+
+  function showMeta() {
+    if (!payload || (!payload.subject && !payload.updatedAt)) {
+      el.meta.hidden = true;
+      el.meta.innerHTML = "";
+      return;
+    }
+    var t = ts(payload.updatedAt);
+    var bits = [];
+    if (payload.subject) bits.push("<b>" + esc(payload.subject) + "</b>");
+    if (!isNaN(t)) {
+      var when = relTime(t);
+      if (when) bits.push("<span>" + esc(when) + " 시작 · " + esc(clockFor(t)) + "</span>");
+    }
+    el.meta.innerHTML = bits.join("");
+    el.meta.hidden = bits.length === 0;
+  }
+
+  function clockFor(t) {
+    try {
+      return new Date(t).toLocaleString("ko-KR", {
+        month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Seoul"
+      });
+    } catch (e) { return ""; }
+  }
+
+  function render() {
+    var url = payload && payload.url ? payload.url : "";
+    var t = payload ? ts(payload.updatedAt) : NaN;
+    var fresh = url && !isNaN(t) && (Date.now() - t) <= MAX_AGE_MS;
+
+    clearActions();
+    stopCountdown();
+    el.hint.className = "hint";
+    el.hint.textContent = "";
+
+    if (phase === "error") {
+      setPill("warn", "연결 오류");
+      el.title.textContent = "링크를 확인할 수 없습니다";
+      el.desc.textContent = "잠시 후 다시 시도해 주세요. 계속 안 되면 이 페이지 주소를 그대로 열어 두면 됩니다.";
+      button("다시 확인", "primary", function () { load(); });
+      el.hint.textContent = "자동 확인 중 · 30초마다";
+      return;
+    }
+
+    if (phase === "loading") {
+      setPill("off", "확인 중");
+      el.title.textContent = "LiveTrack 링크 확인 중…";
+      el.desc.textContent = "가민 라이브트랙 세션을 찾고 있습니다.";
+      return;
+    }
+
+    if (url && fresh) {
+      target = url;
+      setPill("live", "LIVE");
+      el.title.textContent = "지금 라이브 세션이 진행 중입니다";
+      el.desc.textContent = "가민 LiveTrack으로 바로 연결합니다.";
+      showMeta();
+      if (autoOn) {
+        startCountdown();
+      } else {
+        el.count.hidden = true;
+        button("LiveTrack 열기", "primary", go);
+        button("자동 이동 다시 켜기", "ghost", function () {
+          autoOn = true; render();
+        });
+      }
+      el.hint.textContent = "자동 확인 중 · 30초마다";
+      return;
+    }
+
+    if (url && !fresh) {
+      target = url;
+      setPill("warn", "지난 세션");
+      el.title.textContent = "마지막 세션이 24시간 넘었습니다";
+      el.desc.textContent = "새 세션이 시작되면 자동으로 연결됩니다. 지난 기록을 보려면 아래 버튼을 누르세요.";
+      showMeta();
+      button("지난 세션 열기", "primary", go);
+      button("지금 새로 확인", "ghost", function () { load(); });
+      el.hint.textContent = "지난 링크는 이미 종료됐을 수 있습니다.";
+      return;
+    }
+
+    // 진행 중인 세션 없음
+    setPill("off", "대기 중");
+    el.title.textContent = "아직 진행 중인 LiveTrack이 없습니다";
+    el.desc.textContent = "라이브 세션이 시작되면 이 페이지가 자동으로 연결합니다. 이 화면을 열어 두면 30초마다 다시 확인합니다.";
+    showMeta();
+    button("지금 새로 확인", "primary", function () { load(); });
+    el.hint.textContent = "자동 확인 중 · 30초마다";
+  }
+
+  /* ── 로드 ─────────────────────────────────────────────── */
+  function readLocal() {
+    return getJSON("./latest.json", 10000).catch(function () { return null; });
+  }
+
+  function load(silent) {
+    if (busy) return Promise.resolve();
+    busy = true;
+    if (!silent) { phase = "loading"; render(); }
+
+    var dm = document.documentElement.dataset;
+    var qparam = "";
+    try { qparam = (new URLSearchParams(window.location.search).get("endpoint") || "").trim(); }
+    catch (e) { qparam = ""; }
+
+    return readLocal().then(function (raw) {
+      var local = normalize(raw);
+      var rawEp = raw && typeof raw.endpoint === "string" ? raw.endpoint.trim() : "";
+      var eps = qparam || APPS_SCRIPT_URL || rawEp || dm.endpoint || "";
+      endpoint = eps;
+      if (!endpoint) return { local: local, remote: null };
+
+      return getEndpointJSON(endpoint).then(normalize).then(function (remote) {
+        return { local: local, remote: remote };
+      }).catch(function () {
+        return { local: local, remote: null };
+      });
+    }).then(function (res) {
+      payload = better(res.local, res.remote);
+      phase = "ready";
+      busy = false;
+      el.checked.textContent = clock() ? clock() + " 확인" : "";
+      render();
+    }).catch(function () {
+      busy = false;
+      phase = payload ? "ready" : "error";
+      render();
+    });
+  }
+
+  function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(function () {
+      if (document.hidden) return;
+      if (phase === "loading") return;
+      if (payload && payload.url && ts(payload.updatedAt) && (Date.now() - ts(payload.updatedAt)) <= MAX_AGE_MS && autoOn) return;
+      load(true);
+    }, POLL_MS);
+  }
+
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) load(true);
+  });
+
+  render();
+  load();
+  startPolling();
+})();
+</script>
+</body>
+</html>
