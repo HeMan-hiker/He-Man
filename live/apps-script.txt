@@ -589,8 +589,49 @@ function probeGarmin_() {
   });
   out.steps.push({ step: 'csrf-probe', status: resp.getResponseCode(), expect: 404 });
   out.csrfOk = resp.getResponseCode() === 404;
-  out.ok = out.csrfOk;
+
+  // 음성(multipart) 경로도 같은 방식으로 점검 — 짧은 무음 WAV 를 '없는 세션'에만 보낸다
+  try {
+    var wav = silentWav_(1);
+    var boundary2 = '----LiveTrackProbe' + Date.now();
+    var h2 = '--' + boundary2 + '\r\n' +
+      'Content-Disposition: form-data; name="from"\r\n\r\nprobe\r\n' +
+      '--' + boundary2 + '\r\n' +
+      'Content-Disposition: form-data; name="content"; filename="probe.wav"\r\n' +
+      'Content-Type: audio/wav\r\n\r\n';
+    var t2 = '\r\n--' + boundary2 + '--\r\n';
+    var bytes2 = Utilities.newBlob(h2, 'text/plain').getBytes()
+      .concat(wav, Utilities.newBlob(t2, 'text/plain').getBytes());
+    var urlA = GARMIN_BASE + '/api/messages/spectator/audio?sessionId=00000000-0000-0000-0000-000000000000&token=PROBE';
+    var respA = UrlFetchApp.fetch(urlA, {
+      method: 'post',
+      headers: garminHeaders_(ctx, s.id, s.token, ''),
+      payload: Utilities.newBlob(bytes2, 'multipart/form-data; boundary=' + boundary2),
+      muteHttpExceptions: true
+    });
+    out.steps.push({ step: 'audio-probe', status: respA.getResponseCode(), expect: 404 });
+    out.audioOk = respA.getResponseCode() === 404;
+  } catch (errA) {
+    out.steps.push({ step: 'audio-probe', status: 'error', error: String(errA) });
+  }
+
+  out.ok = out.csrfOk && out.audioOk !== false;
   return out;
+}
+
+/** 점검용 1초 무음 WAV */
+function silentWav_(sec) {
+  var rate = 8000, ch = 1, bits = 8;
+  var n = rate * (sec || 1);
+  var bytes = [];
+  function pushStr(str) { for (var i = 0; i < str.length; i++) bytes.push(str.charCodeAt(i)); }
+  function push32(v) { bytes.push(v & 255, (v >> 8) & 255, (v >> 16) & 255, (v >> 24) & 255); }
+  function push16(v) { bytes.push(v & 255, (v >> 8) & 255); }
+  pushStr('RIFF'); push32(36 + n); pushStr('WAVEfmt '); push32(16); push16(1); push16(ch);
+  push32(rate); push32(rate * ch * bits / 8); push16(ch * bits / 8); push16(bits);
+  pushStr('data'); push32(n);
+  for (var i = 0; i < n; i++) bytes.push(128);
+  return bytes;
 }
 
 /* ============================================================
