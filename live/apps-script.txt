@@ -502,53 +502,69 @@ function garminSend_(sessionUrl, from, type, text, audioBase64, mime) {
   var out = { sent: false, status: '', error: '', messageId: '' };
   var s = parseSessionUrl_(sessionUrl);
   if (!s) { out.status = 'no-session'; return out; }
+  if (type === 'audio' && !audioBase64) { out.status = 'no-audio'; return out; }
 
-  var ctx = garminContext_(s.id, s.token);
-  if (!ctx.ok) {
-    out.status = 'csrf';
-    out.error = 'CSRF 준비 실패 (페이지 ' + (ctx.status || '연결 실패') + ')';
-    return out;
+  var sess = null;
+  var guid = '';
+
+  // 403 이면 CSRF/쿠키를 새로 받아 한 번만 더 시도 (Google 출구 IP 가 바뀌었을 때 대비)
+  for (var attempt = 0; attempt < 2; attempt++) {
+    var ctx = garminContext_(s.id, s.token);
+    if (!ctx.ok) {
+      out.status = 'csrf';
+      out.error = 'CSRF 준비 실패 (페이지 ' + (ctx.status || '연결 실패') + ')';
+      return out;
+    }
+
+    if (!sess) {
+      sess = garminSession_(s.id, s.token, ctx);
+      if (!sess) { out.status = 'not-found'; return out; }
+      if (!isActive_(sess)) { out.status = 'ended'; return out; }
+      guid = sess.publisher && sess.publisher.garminGuid ? sess.publisher.garminGuid : '';
+    }
+
+    var resp = type === 'audio'
+      ? garminPostAudio_(ctx, s.id, s.token, guid, from, audioBase64, mime)
+      : garminPostText_(ctx, s.id, s.token, guid, from, text);
+
+    if (resp.getResponseCode() !== 403) return garminResult_(resp);
+    out = garminResult_(resp);
+    Utilities.sleep(300);
   }
+  return out;
+}
 
-  var sess = garminSession_(s.id, s.token, ctx);
-  if (!sess) { out.status = 'not-found'; return out; }
-  if (!isActive_(sess)) { out.status = 'ended'; return out; }
-
-  var guid = sess.publisher && sess.publisher.garminGuid ? sess.publisher.garminGuid : '';
-  var headers = garminHeaders_(ctx, s.id, s.token, guid);
-
-  if (type === 'audio') {
-    if (!audioBase64) { out.status = 'no-audio'; return out; }
-    var m = String(mime || 'audio/webm');
-    var ext = m.indexOf('mp4') >= 0 ? 'm4a' : (m.indexOf('ogg') >= 0 ? 'ogg' : 'webm');
-    var boundary = '----LiveTrackCheer' + Date.now() + Math.floor(Math.random() * 1e6);
-    var head = '--' + boundary + '\r\n' +
-      'Content-Disposition: form-data; name="from"\r\n\r\n' + from + '\r\n' +
-      '--' + boundary + '\r\n' +
-      'Content-Disposition: form-data; name="content"; filename="cheer.' + ext + '"\r\n' +
-      'Content-Type: ' + m + '\r\n\r\n';
-    var tail = '\r\n--' + boundary + '--\r\n';
-    var bytes = Utilities.newBlob(head, 'text/plain').getBytes()
-      .concat(Utilities.base64Decode(audioBase64), Utilities.newBlob(tail, 'text/plain').getBytes());
-    var payloadBlob = Utilities.newBlob(bytes, 'multipart/form-data; boundary=' + boundary);
-    var url = GARMIN_BASE + '/api/messages/spectator/audio?sessionId=' + s.id + '&token=' + s.token;
-    var resp = UrlFetchApp.fetch(url, {
-      method: 'post', headers: headers, payload: payloadBlob, muteHttpExceptions: true
-    });
-    return garminResult_(resp);
-  }
-
-  // 텍스트 — 시계 알림은 50자까지만 전달 (전체 문장은 드라이브에 저장)
-  var content = String(text || '').slice(0, 50);
-  var urlText = GARMIN_BASE + '/api/messages/spectator/text?sessionId=' + s.id + '&token=' + s.token;
-  var respText = UrlFetchApp.fetch(urlText, {
+function garminPostText_(ctx, sessionId, token, guid, from, text) {
+  // 시계 알림은 50자까지만 전달 (전체 문장은 드라이브에 저장)
+  var url = GARMIN_BASE + '/api/messages/spectator/text?sessionId=' + sessionId + '&token=' + token;
+  return UrlFetchApp.fetch(url, {
     method: 'post',
-    headers: headers,
+    headers: garminHeaders_(ctx, sessionId, token, guid),
     contentType: 'application/json; charset=utf-8',
-    payload: JSON.stringify({ from: from, content: content }),
+    payload: JSON.stringify({ from: from, content: String(text || '').slice(0, 50) }),
     muteHttpExceptions: true
   });
-  return garminResult_(respText);
+}
+
+function garminPostAudio_(ctx, sessionId, token, guid, from, audioBase64, mime) {
+  var m = String(mime || 'audio/webm');
+  var ext = m.indexOf('mp4') >= 0 ? 'm4a' : (m.indexOf('ogg') >= 0 ? 'ogg' : 'webm');
+  var boundary = '----LiveTrackCheer' + Date.now() + Math.floor(Math.random() * 1e6);
+  var head = '--' + boundary + '\r\n' +
+    'Content-Disposition: form-data; name="from"\r\n\r\n' + from + '\r\n' +
+    '--' + boundary + '\r\n' +
+    'Content-Disposition: form-data; name="content"; filename="cheer.' + ext + '"\r\n' +
+    'Content-Type: ' + m + '\r\n\r\n';
+  var tail = '\r\n--' + boundary + '--\r\n';
+  var bytes = Utilities.newBlob(head, 'text/plain').getBytes()
+    .concat(Utilities.base64Decode(audioBase64), Utilities.newBlob(tail, 'text/plain').getBytes());
+  var url = GARMIN_BASE + '/api/messages/spectator/audio?sessionId=' + sessionId + '&token=' + token;
+  return UrlFetchApp.fetch(url, {
+    method: 'post',
+    headers: garminHeaders_(ctx, sessionId, token, guid),
+    payload: Utilities.newBlob(bytes, 'multipart/form-data; boundary=' + boundary),
+    muteHttpExceptions: true
+  });
 }
 
 function garminResult_(resp) {
