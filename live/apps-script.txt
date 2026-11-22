@@ -1,0 +1,217 @@
+/**
+ * 가민 LiveTrack 고정 링크 · Google Apps Script
+ * ------------------------------------------------------------
+ * 하는 일
+ *   1) 1분마다 Gmail(whi2hn@gmail.com)에 온 가민 LiveTrack 메일을 찾아
+ *      "https://livetrack.garmin.com/session/..." 링크를 뽑아 저장합니다.
+ *   2) 웹앱으로 열면 저장된 링크를 JSON으로 돌려줍니다.
+ *      → https://heman-hiker.github.io/He-Man/live/ 가 이 JSON을 받아 자동 이동.
+ *
+ * 설치 (5분)
+ *   1. https://script.google.com → 새 프로젝트 → 이 파일 내용 전체를 Code.gs에 붙여넣기 → 저장
+ *   2. 함수 목록에서 [setup] 선택 → 실행 → 권한 허용
+ *      (1분 자동 실행 트리거 생성 + 지금 한 번 확인)
+ *   3. 배포 → 새 배포 → 유형 "웹 앱"
+ *        · 다음 사용자로 실행: 나(whi2hn@gmail.com)
+ *        · 액세스 권한: 모든 사용자
+ *      → 배포 → 나온 웹 앱 URL(".../exec")을 복사
+ *   4. 그 URL을 히맨(버거)에게 보내면 고정 페이지(live/index.html)에 연결해 둡니다.
+ *      (또는 live/latest.json 의 "endpoint" 값에 붙여넣어도 됩니다.)
+ *
+ * 참고
+ *   · 가민 커넥트 → 설정 → LiveTrack 에서 "자동 시작"을 켜고
+ *     whi2hn@gmail.com 을 수신자로 등록해야 메일이 옵니다.
+ *   · 코드를 고치면 배포 → 배포 관리 → 수정 → 새 버전으로 다시 배포해야 반영됩니다.
+ * ------------------------------------------------------------
+ */
+
+var PROP_KEY = 'livetrack';          // { url, updatedAt, subject, messageId }
+var PROP_CHECKED = 'livetrackChecked'; // 마지막으로 메일함을 훑은 시각(ISO)
+var MAX_AGE_MS = 24 * 60 * 60 * 1000;  // 24시간
+var ON_DEMAND_MS = 5 * 60 * 1000;      // 웹앱 요청 시 즉시 재확인 최소 간격
+
+/* ============================================================
+ * 1. 웹앱 — 페이지가 부르는 곳
+ * ============================================================ */
+function doGet(e) {
+  var state = getState();
+
+  // 트리거가 멈췄을 때를 대비한 보험: 5분 넘게 확인 안 했으면 즉시 한 번 훑기
+  try {
+    var checked = Date.parse(state.checkedAt || '') || 0;
+    if (Date.now() - checked > ON_DEMAND_MS) {
+      checkLiveTrackMail();
+      state = getState();
+    }
+  } catch (err) {
+    // 확인 실패는 저장된 값으로 응답 (페이지가 latest.json으로 폴백)
+  }
+
+  var body = {
+    url: state.url || '',
+    updatedAt: state.updatedAt || '',
+    subject: state.subject || '',
+    updatedAtKst: state.updatedAt ? formatKst(state.updatedAt) : '',
+    source: 'garmin-livetrack-apps-script'
+  };
+  var json = JSON.stringify(body);
+
+  // JSONP 폴백 (?callback=함수이름)
+  var cb = e && e.parameter && e.parameter.callback;
+  if (cb && /^[A-Za-z_$][A-Za-z0-9_$.]{0,60}$/.test(cb)) {
+    return ContentService
+      .createTextOutput(cb + '(' + json + ');')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  return ContentService
+    .createTextOutput(json)
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/* ============================================================
+ * 2. 메일 확인 — 1분 트리거
+ * ============================================================ */
+function checkLiveTrackMail() {
+  var props = PropertiesService.getScriptProperties();
+  var prev = getState();
+
+  var query = '(from:garmin OR from:livetrack.garmin.com OR "livetrack.garmin.com" OR subject:LiveTrack) newer_than:1d';
+  var threads = GmailApp.search(query, 0, 10);
+
+  var found = null;
+
+  for (var i = 0; i < threads.length; i++) {
+    var messages = threads[i].getMessages();
+    // 최신 메일부터 (스레드 안에서 마지막이 최신)
+    for (var j = messages.length - 1; j >= 0; j--) {
+      var msg = messages[j];
+      var date = msg.getDate();
+      if (!date || Date.now() - date.getTime() > MAX_AGE_MS) continue;
+
+      var url = extractLiveTrackUrl(msg);
+      if (!url) continue;
+
+      if (!found || date.getTime() > found.date.getTime()) {
+        found = { url: url, date: date, subject: msg.getSubject() || '', messageId: msg.getId() };
+      }
+    }
+  }
+
+  props.setProperty(PROP_CHECKED, new Date().toISOString());
+
+  if (!found) {
+    Logger.log('LiveTrack 메일 없음 (최근 24시간)');
+    return prev;
+  }
+
+  // 이미 저장된 것보다 오래된 메일이면 무시 (순서 꼬임 방지)
+  var prevTime = Date.parse(prev.updatedAt || '') || 0;
+  if (prev.url && prevTime > found.date.getTime()) {
+    Logger.log('이미 더 최신 링크가 저장되어 있음 — 그대로 둠');
+    return prev;
+  }
+  if (prev.url === found.url && prev.updatedAt === found.date.toISOString()) {
+    return prev; // 변화 없음
+  }
+
+  var state = {
+    url: found.url,
+    updatedAt: found.date.toISOString(),
+    subject: found.subject,
+    messageId: found.messageId
+  };
+  props.setProperty(PROP_KEY, JSON.stringify(state));
+  Logger.log('저장: ' + state.url + ' / ' + state.updatedAt);
+  return state;
+}
+
+/** 메일 본문(텍스트+HTML)에서 LiveTrack 주소 추출 */
+function extractLiveTrackUrl(msg) {
+  var text = '';
+  try { text += (msg.getPlainBody() || '') + '\n'; } catch (e) {}
+  try { text += (msg.getBody() || '') + '\n'; } catch (e) {}
+
+  var patterns = [
+    /https:\/\/livetrack\.garmin\.com\/[^\s"'<>\\]+/i,
+    /https:\/\/connect\.garmin\.com\/[^\s"'<>\\]*livetrack[^\s"'<>\\]*/i,
+    // 메일이 추적 링크로 감싼 경우 (퍼센트 인코딩된 주소)
+    /https%3A%2F%2Flivetrack\.garmin\.com%2F[^\s"'<>&]+/i
+  ];
+
+  for (var i = 0; i < patterns.length; i++) {
+    var m = text.match(patterns[i]);
+    if (m) {
+      var raw = m[0];
+      if (raw.indexOf('https%3A') === 0) {
+        try { raw = decodeURIComponent(raw); } catch (e) { continue; }
+      }
+      var url = tidyUrl(raw);
+      if (url) return url;
+    }
+  }
+  return '';
+}
+
+/** &amp; 디코딩, 끝에 붙은 문장부호·따옴표·괄호 제거 */
+function tidyUrl(u) {
+  u = String(u).trim();
+  u = u.replace(/&amp;/g, '&');
+  u = u.replace(/&#38;/g, '&');
+  u = u.replace(/[)\].,;:!?'"]+$/, '');
+  if (u.indexOf('https://livetrack.garmin.com/') !== 0 &&
+      u.indexOf('https://connect.garmin.com/') !== 0) {
+    return '';
+  }
+  return u;
+}
+
+/* ============================================================
+ * 3. 상태 읽기 / 설치
+ * ============================================================ */
+function getState() {
+  var props = PropertiesService.getScriptProperties();
+  var raw = props.getProperty(PROP_KEY);
+  var state = { url: '', updatedAt: '', subject: '' };
+  if (raw) {
+    try {
+      var o = JSON.parse(raw);
+      state.url = o.url || '';
+      state.updatedAt = o.updatedAt || '';
+      state.subject = o.subject || '';
+      state.messageId = o.messageId || '';
+    } catch (e) {}
+  }
+  state.checkedAt = props.getProperty(PROP_CHECKED) || '';
+  return state;
+}
+
+/** 최초 1회 실행: 1분 트리거 만들고 바로 한 번 확인 */
+function setup() {
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'checkLiveTrackMail') {
+      ScriptApp.deleteTrigger(triggers[i]);
+    }
+  }
+  ScriptApp.newTrigger('checkLiveTrackMail').timeBased().everyMinutes(1).create();
+  checkLiveTrackMail();
+  Logger.log('설정 완료 — 1분마다 메일 확인. 이제 웹앱으로 배포하세요.');
+}
+
+/** 저장된 상태를 로그로 보기 */
+function showState() {
+  Logger.log(JSON.stringify(getState(), null, 2));
+}
+
+/** 트리거 없이 한 번만 확인 (테스트용) */
+function testCheck() {
+  var s = checkLiveTrackMail();
+  Logger.log(JSON.stringify(s, null, 2));
+}
+
+function formatKst(iso) {
+  var t = Date.parse(iso);
+  if (!t) return '';
+  return Utilities.formatDate(new Date(t), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
+}
