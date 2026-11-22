@@ -247,6 +247,22 @@ audio{width:100%;margin-top:10px;height:38px}
 .arc-head{padding:6px 2px 0;display:flex;flex-direction:column;gap:7px;align-items:flex-start}
 .arc-h1{margin:0;font-size:clamp(19px,4.6vw,24px);letter-spacing:-.02em;line-height:1.3}
 .arc-sub{margin:0;font-size:12.5px;color:var(--dim);line-height:1.5}
+.wrap.mid{max-width:720px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
+.segbtn{
+  display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--muted);
+  font-size:12.5px;font-weight:750;padding:8px 12px;border-radius:9px;min-height:38px;white-space:nowrap;
+}
+.segbtn.on{background:rgba(123,216,143,.14);color:var(--trail);box-shadow:inset 0 0 0 1px rgba(123,216,143,.25)}
+.segN{font-size:10.5px;font-weight:750;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:0 6px;line-height:16px}
+.segbtn.on .segN{color:var(--trail);border-color:rgba(123,216,143,.3)}
+.gbday{
+  font-size:11.5px;font-weight:750;color:var(--dim);letter-spacing:.04em;margin:4px 2px 0;
+  display:flex;align-items:center;gap:8px;
+}
+.gbday::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.card.guest-mode{border-color:rgba(232,213,168,.32)}
+.card.guest-mode h2 .count{border-color:rgba(232,213,168,.3);color:var(--sand)}
 .filters{
   position:sticky;top:0;z-index:20;display:flex;flex-direction:column;gap:8px;
   padding:10px 6px;margin:0 -6px;
@@ -280,7 +296,6 @@ input[type=password]:focus{border-color:rgba(123,216,143,.55);background:rgba(12
 }
 .act:hover{transform:translateY(-1px);border-color:#3f5a4b;background:linear-gradient(180deg,#1c2721,#18211c)}
 .act.has-audio{border-left-color:var(--sky)}
-.act.pending{border-left-color:var(--sand)}
 .act-main{
   appearance:none;border:0;background:transparent;color:inherit;font:inherit;text-align:left;
   display:flex;flex-direction:column;gap:7px;padding:13px 13px 10px;cursor:pointer;width:100%;
@@ -376,7 +391,7 @@ footer a{color:var(--dim);text-decoration:none}
 
   <!-- 2) 응원 보내기 -->
   <section class="card" id="cheerCard">
-    <h2>🎙️ 응원 메시지 보내기</h2>
+    <h2 id="cheerTitle">🎙️ 응원 메시지 보내기 <span class="count" id="cheerMode" hidden></span></h2>
     <p class="sub" id="cheerSub">음성(최대 15초)이나 글로 응원을 남겨 주세요. 시계로 바로 전달되고 드라이브에 영구 저장됩니다.</p>
 
     <div class="field">
@@ -423,7 +438,10 @@ footer a{color:var(--dim);text-decoration:none}
     <p class="sub" id="recentSub">레이스가 끝나도 여기에 그대로 남습니다.</p>
     <div class="msgs" id="recentList"></div>
     <div class="empty" id="recentEmpty">아직 도착한 응원이 없습니다.</div>
-    <button class="btn ghost" id="goArchive" type="button" style="width:100%;margin-top:12px" hidden>📂 활동별 응원 아카이브 전체 보기</button>
+    <div class="two" id="recentLinks" hidden>
+      <button class="btn ghost" id="goArchive" type="button">📂 활동별 아카이브</button>
+      <button class="btn ghost" id="goGuestbook" type="button">💌 일반 응원 <span id="goGuestCount"></span></button>
+    </div>
   </section>
   </div><!-- /viewLive -->
 
@@ -433,6 +451,10 @@ footer a{color:var(--dim);text-decoration:none}
       <span class="pill off"><i class="dot"></i>응원 아카이브</span>
       <h1 class="arc-h1">📂 활동별 응원 아카이브</h1>
       <p class="arc-sub" id="arcSub">활동(세션)별로 모은 응원입니다.</p>
+      <nav class="seg" aria-label="응원 보기 전환">
+        <a class="segbtn" href="#/archive" data-seg="archive">📂 활동별 <span class="segN" data-segn="archive" hidden></span></a>
+        <a class="segbtn" href="#/guestbook" data-seg="guestbook">💌 일반 응원 <span class="segN" data-segn="guestbook" hidden></span></a>
+      </nav>
     </div>
     <div class="filters" id="filters" hidden>
       <label class="searchbox">
@@ -448,6 +470,30 @@ footer a{color:var(--dim);text-decoration:none}
     <div class="empty" id="arcEmpty" hidden>조건에 맞는 활동이 없습니다.</div>
   </div><!-- /viewArchive -->
 
+  <!-- ── 일반 응원(방명록) 뷰 ──────────────────── -->
+  <div class="view" id="viewGuest" hidden>
+    <div class="arc-head">
+      <span class="pill off"><i class="dot"></i>상시 방명록</span>
+      <h1 class="arc-h1">💌 일반 응원 (방명록)</h1>
+      <p class="arc-sub" id="gbSub">활동(세션) 밖에서 들어온 응원을 최신순으로 모읍니다.</p>
+      <nav class="seg" aria-label="응원 보기 전환">
+        <a class="segbtn" href="#/archive" data-seg="archive">📂 활동별 <span class="segN" data-segn="archive" hidden></span></a>
+        <a class="segbtn" href="#/guestbook" data-seg="guestbook">💌 일반 응원 <span class="segN" data-segn="guestbook" hidden></span></a>
+      </nav>
+    </div>
+    <div class="filters" id="gbFilters" hidden>
+      <label class="searchbox">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="gbQ" type="search" placeholder="보낸사람·내용 검색" autocomplete="off" enterkeyhint="search" aria-label="일반 응원 검색">
+      </label>
+      <div class="frow">
+        <div class="chips" id="gbTypes" role="group" aria-label="일반 응원 유형"></div>
+      </div>
+    </div>
+    <div class="msgs" id="gbList"></div>
+    <div class="empty" id="gbEmpty" hidden>아직 일반 응원이 없습니다.</div>
+  </div><!-- /viewGuest -->
+
   <footer>
     <span>고정 링크 · <a href="../garmin/">러닝 기록</a></span>
     <span id="checked">—</span>
@@ -462,6 +508,7 @@ footer a{color:var(--dim);text-decoration:none}
     <button class="iconbtn sm" id="drawerClose" type="button" aria-label="메뉴 닫기">×</button>
   </div>
   <a class="dnav" id="navLive" href="#/live">📡 현재 라이브 &amp; 응원</a>
+  <a class="dnav" id="navGuest" href="#/guestbook">💌 일반 응원 (방명록) <span class="dn" id="navGuestCount" hidden></span></a>
   <a class="dnav" id="navArchive" href="#/archive">📂 활동별 응원 아카이브 <span class="dn" id="navArcCount" hidden></span></a>
   <div class="dlabel">최근 활동</div>
   <div class="dacts" id="drawerActs"></div>
@@ -561,7 +608,8 @@ footer a{color:var(--dim);text-decoration:none}
   var el = {
     pill: $("pill"), pillText: $("pillText"), title: $("title"), desc: $("desc"),
     meta: $("meta"), actions: $("actions"), hint: $("hint"), checked: $("checked"),
-    cheerSub: $("cheerSub"), fromName: $("fromName"),
+    cheerSub: $("cheerSub"), cheerTitle: $("cheerTitle"), cheerMode: $("cheerMode"), cheerCard: $("cheerCard"),
+    fromName: $("fromName"),
     tabAudio: $("tabAudio"), tabText: $("tabText"),
     panelAudio: $("panelAudio"), panelText: $("panelText"),
     recTime: $("recTime"), recBar: $("recBar"), recBtn: $("recBtn"), recNote: $("recNote"),
@@ -569,11 +617,14 @@ footer a{color:var(--dim);text-decoration:none}
     msgText: $("msgText"), msgCount: $("msgCount"), textSend: $("textSend"),
     result: $("result"),
     recentList: $("recentList"), recentBadge: $("recentBadge"), recentSub: $("recentSub"),
-    recentEmpty: $("recentEmpty"), goArchive: $("goArchive"),
-    wrap: $("wrap"), viewLive: $("viewLive"), viewArchive: $("viewArchive"),
+    recentEmpty: $("recentEmpty"), goArchive: $("goArchive"), recentLinks: $("recentLinks"),
+    goGuestbook: $("goGuestbook"), goGuestCount: $("goGuestCount"),
+    wrap: $("wrap"), viewLive: $("viewLive"), viewArchive: $("viewArchive"), viewGuest: $("viewGuest"),
     menuBtn: $("menuBtn"), drawer: $("drawer"), drawerBack: $("drawerBack"), drawerClose: $("drawerClose"),
     navLive: $("navLive"), navArchive: $("navArchive"), navArcCount: $("navArcCount"), drawerActs: $("drawerActs"),
+    navGuest: $("navGuest"), navGuestCount: $("navGuestCount"),
     filters: $("filters"), arcSub: $("arcSub"), arcQ: $("arcQ"), arcYear: $("arcYear"),
+    gbFilters: $("gbFilters"), gbSub: $("gbSub"), gbQ: $("gbQ"), gbTypes: $("gbTypes"), gbList: $("gbList"), gbEmpty: $("gbEmpty"),
     arcTypes: $("arcTypes"), actGrid: $("actGrid"), arcEmpty: $("arcEmpty"),
     actModal: $("actModal"), actTitle: $("actTitle"), actMeta: $("actMeta"), actMsgs: $("actMsgs"),
     actSession: $("actSession"), actRename: $("actRename"), actClose: $("actClose"), actCount: $("actCount"),
@@ -858,22 +909,22 @@ footer a{color:var(--dim);text-decoration:none}
       return;
     }
 
-    if (isLiveTrackUrl(state.url) && !isNaN(startT)) {
-      setPill("warn", "지난 세션");
-      el.title.textContent = "지난 세션 (" + relTime(startT) + " 시작)";
-      el.desc.textContent = "새 세션이 시작되면 자동으로 라이브로 바뀝니다. 지난 기록은 가민에서 볼 수 있습니다.";
-      el.meta.innerHTML = "<b>" + esc(clockFor(startT, true)) + "</b>" + (isNaN(endT) ? "" : "<span>종료 " + esc(clockFor(endT, true)) + "</span>");
+    // 진행 중인 활동이 없을 때 — 상단 카드에 크게 알린다
+    var hasPast = isLiveTrackUrl(state.url) && !isNaN(startT);
+    setPill("off", "비활동 중");
+    el.title.textContent = "현재 진행 중인 활동이 없습니다";
+    if (hasPast) {
+      el.desc.textContent = "최근 활동이 끝난 상태입니다. 새 활동이 시작되면 자동으로 라이브로 바뀌고, 지금 남기는 응원은 방명록에 보관됩니다.";
+      el.meta.innerHTML = "<b>최근 활동 " + esc(clockFor(startT, true)) + " 시작</b>" +
+        (isNaN(endT) ? "" : "<span>종료 " + esc(clockFor(endT, true)) + "</span>");
       el.meta.hidden = false;
-      linkButton("지난 세션 열기", "ghost", state.url);
-      button("지금 새로 확인", "ghost", function () { load(); });
-      el.hint.textContent = "지난 링크는 이미 종료됐을 수 있습니다.";
-      return;
+      linkButton("지난 활동 열기", "ghost", state.url);
+    } else {
+      el.desc.textContent = "라이브가 시작되면 이 페이지가 자동으로 연결됩니다. 지금 남기는 응원은 방명록에 보관됩니다.";
     }
-
-    setPill("off", "대기 중");
-    el.title.textContent = "아직 진행 중인 LiveTrack이 없습니다";
-    el.desc.textContent = "라이브가 시작되면 이 페이지가 자동으로 연결됩니다. 응원 메시지는 지금 미리 남겨도 저장됩니다.";
     button("지금 새로 확인", "primary", function () { load(); });
+    var gbN = generalMessages().length;
+    button("💌 일반 응원 방명록" + (gbN ? " (" + gbN + ")" : ""), "ghost", function () { setHash("#/guestbook"); });
     el.hint.textContent = "30초마다 자동 확인";
   }
 
@@ -954,23 +1005,27 @@ footer a{color:var(--dim);text-decoration:none}
          .trim();
     return t.length >= 2 ? t : "";
   }
-  /** 라이브 밖에서 보낸(시계로 못 간) 응원인가 */
-  function isPendingMsg(m) {
+  /** 응원이 가리키는 활동(세션) 키 — 세션 주소가 없으면 null (= 활동 밖에서 보낸 응원) */
+  function activityKeyOf(m) {
+    var u = cleanUrl(m && m.sessionUrl);
+    var sid = sessionIdOf(u);
+    if (sid) return { key: "s:" + sid, sid: sid, url: u };
+    if (isLiveTrackUrl(u)) {
+      var noTok = u.replace(/\/token\/[^\/?#]+/i, "");
+      return { key: "u:" + noTok, sid: "", url: u };
+    }
+    return null;
+  }
+  /** 활동 밖에서 보낸 응원(일반 응원·방명록)인가 */
+  function isGuestMsg(m) {
     if (/세션 링크 없음/.test(String(m.garmin || ""))) return true;
-    if (!m.sessionUrl && !String(m.sessionSubject || "").trim()) return true;
-    return false;
+    return !activityKeyOf(m);
   }
 
-  /** 응원 목록 → 활동(세션) 묶음 (최근 활동이 앞) */
+  /** 응원 목록 → 활동(세션) 묶음 (최근 활동이 앞). 활동 키가 없는 응원은 여기 들어오지 않는다 */
   function buildActivities(list) {
-    var groups = [], bySid = {}, byKey = {};
+    var groups = [], byKey = {};
 
-    function make(key, sid, url, title) {
-      return {
-        key: key, sid: sid || "", url: url || "", title: title || "",
-        days: {}, msgs: [], audio: 0, text: 0, latest: -Infinity, pending: false, aliases: []
-      };
-    }
     function add(g, m) {
       g.msgs.push(m);
       if (m.type === "audio") g.audio++; else g.text++;
@@ -978,48 +1033,20 @@ footer a{color:var(--dim);text-decoration:none}
       if (d) g.days[d] = true;
       var t = kstMs(m.timeKst);
       if (isFinite(t) && t > g.latest) g.latest = t;
-      if (!g.url && isLiveTrackUrl(m.sessionUrl)) g.url = m.sessionUrl;
+      if (!g.url && isLiveTrackUrl(m.sessionUrl)) g.url = cleanUrl(m.sessionUrl);
       if (!g.title) g.title = activityTitle(m.sessionSubject);
     }
 
-    // (1) 세션 주소가 있는 응원 → 세션(활동)별
     list.forEach(function (m) {
-      if (isPendingMsg(m)) return;
-      var sid = sessionIdOf(m.sessionUrl);
-      if (!sid) return;
-      var g = bySid[sid];
+      var k = activityKeyOf(m);
+      if (!k) return;                       // 활동 밖 → '일반 응원(방명록)'에서 따로 보인다
+      var g = byKey[k.key];
       if (!g) {
-        g = bySid[sid] = make("s:" + sid, sid, isLiveTrackUrl(m.sessionUrl) ? m.sessionUrl : "", activityTitle(m.sessionSubject));
+        g = byKey[k.key] = {
+          key: k.key, sid: k.sid, url: k.url || "", title: activityTitle(m.sessionSubject),
+          days: {}, msgs: [], audio: 0, text: 0, latest: -Infinity, aliases: []
+        };
         groups.push(g);
-      }
-      add(g, m);
-    });
-
-    // (2) 라이브 밖에서 남긴 응원 → '일반 응원'
-    list.forEach(function (m) {
-      if (!isPendingMsg(m)) return;
-      var g = byKey["!pending"];
-      if (!g) { g = byKey["!pending"] = make("!pending", "", "", ""); groups.push(g); }
-      g.pending = true;
-      add(g, m);
-    });
-
-    // (3) 세션 주소가 없는 옛 기록 → 같은 날·같은 제목의 세션에 붙이고, 아니면 날짜 묶음
-    list.forEach(function (m) {
-      if (isPendingMsg(m) || sessionIdOf(m.sessionUrl)) return;
-      var day = kstDate(m.timeKst);
-      var title = activityTitle(m.sessionSubject);
-      var g = null;
-      if (day) {
-        for (var i = 0; i < groups.length; i++) {
-          var h = groups[i];
-          if (h.sid && !h.pending && h.days[day] && (!title || !h.title || h.title === title)) { g = h; break; }
-        }
-      }
-      if (!g) {
-        var key = "d:" + (day || "?") + "|" + title;
-        g = byKey[key];
-        if (!g) { g = byKey[key] = make(key, "", "", title); groups.push(g); }
       }
       add(g, m);
     });
@@ -1039,11 +1066,15 @@ footer a{color:var(--dim);text-decoration:none}
       });
       g.aliases = al.filter(function (k, i) { return k && k !== g.key && al.indexOf(k) === i; });
     });
-    groups.sort(function (a, b) {
-      if (a.pending !== b.pending) return a.pending ? 1 : -1;   // '일반 응원'은 활동 목록 맨 뒤로
-      return b.latest - a.latest;
-    });
+    groups.sort(function (a, b) { return b.latest - a.latest; });
     return groups;
+  }
+
+  /** 활동 밖에서 온 응원 (최신순) */
+  function generalMessages() {
+    var list = (state.messages || []).filter(isGuestMsg);
+    list.sort(function (a, b) { return (kstMs(b.timeKst) || 0) - (kstMs(a.timeKst) || 0); });
+    return list;
   }
 
   /* ── 활동 이름(대회명) · 필터 · 카드 그리드 ─────────────── */
@@ -1052,6 +1083,7 @@ footer a{color:var(--dim);text-decoration:none}
   var currentAct = null;
   var renameTarget = null;
   var wantKey = "";
+  var viewMode = "live";
   var toastTimer = null;
 
   function readLocalNames() {
@@ -1087,7 +1119,6 @@ footer a{color:var(--dim);text-decoration:none}
   }
   function activityName(g) {
     if (!g) return "LiveTrack 활동";
-    if (g.pending) return "일반 응원";
     return customName(g) || g.title || "LiveTrack 활동";
   }
   function activities() {
@@ -1115,13 +1146,26 @@ footer a{color:var(--dim);text-decoration:none}
 
   /* ── 뷰 전환 · 해시 라우팅 ──────────────────────────────── */
   function setView(v) {
-    var isArc = v === "archive";
-    if (el.viewLive) el.viewLive.hidden = isArc;
+    viewMode = v;
+    var isArc = v === "archive", isGb = v === "guestbook";
+    if (el.viewLive) el.viewLive.hidden = !(v === "live");
     if (el.viewArchive) el.viewArchive.hidden = !isArc;
-    if (el.wrap) el.wrap.classList.toggle("wide", isArc);
-    document.title = isArc ? "활동별 응원 아카이브 · 히맨_He-Man" : "LiveTrack · 히맨_He-Man";
-    if (el.navLive) el.navLive.classList.toggle("on", !isArc);
+    if (el.viewGuest) el.viewGuest.hidden = !isGb;
+    if (el.wrap) {
+      el.wrap.classList.toggle("wide", isArc);
+      el.wrap.classList.toggle("mid", isGb);
+    }
+    document.title = isArc ? "활동별 응원 아카이브 · 히맨_He-Man"
+      : isGb ? "일반 응원 방명록 · 히맨_He-Man"
+      : "LiveTrack · 히맨_He-Man";
+    if (el.navLive) el.navLive.classList.toggle("on", v === "live");
     if (el.navArchive) el.navArchive.classList.toggle("on", isArc);
+    if (el.navGuest) el.navGuest.classList.toggle("on", isGb);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-seg]"), function (a) {
+      var on = a.getAttribute("data-seg") === v;
+      a.classList.toggle("on", on);
+      if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
   }
   function setHash(h) {
     if (window.location.hash === h) return;
@@ -1129,6 +1173,12 @@ footer a{color:var(--dim);text-decoration:none}
   }
   function route() {
     var h = window.location.hash || "";
+    // #/guestbook · 옛 링크(#/archive/general, #/archive/!pending)도 방명록으로
+    if (/^#\/(guestbook|archive\/(general|!pending))\/?$/.test(h)) {
+      setView("guestbook");
+      if (currentAct) closeActivity(false);
+      return;
+    }
     var m = /^#\/archive(?:\/(.+))?$/.exec(h);
     if (m) {
       setView("archive");
@@ -1163,7 +1213,7 @@ footer a{color:var(--dim);text-decoration:none}
     syncScroll();
   }
   function renderDrawerActs() {
-    var list = activities().filter(function (g) { return !g.pending; }).slice(0, 6);
+    var list = activities().slice(0, 6);
     el.drawerActs.innerHTML = "";
     if (!list.length) {
       var p = document.createElement("p");
@@ -1198,11 +1248,14 @@ footer a{color:var(--dim);text-decoration:none}
     var list = (state.messages || []).slice();
     list.sort(function (a, b) { return (kstMs(b.timeKst) || 0) - (kstMs(a.timeKst) || 0); });
     var total = list.length;
+    var gbN = generalMessages().length;
     el.recentBadge.textContent = String(total);
     el.recentBadge.hidden = total === 0;
     el.recentList.innerHTML = "";
     el.recentEmpty.hidden = total !== 0;
-    el.goArchive.hidden = total === 0;
+    el.recentLinks.hidden = total === 0;
+    el.goGuestbook.hidden = gbN === 0;
+    el.goGuestCount.textContent = gbN ? "(" + gbN + ")" : "";
     list.slice(0, 3).forEach(function (m) { el.recentList.appendChild(msgNode(m, true)); });
     el.recentSub.textContent = total
       ? "최근 " + Math.min(3, total) + "개만 보여 드립니다 · 전체 " + total + "개"
@@ -1271,20 +1324,18 @@ footer a{color:var(--dim);text-decoration:none}
   }
   function renderArchive() {
     var groups = activities();
-    var total = (state.messages || []).length;
-    var totalAudio = 0;
-    groups.forEach(function (g) { totalAudio += g.audio; });
+    var allMsgs = (state.messages || []).length;
+    var msgTotal = 0, audioTotal = 0;
+    groups.forEach(function (g) { msgTotal += g.msgs.length; audioTotal += g.audio; });
 
-    if (el.navArcCount) {
-      el.navArcCount.textContent = total ? String(total) : "";
-      el.navArcCount.hidden = !total;
-    }
-
-    if (!total) {
+    if (!groups.length) {
       el.filters.hidden = true;
       el.actGrid.innerHTML = "";
-      el.arcEmpty.hidden = true;
-      el.arcSub.textContent = "아직 도착한 응원이 없습니다. 라이브 중에 보낸 응원이 여기에 활동별로 쌓입니다.";
+      el.arcEmpty.hidden = false;
+      el.arcEmpty.textContent = allMsgs
+        ? "아직 활동별로 묶인 응원이 없습니다. 활동(라이브) 중에 보낸 응원이 여기에 활동별로 쌓이고, 활동 밖에서 보낸 응원은 💌 일반 응원(방명록)에 모입니다."
+        : "아직 도착한 응원이 없습니다. 라이브 중에 보낸 응원이 여기에 활동별로 쌓입니다.";
+      el.arcSub.textContent = "활동(세션)별로 모은 응원입니다.";
       return;
     }
 
@@ -1300,22 +1351,105 @@ footer a{color:var(--dim);text-decoration:none}
     });
 
     if (shown.length === groups.length) {
-      el.arcSub.textContent = "활동 " + groups.length + "개 · 음성 " + totalAudio + "개 · 텍스트 " + (total - totalAudio) + "개";
+      el.arcSub.textContent = "활동 " + groups.length + "개 · 응원 " + msgTotal + "개 (음성 " + audioTotal + " · 텍스트 " + (msgTotal - audioTotal) + ")";
     } else {
       var a = 0, t = 0;
       shown.forEach(function (g) { a += g.audio; t += g.text; });
-      el.arcSub.textContent = "활동 " + shown.length + "/" + groups.length + "개 · 음성 " + a + " · 텍스트 " + t;
+      el.arcSub.textContent = "활동 " + shown.length + "/" + groups.length + "개 · 응원 " + (a + t) + "개 (음성 " + a + " · 텍스트 " + t + ")";
     }
 
     el.actGrid.innerHTML = "";
     shown.forEach(function (g) { el.actGrid.appendChild(activityCard(g)); });
     el.arcEmpty.hidden = shown.length !== 0;
-    el.arcEmpty.textContent = "조건에 맞는 활동이 없습니다. 검색어나 필터를 바꿔 보세요.";
+    if (!shown.length) el.arcEmpty.textContent = "조건에 맞는 활동이 없습니다. 검색어나 필터를 바꿔 보세요.";
+  }
+
+  /* ── 일반 응원(방명록) 뷰 ──────────────────────────────── */
+  var gb = { q: "", type: "all" };
+
+  function renderGuestTypes() {
+    var defs = [["all", "전체"], ["audio", "🎙️ 음성"], ["text", "💬 텍스트"]];
+    el.gbTypes.innerHTML = "";
+    defs.forEach(function (d) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.setAttribute("data-gtype", d[0]);
+      b.setAttribute("aria-pressed", gb.type === d[0] ? "true" : "false");
+      var t = document.createElement("span");
+      t.className = "t";
+      t.textContent = d[1];
+      b.appendChild(t);
+      el.gbTypes.appendChild(b);
+    });
+  }
+
+  function renderGuestbook() {
+    var all = generalMessages();
+    var allAudio = 0;
+    all.forEach(function (m) { if (m.type === "audio") allAudio++; });
+    renderGuestTypes();
+
+    if (!all.length) {
+      el.gbFilters.hidden = true;
+      el.gbList.innerHTML = "";
+      el.gbEmpty.hidden = false;
+      el.gbEmpty.textContent = "아직 일반 응원이 없습니다. 라이브(활동) 중이 아닐 때 남긴 응원이 이곳에 모입니다.";
+      el.gbSub.textContent = "활동(세션) 밖에서 들어온 응원을 최신순으로 모읍니다.";
+      return;
+    }
+
+    el.gbFilters.hidden = false;
+    el.gbSub.textContent = "활동 밖에서 들어온 응원 " + all.length + "개 (음성 " + allAudio + " · 텍스트 " + (all.length - allAudio) + ") · 최신순";
+
+    var q = String(gb.q || "").trim().toLowerCase();
+    var shown = all.filter(function (m) {
+      if (gb.type === "audio" && m.type !== "audio") return false;
+      if (gb.type === "text" && m.type === "audio") return false;
+      if (!q) return true;
+      var hay = (String(m.from || "") + " " + String(m.content || "") + " " + msgTime(m.timeKst, true)).toLowerCase();
+      return hay.indexOf(q) >= 0;
+    });
+
+    el.gbList.innerHTML = "";
+    var lastDay = "";
+    shown.forEach(function (m) {
+      var d = kstDate(m.timeKst);
+      if (d && d !== lastDay) {
+        lastDay = d;
+        var hd = document.createElement("div");
+        hd.className = "gbday";
+        hd.textContent = dayInfo(d).full || d;
+        el.gbList.appendChild(hd);
+      }
+      el.gbList.appendChild(msgNode(m, false));
+    });
+
+    el.gbEmpty.hidden = shown.length !== 0;
+    if (!shown.length) el.gbEmpty.textContent = "조건에 맞는 일반 응원이 없습니다. 검색어나 유형을 바꿔 보세요.";
+  }
+
+  function renderBadges() {
+    var acts = activities().length;
+    var guest = generalMessages().length;
+    if (el.navArcCount) {
+      el.navArcCount.textContent = acts ? String(acts) : "";
+      el.navArcCount.hidden = !acts;
+    }
+    if (el.navGuestCount) {
+      el.navGuestCount.textContent = guest ? String(guest) : "";
+      el.navGuestCount.hidden = !guest;
+    }
+    Array.prototype.forEach.call(document.querySelectorAll("[data-segn]"), function (n) {
+      var v = n.getAttribute("data-segn") === "archive" ? acts : guest;
+      n.textContent = String(v);
+      n.hidden = false;
+    });
   }
 
   function activityCard(g) {
     var card = document.createElement("div");
-    card.className = "act" + (g.audio ? " has-audio" : "") + (g.pending ? " pending" : "");
+    card.className = "act" + (g.audio ? " has-audio" : "");
 
     var main = document.createElement("button");
     main.type = "button";
@@ -1328,7 +1462,7 @@ footer a{color:var(--dim);text-decoration:none}
     var d = document.createElement("span");
     d.className = "ad";
     var di = dayInfo(g.day);
-    d.textContent = g.pending ? "라이브 밖" : (di.full || "날짜 없음");
+    d.textContent = di.full || "날짜 없음";
     var st = document.createElement("span");
     st.className = "astat";
     st.textContent = g.latest ? relTime(g.latest) : "";
@@ -1369,15 +1503,13 @@ footer a{color:var(--dim);text-decoration:none}
     meta.textContent = g.latest ? "최근 " + fmtHm(g.latest) : "";
     foot.appendChild(meta);
 
-    if (!g.pending) {
-      var ed = document.createElement("button");
-      ed.type = "button";
-      ed.className = "edit";
-      ed.setAttribute("data-edit", g.key);
-      ed.title = "관리자 비밀번호로 활동 이름(대회명)을 바꿉니다";
-      ed.textContent = "✏️ 이름 수정";
-      foot.appendChild(ed);
-    }
+    var ed = document.createElement("button");
+    ed.type = "button";
+    ed.className = "edit";
+    ed.setAttribute("data-edit", g.key);
+    ed.title = "관리자 비밀번호로 활동 이름(대회명)을 바꿉니다";
+    ed.textContent = "✏️ 이름 수정";
+    foot.appendChild(ed);
     card.appendChild(foot);
     return card;
   }
@@ -1389,14 +1521,14 @@ footer a{color:var(--dim);text-decoration:none}
     currentAct = g;
     var di = dayInfo(g.day);
     el.actTitle.textContent = activityName(g);
-    el.actMeta.textContent = (g.pending ? "라이브 밖에서 보낸 응원" : (di.full || "날짜 없음")) +
+    el.actMeta.textContent = (di.full || "날짜 없음") +
       (g.latest ? " · 최근 " + clockFor(g.latest, true) : "") +
       " · 음성 " + g.audio + " · 텍스트 " + g.text;
     el.actMsgs.innerHTML = "";
     g.msgs.forEach(function (m) { el.actMsgs.appendChild(msgNode(m, g.multiDay)); });
     el.actSession.hidden = !g.url;
     if (g.url) el.actSession.href = g.url;
-    el.actRename.hidden = !!g.pending;
+    el.actRename.hidden = false;
     el.actCount.textContent = "응원 " + g.msgs.length + "개";
     el.actModal.classList.add("on");
     el.actModal.setAttribute("aria-hidden", "false");
@@ -1408,7 +1540,7 @@ footer a{color:var(--dim);text-decoration:none}
     el.actModal.classList.remove("on");
     el.actModal.setAttribute("aria-hidden", "true");
     syncScroll();
-    if (updateHash !== false) setHash("#/archive");
+    if (updateHash !== false) setHash(viewMode === "guestbook" ? "#/guestbook" : "#/archive");
   }
 
   /* ── 이름(대회명) 수정 모달 ────────────────────────────── */
@@ -1417,7 +1549,7 @@ footer a{color:var(--dim);text-decoration:none}
     el.rnNote.className = "rnnote" + (isErr ? " warn" : "");
   }
   function openRename(g) {
-    if (!g || g.pending) return;
+    if (!g) return;
     renameTarget = g;
     el.rnName.value = customName(g) || g.title || "";
     el.rnPin.value = "";
@@ -1507,8 +1639,10 @@ footer a{color:var(--dim);text-decoration:none}
     state.lastSig = sig;
 
     state.actsCache = null;
+    renderBadges();
     renderLiveRecent();
     renderArchive();
+    renderGuestbook();
     renderDrawerActs();
     if (currentAct && !player.playingId && !el.renameModal.classList.contains("on")) {
       var g = findActivity(currentAct.key);
@@ -1530,8 +1664,25 @@ footer a{color:var(--dim);text-decoration:none}
     });
     el.drawerBack.addEventListener("click", closeMenu);
     el.drawerClose.addEventListener("click", closeMenu);
-    [el.navLive, el.navArchive].forEach(function (a) {
-      a.addEventListener("click", function () { closeMenu(); });
+    [el.navLive, el.navArchive, el.navGuest].forEach(function (a) {
+      if (a) a.addEventListener("click", function () { closeMenu(); });
+    });
+
+    // 최근 응원 카드 → 아카이브/방명록
+    if (el.goArchive) el.goArchive.addEventListener("click", function () { closeMenu(); setHash("#/archive"); });
+    if (el.goGuestbook) el.goGuestbook.addEventListener("click", function () { closeMenu(); setHash("#/guestbook"); });
+
+    // 일반 응원(방명록) 필터
+    if (el.gbQ) el.gbQ.addEventListener("input", function () {
+      gb.q = el.gbQ.value || "";
+      renderGuestbook();
+    });
+    if (el.gbTypes) el.gbTypes.addEventListener("click", function (ev) {
+      var n = ev.target;
+      while (n && n !== el.gbTypes && !(n.getAttribute && n.getAttribute("data-gtype"))) n = n.parentNode;
+      if (!n || n === el.gbTypes) return;
+      gb.type = n.getAttribute("data-gtype") || "all";
+      renderGuestbook();
     });
 
     // 활동 카드 / 이름 수정
@@ -1596,6 +1747,16 @@ footer a{color:var(--dim);text-decoration:none}
     });
   }
 
+  /** 시트의 전송 상태 문구를 관전자가 읽기 쉬운 말로 */
+  function garminLabel(s) {
+    var t = String(s || "").trim();
+    if (!t) return "";
+    if (/^성공/.test(t)) return "시계 전송 완료";
+    if (/세션 종료/.test(t)) return "활동이 끝난 뒤에 보냄";
+    if (/세션 링크 없음/.test(t)) return "활동 밖에서 보냄";
+    return t;
+  }
+
   function msgNode(m, withDate) {
     var isAudio = m.type === "audio";
     var row = document.createElement("div");
@@ -1617,7 +1778,7 @@ footer a{color:var(--dim);text-decoration:none}
     foot.className = "msgfoot";
     var st = document.createElement("span");
     st.className = "st";
-    st.textContent = m.garmin || "";
+    st.textContent = garminLabel(m.garmin);
     foot.appendChild(st);
 
     if (isAudio && m.audioFileId) {
@@ -1775,18 +1936,34 @@ footer a{color:var(--dim);text-decoration:none}
   function updateCheerHint() {
     var s = state.session;
     var live = computeLive();
+    if (el.cheerCard) el.cheerCard.classList.toggle("guest-mode", !live);
+    if (el.cheerMode) {
+      el.cheerMode.textContent = live ? "워치 전송" : "방명록 저장";
+      el.cheerMode.hidden = false;
+    }
     if (live) {
+      setCheerTitle("🎙️ 실시간 워치 응원");
       if (s && s.caps && !s.audio) {
-        el.cheerSub.textContent = "이 기기는 음성 응원을 지원하지 않습니다. 텍스트 응원을 남겨 주세요. (둘 다 드라이브에 저장됩니다)";
+        el.cheerSub.textContent = "(시계로 바로 전송됩니다) 이 기기는 음성 응원을 지원하지 않아 텍스트로 보내 주세요. 여기 남긴 응원은 모두 드라이브에 저장됩니다.";
         el.recBtn.disabled = true;
-        el.recNote.textContent = "음성 응원은 이 시계에서 재생되지 않습니다";
+        if (!recording) el.recNote.textContent = "음성 응원은 이 시계에서 재생되지 않습니다";
       } else {
-        el.cheerSub.textContent = "음성(최대 15초)이나 글로 응원을 남겨 주세요. 시계로 바로 전달되고 드라이브에 영구 저장됩니다.";
+        el.cheerSub.textContent = "(시계로 바로 전송됩니다) 음성(최대 15초)이나 글을 남겨 주세요 — 드라이브에도 영구 저장됩니다.";
         el.recBtn.disabled = false;
       }
     } else {
-      el.cheerSub.textContent = "지금은 라이브가 아니어도 괜찮아요. 남긴 응원은 드라이브에 저장되고, 라이브 중에 보낸 것은 시계로도 전달됩니다.";
+      setCheerTitle("💌 상시 응원 방명록 (비활동 중)");
+      el.cheerSub.textContent = "지금은 활동 중이 아니어서 워치로 바로 울리진 않지만, 남겨주시면 히맨 님 아카이브에 보관됩니다!";
+      el.recBtn.disabled = false;
+      if (!recording) el.recNote.textContent = "최대 15초 · 누르면 바로 녹음됩니다";
     }
+  }
+  /** 제목 앞 글자만 바꾸면서 안의 배지(span)는 그대로 둔다 */
+  function setCheerTitle(text) {
+    if (!el.cheerTitle) return;
+    var first = el.cheerTitle.firstChild;
+    if (first && first.nodeType === 3) first.nodeValue = text + " ";
+    else el.cheerTitle.textContent = text;
   }
 
   function startPolling() {
@@ -2141,8 +2318,11 @@ footer a{color:var(--dim);text-decoration:none}
   bindUI();
   route();
   arc.q = (el.arcQ.value || "");   // 새로고침 때 브라우저가 살려 둔 검색어와 상태를 맞춘다
+  gb.q = (el.gbQ.value || "");
+  renderBadges();
   renderLiveRecent();
   renderArchive();
+  renderGuestbook();
   renderDrawerActs();
   renderStatus();
   updateCheerHint();
