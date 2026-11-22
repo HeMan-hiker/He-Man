@@ -1400,7 +1400,6 @@ footer a{color:var(--dim);text-decoration:none}
     }
 
     el.gbFilters.hidden = false;
-    el.gbSub.textContent = "활동 밖에서 들어온 응원 " + all.length + "개 (음성 " + allAudio + " · 텍스트 " + (all.length - allAudio) + ") · 최신순";
 
     var q = String(gb.q || "").trim().toLowerCase();
     var shown = all.filter(function (m) {
@@ -1410,6 +1409,14 @@ footer a{color:var(--dim);text-decoration:none}
       var hay = (String(m.from || "") + " " + String(m.content || "") + " " + msgTime(m.timeKst, true)).toLowerCase();
       return hay.indexOf(q) >= 0;
     });
+
+    if (shown.length === all.length) {
+      el.gbSub.textContent = "활동 밖에서 들어온 응원 " + all.length + "개 (음성 " + allAudio + " · 텍스트 " + (all.length - allAudio) + ") · 최신순";
+    } else {
+      var sa = 0;
+      shown.forEach(function (m) { if (m.type === "audio") sa++; });
+      el.gbSub.textContent = "조건에 맞는 응원 " + shown.length + "/" + all.length + "개 (음성 " + sa + " · 텍스트 " + (shown.length - sa) + ")";
+    }
 
     el.gbList.innerHTML = "";
     var lastDay = "";
