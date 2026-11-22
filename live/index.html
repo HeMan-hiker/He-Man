@@ -789,8 +789,8 @@ footer a{color:var(--dim);text-decoration:none}
   function updateCheerHint() {
     var s = state.session;
     var live = computeLive();
-    if (s && s.id && live) {
-      if (s.caps && !s.audio) {
+    if (live) {
+      if (s && s.caps && !s.audio) {
         el.cheerSub.textContent = "이 기기는 음성 응원을 지원하지 않습니다. 텍스트 응원을 남겨 주세요. (둘 다 드라이브에 저장됩니다)";
         el.recBtn.disabled = true;
         el.recNote.textContent = "음성 응원은 이 시계에서 재생되지 않습니다";
