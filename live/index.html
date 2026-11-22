@@ -487,7 +487,7 @@ footer a{color:var(--dim);text-decoration:none}
         <button class="btn ghost sm" id="actRename" type="button">✏️ 이름 수정</button>
         <a class="btn ghost sm" id="actSession" href="#" target="_blank" rel="noopener noreferrer" hidden>세션 열기 ↗</a>
       </div>
-      <span class="ameta">가민 LiveTrack 세션</span>
+      <span class="ameta" id="actCount"></span>
     </div>
   </div>
 </div>
@@ -527,6 +527,19 @@ footer a{color:var(--dim);text-decoration:none}
 (function () {
   "use strict";
 
+  /* 진단용: 이 페이지에서 난 오류를 조용히 모아 둔다 (개발자 도구 없이 확인할 때 씀) */
+  window.__ltErrors = window.__ltErrors || [];
+  window.addEventListener("error", function (ev) {
+    try {
+      window.__ltErrors.push(String(ev.message || ev.error || "error") + " @" + String(ev.filename || "") + ":" + String(ev.lineno || ""));
+    } catch (e) {}
+  });
+  window.addEventListener("unhandledrejection", function (ev) {
+    try {
+      window.__ltErrors.push("promise: " + String((ev.reason && ev.reason.message) || ev.reason));
+    } catch (e) {}
+  });
+
   /* ── 설정 ───────────────────────────────────────────────
      Apps Script 웹앱 URL은 live/latest.json 의 "endpoint" 값을 씁니다.
      (여기에 직접 넣어도 됩니다.)                          */
@@ -563,7 +576,7 @@ footer a{color:var(--dim);text-decoration:none}
     filters: $("filters"), arcSub: $("arcSub"), arcQ: $("arcQ"), arcYear: $("arcYear"),
     arcTypes: $("arcTypes"), actGrid: $("actGrid"), arcEmpty: $("arcEmpty"),
     actModal: $("actModal"), actTitle: $("actTitle"), actMeta: $("actMeta"), actMsgs: $("actMsgs"),
-    actSession: $("actSession"), actRename: $("actRename"), actClose: $("actClose"),
+    actSession: $("actSession"), actRename: $("actRename"), actClose: $("actClose"), actCount: $("actCount"),
     renameModal: $("renameModal"), rnName: $("rnName"), rnPin: $("rnPin"), rnNote: $("rnNote"),
     rnSave: $("rnSave"), rnCancel: $("rnCancel"), rnClose: $("rnClose"), rnOrig: $("rnOrig"),
     toast: $("toast")
@@ -1384,6 +1397,7 @@ footer a{color:var(--dim);text-decoration:none}
     el.actSession.hidden = !g.url;
     if (g.url) el.actSession.href = g.url;
     el.actRename.hidden = !!g.pending;
+    el.actCount.textContent = "응원 " + g.msgs.length + "개";
     el.actModal.classList.add("on");
     el.actModal.setAttribute("aria-hidden", "false");
     syncScroll();
