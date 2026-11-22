@@ -331,7 +331,9 @@ function pinIsDefault_() {
  */
 function setupPin(pin) {
   pin = String(pin == null ? '' : pin).trim();
-  if (pin.length < 4) throw new Error('비밀번호는 4자 이상으로 정해 주세요.');
+  if (pin.length < 4) {
+    throw new Error('setupPin 은 비밀번호를 인자로 받습니다. ① 프로젝트 설정 → 스크립트 속성에 ADMIN_PIN = 원하는비번 을 추가하거나, ② function myPin(){ setupPin(\'원하는비번\'); } 를 만들어 실행하세요. (4자 이상)');
+  }
   PropertiesService.getScriptProperties().setProperty(PROP_PIN, pin);
   Logger.log('관리자 비밀번호 저장 완료 (길이 ' + pin.length + '자). 이제 페이지의 「✏️ 이름 수정」에서 이 비밀번호를 쓰세요.');
   return true;
