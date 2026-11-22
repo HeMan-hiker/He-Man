@@ -765,7 +765,10 @@ footer a{color:var(--dim);text-decoration:none}
       g.msgs.sort(function (a, b) { return (kstMs(b.timeKst) || 0) - (kstMs(a.timeKst) || 0); });
       if (!isFinite(g.latest)) g.latest = 0;
     });
-    groups.sort(function (a, b) { return b.latest - a.latest; });
+    groups.sort(function (a, b) {
+      if (a.pending !== b.pending) return a.pending ? 1 : -1;   // '일반 응원'은 활동 목록 맨 뒤로
+      return b.latest - a.latest;
+    });
     return groups;
   }
 
