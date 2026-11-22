@@ -1,39 +1,63 @@
 /**
- * 가민 LiveTrack 고정 링크 · Google Apps Script
- * ------------------------------------------------------------
+ * 가민 LiveTrack · 응원 메시지 (영구 저장 + 워치 동시 전송) · Google Apps Script v2
+ * ============================================================
  * 하는 일
  *   1) 1분마다 Gmail(whi2hn@gmail.com)에 온 가민 LiveTrack 메일을 찾아
- *      "https://livetrack.garmin.com/session/..." 링크를 뽑아 저장합니다.
- *   2) 웹앱으로 열면 저장된 링크를 JSON으로 돌려줍니다.
- *      → https://heman-hiker.github.io/He-Man/live/ 가 이 JSON을 받아 자동 이동.
+ *      "https://livetrack.garmin.com/session/..." 링크를 뽑아 저장합니다. (v1 그대로)
+ *   2) 웹앱으로 열면 저장된 링크 + 라이브 세션 상태 + 최근 응원 메시지 50건을 JSON으로 돌려줍니다.
+ *      → https://heman-hiker.github.io/He-Man/live/ 가 이 JSON을 받아 표시합니다.
+ *   3) 관전자가 페이지에서 보낸 음성/텍스트 응원을
+ *        (a) 내 Google Drive 폴더 + 스프레드시트에 영구 저장하고
+ *        (b) 동시에 가민 LiveTrack 관전자 메시지 API로 쏘아 워치 스피커로 재생되게 합니다.
  *
  * 설치 (5분)
- *   1. https://script.google.com → 새 프로젝트 → 이 파일 내용 전체를 Code.gs에 붙여넣기 → 저장
+ *   1. https://script.google.com → 기존 프로젝트 열기(없으면 새 프로젝트) → 이 파일 내용 전체를 Code.gs에 붙여넣기 → 저장
  *   2. 함수 목록에서 [setup] 선택 → 실행 → 권한 허용
- *      (1분 자동 실행 트리거 생성 + 지금 한 번 확인)
- *   3. 배포 → 새 배포 → 유형 "웹 앱"
- *        · 다음 사용자로 실행: 나(whi2hn@gmail.com)
- *        · 액세스 권한: 모든 사용자
- *      → 배포 → 나온 웹 앱 URL(".../exec")을 복사
- *   4. 그 URL을 히맨(버거)에게 보내면 고정 페이지(live/index.html)에 연결해 둡니다.
- *      (또는 live/latest.json 의 "endpoint" 값에 붙여넣어도 됩니다.)
+ *      (Gmail 읽기 + Drive/시트 생성 + 외부 요청 권한. 1분 자동 실행 트리거 생성 + 지금 한 번 확인 + 저장 폴더 생성)
+ *   3. 배포 → 배포 관리 → ✏️(수정) → 버전 "새 버전" → 배포
+ *      (⚠️ "새 배포"를 만들면 URL이 바뀝니다. 반드시 기존 배포를 수정하세요.)
+ *   4. 확인: 웹앱 URL 뒤에 ?probe=1 을 붙여 열면 가민 API 연결 상태가 JSON으로 나옵니다.
+ *      {"csrfOk":true, ...} 면 준비 완료.
  *
- * 참고
- *   · 가민 커넥트 → 설정 → LiveTrack 에서 "자동 시작"을 켜고
- *     whi2hn@gmail.com 을 수신자로 등록해야 메일이 옵니다.
- *   · 코드를 고치면 배포 → 배포 관리 → 수정 → 새 버전으로 다시 배포해야 반영됩니다.
- * ------------------------------------------------------------
+ * 가민 API 메모 (2026-11 확인)
+ *   · 세션 페이지 GET → <meta name="csrf-token"> + Set-Cookie: livetrack_csrf=... 를 함께 받아야
+ *     이후 API 호출이 403이 아니다 (CSRF 이중 제출 방식).
+ *   · 헤더: "Livetrack-Csrf-Token: <meta 값>", "Cookie: livetrack_csrf=...",
+ *     "X-Garmin-LiveTrack-User-Guid: <publisher.garminGuid>"
+ *   · 텍스트: POST /api/messages/spectator/text?sessionId=..&token=..  body {"from":..,"content":..}
+ *   · 음성  : POST /api/messages/spectator/audio?sessionId=..&token=.. multipart (from, content=오디오 파일)
+ *   · 성공 시 {"messageId":"..."} / 세션 없음 404 NOT_FOUND / 음성 미지원 409
+ *   · 기기 지원 여부: GET /api/device/{unitId}/capabilities?userProfileId=.. → {"audio":true,"text":true}
+ * ============================================================
  */
 
-var PROP_KEY = 'livetrack';          // { url, updatedAt, subject, messageId }
-var PROP_CHECKED = 'livetrackChecked'; // 마지막으로 메일함을 훑은 시각(ISO)
-var MAX_AGE_MS = 24 * 60 * 60 * 1000;  // 24시간
-var ON_DEMAND_MS = 5 * 60 * 1000;      // 웹앱 요청 시 즉시 재확인 최소 간격
+var PROP_KEY = 'livetrack';             // { url, updatedAt, subject, messageId }
+var PROP_CHECKED = 'livetrackChecked';  // 마지막으로 메일함을 훑은 시각(ISO)
+var PROP_FOLDER = 'cheerFolderId';      // 응원 메시지 폴더 ID
+var PROP_SHEET = 'cheerSheetId';        // 응원 메시지 기록 시트 ID
+
+var MAX_AGE_MS = 24 * 60 * 60 * 1000;   // 24시간
+var ON_DEMAND_MS = 5 * 60 * 1000;       // 웹앱 요청 시 즉시 재확인 최소 간격
+
+var FOLDER_NAME = 'Garmin LiveTrack 응원 메시지';
+var SHEET_NAME = 'LiveTrack 응원 메시지 기록';
+var SHEET_HEADERS = ['시각(KST)', '세션', '보낸사람', '종류', '내용', '오디오파일', '가민전송'];
+var MSG_LIMIT = 50;                     // doGet 이 돌려주는 최근 메시지 수
+var GARMIN_BASE = 'https://livetrack.garmin.com';
+var CACHE_LIVE_SEC = 90;                // 라이브 상태 캐시(초)
 
 /* ============================================================
- * 1. 웹앱 — 페이지가 부르는 곳
+ * 1. 웹앱 — GET (페이지가 부르는 곳)
  * ============================================================ */
 function doGet(e) {
+  var p = (e && e.parameter) || {};
+
+  // ?audio=<fileId> — 오디오 재생용 (드라이브 파일을 base64 로 돌려줌)
+  if (p.audio) return jsonOut(loadAudio_(p.audio), p.callback);
+
+  // ?probe=1 — 가민 API 연결 상태 점검 (가짜 세션으로 POST → 404면 CSRF 통과)
+  if (p.probe) return jsonOut(probeGarmin_(), p.callback);
+
   var state = getState();
 
   // 트리거가 멈췄을 때를 대비한 보험: 5분 넘게 확인 안 했으면 즉시 한 번 훑기
@@ -44,7 +68,7 @@ function doGet(e) {
       state = getState();
     }
   } catch (err) {
-    // 확인 실패는 저장된 값으로 응답 (페이지가 latest.json으로 폴백)
+    // 확인 실패는 저장된 값으로 응답
   }
 
   var body = {
@@ -52,25 +76,512 @@ function doGet(e) {
     updatedAt: state.updatedAt || '',
     subject: state.subject || '',
     updatedAtKst: state.updatedAt ? formatKst(state.updatedAt) : '',
-    source: 'garmin-livetrack-apps-script'
+    session: liveInfo_(state),
+    messages: safeMessages_(MSG_LIMIT),
+    source: 'garmin-livetrack-apps-script-v2'
   };
-  var json = JSON.stringify(body);
 
-  // JSONP 폴백 (?callback=함수이름)
-  var cb = e && e.parameter && e.parameter.callback;
-  if (cb && /^[A-Za-z_$][A-Za-z0-9_$.]{0,60}$/.test(cb)) {
-    return ContentService
-      .createTextOutput(cb + '(' + json + ');')
-      .setMimeType(ContentService.MimeType.JAVASCRIPT);
-  }
-
-  return ContentService
-    .createTextOutput(json)
-    .setMimeType(ContentService.MimeType.JSON);
+  return jsonOut(body, p.callback);
 }
 
 /* ============================================================
- * 2. 메일 확인 — 1분 트리거
+ * 2. 웹앱 — POST (응원 메시지 받는 곳)
+ * ============================================================ */
+function doPost(e) {
+  var res = {
+    ok: false, saved: false, garminSent: false, garminStatus: '',
+    audioUrl: '', audioFileId: '', msgId: '', timeKst: '', error: ''
+  };
+
+  var data = null;
+  try {
+    var raw = e && e.postData ? e.postData.contents : '';
+    if (!raw) throw new Error('빈 요청');
+    data = JSON.parse(raw);
+  } catch (err) {
+    res.error = '요청 해석 실패: ' + err;
+    return jsonOut(res);
+  }
+
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(20000);
+  } catch (err) {
+    res.error = '잠시 뒤 다시 시도해 주세요 (혼잡)';
+    return jsonOut(res);
+  }
+
+  try {
+    res = handleCheer_(data, res);
+  } catch (err) {
+    res.ok = false;
+    res.error = String(err);
+  } finally {
+    try { lock.releaseLock(); } catch (err2) {}
+  }
+
+  return jsonOut(res);
+}
+
+/** 응원 1건 처리 — 저장 + 가민 전송 */
+function handleCheer_(d, res) {
+  var from = String(d.from || '').replace(/[\r\n\t]/g, ' ').trim().slice(0, 60);
+  var type = (d.type === 'audio') ? 'audio' : 'text';
+  var text = String(d.text || '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').trim().slice(0, 300);
+  var msgId = String(d.msgId || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40) || ('m' + Date.now());
+  var duration = Number(d.duration) || 0;
+  var mime = String(d.mimeType || 'audio/webm').slice(0, 60);
+  var sessionUrl = String(d.sessionUrl || '');
+
+  res.msgId = msgId;
+  res.timeKst = formatKst(new Date().toISOString());
+
+  if (!from) { res.error = '보낸 사람 이름이 비어 있습니다'; return res; }
+  if (type === 'text' && !text) { res.error = '메시지가 비어 있습니다'; return res; }
+
+  // 같은 메시지가 두 번 도착해도(전송 재시도) 한 번만 저장·전송
+  var cache = CacheService.getScriptCache();
+  var doneKey = 'cheer_' + msgId;
+  var hit = cache.get(doneKey);
+  if (hit) {
+    try {
+      var prev = JSON.parse(hit);
+      prev.duplicate = true;
+      return prev;
+    } catch (err) {}
+  }
+
+  var store = getStore_();
+
+  /* ── 1) 오디오 파일 저장 ───────────────────────────── */
+  var audioFile = null;
+  if (type === 'audio') {
+    var b64 = String(d.audioBase64 || '');
+    if (!b64) { res.error = '음성 데이터가 없습니다'; return res; }
+    if (b64.length > 4 * 1024 * 1024) { res.error = '음성 파일이 너무 큽니다'; return res; }
+    var ext = mime.indexOf('mp4') >= 0 ? 'm4a' : (mime.indexOf('ogg') >= 0 ? 'ogg' : 'webm');
+    var fileName = '응원_' + Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyyMMdd_HHmmss') + '_' +
+      from.replace(/[^\w가-힣]/g, '').slice(0, 12) + '.' + ext;
+    var blob = Utilities.newBlob(Utilities.base64Decode(b64), mime, fileName);
+    audioFile = store.folder.createFile(blob);
+    try {
+      audioFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch (errShare) { /* 공유 설정 실패해도 저장은 유지 */ }
+    res.audioFileId = audioFile.getId();
+    res.audioUrl = 'https://drive.google.com/file/d/' + audioFile.getId() + '/view';
+  }
+
+  /* ── 2) 가민 워치로 전송 ───────────────────────────── */
+  var garmin = { sent: false, status: 'skipped', error: '', messageId: '' };
+  if (sessionUrl) {
+    try {
+      garmin = garminSend_(sessionUrl, from, type, text, d.audioBase64, mime);
+    } catch (err) {
+      garmin = { sent: false, status: 'error', error: String(err), messageId: '' };
+    }
+  } else {
+    garmin.status = 'no-session';
+  }
+  res.garminSent = !!garmin.sent;
+  res.garminStatus = garminLabel_(garmin);
+
+  /* ── 3) 시트에 영구 기록 ───────────────────────────── */
+  var sessionLabel = stateLabel_(sessionUrl);
+  var contentCell = type === 'audio'
+    ? ('🎙️ 음성 응원' + (duration > 0 ? ' (' + Math.round(duration) + '초)' : ''))
+    : text;
+
+  store.sheet.appendRow([
+    res.timeKst,
+    sessionLabel,
+    from,
+    type === 'audio' ? '음성' : '텍스트',
+    contentCell,
+    res.audioUrl,
+    res.garminStatus
+  ]);
+
+  res.ok = true;
+  res.saved = true;
+
+  try { cache.put(doneKey, JSON.stringify(res), 21600); } catch (err) {} // 6시간 중복 방지
+  return res;
+}
+
+/** 시트 '세션' 칸에 넣을 이름 */
+function stateLabel_(sessionUrl) {
+  var st = getState();
+  if (st.subject) return st.subject;
+  var s = parseSessionUrl_(sessionUrl);
+  if (!s) return '';
+  var info = liveInfo_({ url: sessionUrl });
+  return info && info.name ? info.name : 'LiveTrack 세션';
+}
+
+/** '가민전송' 칸 문구 */
+function garminLabel_(g) {
+  if (g.sent) return '성공' + (g.messageId ? ' (' + g.messageId.slice(0, 8) + ')' : '');
+  switch (g.status) {
+    case 'no-session': return '대기 — 세션 링크 없음';
+    case 'ended': return '대기 — 세션 종료';
+    case 'not-found': return '대기 — 세션 없음(404)';
+    case '403': return '실패 — 권한/CSRF(403)';
+    case '409': return '실패 — 시계가 음성 미지원(409)';
+    case 'skipped': return '건너뜀';
+    default: return '실패 — ' + (g.status || '') + (g.error ? ' ' + String(g.error).slice(0, 60) : '');
+  }
+}
+
+/* ============================================================
+ * 3. 저장소 (Drive 폴더 + 스프레드시트)
+ * ============================================================ */
+function getStore_() {
+  var props = PropertiesService.getScriptProperties();
+  var folder = null, sheet = null;
+
+  var folderId = props.getProperty(PROP_FOLDER);
+  if (folderId) {
+    try { folder = DriveApp.getFolderById(folderId); } catch (err) { folder = null; }
+  }
+  if (!folder) {
+    var it = DriveApp.getFoldersByName(FOLDER_NAME);
+    folder = it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER_NAME);
+    props.setProperty(PROP_FOLDER, folder.getId());
+  }
+
+  var sheetId = props.getProperty(PROP_SHEET);
+  if (sheetId) {
+    try { sheet = SpreadsheetApp.openById(sheetId); } catch (err) { sheet = null; }
+  }
+  if (!sheet) {
+    var files = folder.getFilesByName(SHEET_NAME);
+    if (files.hasNext()) {
+      try { sheet = SpreadsheetApp.openById(files.next().getId()); } catch (err) { sheet = null; }
+    }
+    if (!sheet) {
+      sheet = SpreadsheetApp.create(SHEET_NAME);
+      try {
+        DriveApp.getFileById(sheet.getId()).moveTo(folder);
+      } catch (errMove) {}
+    }
+    props.setProperty(PROP_SHEET, sheet.getId());
+  }
+
+  var sh = sheet.getSheets()[0];
+  if (sh.getLastRow() === 0) {
+    sh.appendRow(SHEET_HEADERS);
+    sh.setFrozenRows(1);
+  }
+  return { folder: folder, sheet: sh };
+}
+
+/** 최근 메시지 (최신이 앞) */
+function readMessages(limit) {
+  var sh;
+  try { sh = getStore_().sheet; } catch (err) { return []; }
+  var last = sh.getLastRow();
+  if (last < 2) return [];
+  var count = Math.min(limit || MSG_LIMIT, last - 1);
+  var startRow = last - count + 1;
+  var values = sh.getRange(startRow, 1, count, 7).getValues();
+  var out = [];
+  for (var i = values.length - 1; i >= 0; i--) {
+    var r = values[i];
+    var audioUrl = String(r[5] || '');
+    var fileId = '';
+    var m = audioUrl.match(/\/d\/([A-Za-z0-9_-]{20,})/);
+    if (m) fileId = m[1];
+    out.push({
+      timeKst: r[0] ? Utilities.formatDate(new Date(r[0]), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss') : '',
+      sessionSubject: String(r[1] || ''),
+      from: String(r[2] || ''),
+      type: String(r[3] || '') === '음성' ? 'audio' : 'text',
+      content: r[4] == null ? '' : String(r[4]),
+      audioUrl: audioUrl,
+      audioFileId: fileId,
+      garmin: String(r[6] || '')
+    });
+  }
+  return out;
+}
+
+function safeMessages_(limit) {
+  try { return readMessages(limit); } catch (err) { return []; }
+}
+
+/** 오디오 재생용 base64 응답 */
+function loadAudio_(fileId) {
+  try {
+    var f = DriveApp.getFileById(String(fileId));
+    var blob = f.getBlob();
+    var bytes = blob.getBytes();
+    if (bytes.length > 4 * 1024 * 1024) return { ok: false, error: 'too large' };
+    return {
+      ok: true,
+      name: f.getName(),
+      mimeType: blob.getContentType() || 'audio/webm',
+      base64: Utilities.base64Encode(bytes)
+    };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+}
+
+/* ============================================================
+ * 4. 가민 LiveTrack API
+ * ============================================================ */
+function parseSessionUrl_(url) {
+  var m = String(url || '').match(/livetrack\.garmin\.com\/session\/([0-9a-fA-F-]{36})\/token\/([A-Za-z0-9]+)/);
+  if (!m) return null;
+  return { id: m[1], token: m[2] };
+}
+
+/** 세션 페이지를 열어 CSRF 토큰 + livetrack_csrf 쿠키를 얻는다 (이게 없으면 API가 403) */
+function garminContext_(sessionId, token) {
+  var out = { ok: false, status: 0, cookie: '', csrf: '', html: '' };
+  var pageUrl = GARMIN_BASE + '/session/' + sessionId + '/token/' + token;
+  var resp;
+  try {
+    resp = UrlFetchApp.fetch(pageUrl, {
+      method: 'get',
+      muteHttpExceptions: true,
+      followRedirects: true,
+      headers: { 'Accept': 'text/html,application/xhtml+xml' }
+    });
+  } catch (err) {
+    out.status = -1;
+    out.error = String(err);
+    return out;
+  }
+  out.status = resp.getResponseCode();
+  var html = resp.getContentText() || '';
+  out.html = html;
+
+  var mm = html.match(/<meta\s+name="csrf-token"\s+content="([^"]+)"/i);
+  if (mm) out.csrf = mm[1];
+
+  var all = {};
+  try { all = resp.getAllHeaders() || {}; } catch (err) {}
+  var setCookie = '';
+  for (var k in all) {
+    if (String(k).toLowerCase() === 'set-cookie') { setCookie = all[k]; break; }
+  }
+  var list = Array.isArray(setCookie) ? setCookie : (setCookie ? [setCookie] : []);
+  for (var i = 0; i < list.length; i++) {
+    var cm = String(list[i]).match(/livetrack_csrf=([^;]+)/);
+    if (cm) out.cookie = 'livetrack_csrf=' + cm[1];
+  }
+
+  out.ok = !!(out.csrf && out.cookie);
+  return out;
+}
+
+function garminHeaders_(ctx, sessionId, token, guid) {
+  var h = {
+    'Livetrack-Csrf-Token': ctx.csrf,
+    'Cookie': ctx.cookie,
+    'Origin': GARMIN_BASE,
+    'Referer': GARMIN_BASE + '/session/' + sessionId + '/token/' + token,
+    'Accept': 'application/json'
+  };
+  if (guid) h['X-Garmin-LiveTrack-User-Guid'] = guid;
+  return h;
+}
+
+function garminGet_(path, ctx) {
+  try {
+    var r = UrlFetchApp.fetch(GARMIN_BASE + path, {
+      method: 'get',
+      muteHttpExceptions: true,
+      headers: { 'Livetrack-Csrf-Token': ctx.csrf, 'Cookie': ctx.cookie, 'Accept': 'application/json' }
+    });
+    var body = r.getContentText() || '';
+    var json = null;
+    try { json = JSON.parse(body); } catch (err) {}
+    return { status: r.getResponseCode(), body: body, json: json };
+  } catch (err) {
+    return { status: -1, body: String(err), json: null };
+  }
+}
+
+/** 세션 정보 — API 우선, 실패하면 페이지에 박힌 값에서 뽑는다 */
+function garminSession_(sessionId, token, ctx) {
+  var g = garminGet_('/api/v2/sessions/' + sessionId + '?token=' + token, ctx);
+  if (g.status === 200 && g.json) return g.json;
+  var p = parseSessionFromPage_(ctx.html);
+  return p;
+}
+
+function parseSessionFromPage_(html) {
+  if (!html) return null;
+  var flat = String(html).replace(/\\\\/g, '\\').replace(/\\"/g, '"');
+  var start = (flat.match(/"start":"(\d{4}-\d\d-\d\dT[^"]+)"/) || [])[1] || '';
+  var end = (flat.match(/"end":"(\d{4}-\d\d-\d\dT[^"]+)"/) || [])[1] || '';
+  var guid = (flat.match(/"garminGuid":"([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"/) || [])[1] || '';
+  var unit = (flat.match(/"unitId":(\d+)/) || [])[1] || '';
+  var prof = (flat.match(/"connectUserProfileId":(\d+)/) || [])[1] || '';
+  var name = (flat.match(/"sessionName":"([^"]*)"/) || [])[1] || '';
+  if (!start && !guid) return null;
+  return {
+    sessionId: '',
+    start: start,
+    end: end,
+    sessionName: name,
+    unitId: unit ? Number(unit) : 0,
+    publisher: { garminGuid: guid, connectUserProfileId: prof ? Number(prof) : 0 },
+    fromPage: true
+  };
+}
+
+/** 지금 살아 있는 세션인가 */
+function isActive_(sess) {
+  if (!sess) return false;
+  var now = Date.now();
+  if (sess.end) {
+    var te = Date.parse(sess.end);
+    return isFinite(te) && te > now - 60 * 1000;
+  }
+  var ts = Date.parse(sess.start || '');
+  return isFinite(ts) && now - ts < MAX_AGE_MS;
+}
+
+/** 페이지에 보여줄 라이브 상태 (90초 캐시) */
+function liveInfo_(state) {
+  var out = { id: '', active: false, start: '', end: '', name: '', audio: false, text: false, caps: false, checkedAt: '' };
+  var s = parseSessionUrl_(state && state.url);
+  if (!s) return out;
+  out.id = s.id;
+
+  var cache = CacheService.getScriptCache();
+  var key = 'live_' + s.id;
+  try {
+    var hit = cache.get(key);
+    if (hit) return JSON.parse(hit);
+  } catch (err) {}
+
+  var ctx = garminContext_(s.id, s.token);
+  if (ctx.ok) {
+    var sess = garminSession_(s.id, s.token, ctx);
+    if (sess) {
+      out.start = sess.start || '';
+      out.end = sess.end || '';
+      out.name = sess.sessionName || '';
+      out.active = isActive_(sess);
+      var unitId = sess.unitId || 0;
+      var profId = sess.publisher ? (sess.publisher.connectUserProfileId || 0) : 0;
+      if (unitId && profId) {
+        var cap = garminGet_('/api/device/' + unitId + '/capabilities?userProfileId=' + profId, ctx);
+        if (cap.status === 200 && cap.json) {
+          out.audio = !!cap.json.audio;
+          out.text = !!cap.json.text;
+          out.caps = true;
+        }
+      }
+      out.checkedAt = new Date().toISOString();
+    }
+  }
+  try { cache.put(key, JSON.stringify(out), CACHE_LIVE_SEC); } catch (err) {}
+  return out;
+}
+
+/** 텍스트/음성 응원을 가민으로 전송 */
+function garminSend_(sessionUrl, from, type, text, audioBase64, mime) {
+  var out = { sent: false, status: '', error: '', messageId: '' };
+  var s = parseSessionUrl_(sessionUrl);
+  if (!s) { out.status = 'no-session'; return out; }
+
+  var ctx = garminContext_(s.id, s.token);
+  if (!ctx.ok) {
+    out.status = String(ctx.status || 'page');
+    out.error = 'CSRF 준비 실패 (페이지 ' + ctx.status + ')';
+    return out;
+  }
+
+  var sess = garminSession_(s.id, s.token, ctx);
+  if (!sess) { out.status = 'not-found'; return out; }
+  if (!isActive_(sess)) { out.status = 'ended'; return out; }
+
+  var guid = sess.publisher && sess.publisher.garminGuid ? sess.publisher.garminGuid : '';
+  var headers = garminHeaders_(ctx, s.id, s.token, guid);
+
+  if (type === 'audio') {
+    if (!audioBase64) { out.status = 'no-audio'; return out; }
+    var m = String(mime || 'audio/webm');
+    var ext = m.indexOf('mp4') >= 0 ? 'm4a' : (m.indexOf('ogg') >= 0 ? 'ogg' : 'webm');
+    var boundary = '----LiveTrackCheer' + Date.now() + Math.floor(Math.random() * 1e6);
+    var head = '--' + boundary + '\r\n' +
+      'Content-Disposition: form-data; name="from"\r\n\r\n' + from + '\r\n' +
+      '--' + boundary + '\r\n' +
+      'Content-Disposition: form-data; name="content"; filename="cheer.' + ext + '"\r\n' +
+      'Content-Type: ' + m + '\r\n\r\n';
+    var tail = '\r\n--' + boundary + '--\r\n';
+    var bytes = Utilities.newBlob(head, 'text/plain').getBytes()
+      .concat(Utilities.base64Decode(audioBase64), Utilities.newBlob(tail, 'text/plain').getBytes());
+    var payloadBlob = Utilities.newBlob(bytes, 'multipart/form-data; boundary=' + boundary);
+    var url = GARMIN_BASE + '/api/messages/spectator/audio?sessionId=' + s.id + '&token=' + s.token;
+    var resp = UrlFetchApp.fetch(url, {
+      method: 'post', headers: headers, payload: payloadBlob, muteHttpExceptions: true
+    });
+    return garminResult_(resp);
+  }
+
+  // 텍스트 — 시계 알림은 50자까지만 전달 (전체 문장은 드라이브에 저장)
+  var content = String(text || '').slice(0, 50);
+  var urlText = GARMIN_BASE + '/api/messages/spectator/text?sessionId=' + s.id + '&token=' + s.token;
+  var respText = UrlFetchApp.fetch(urlText, {
+    method: 'post',
+    headers: headers,
+    contentType: 'application/json; charset=utf-8',
+    payload: JSON.stringify({ from: from, content: content }),
+    muteHttpExceptions: true
+  });
+  return garminResult_(respText);
+}
+
+function garminResult_(resp) {
+  var out = { sent: false, status: '', error: '', messageId: '' };
+  out.status = String(resp.getResponseCode());
+  var body = resp.getContentText() || '';
+  if (resp.getResponseCode() === 200) {
+    out.sent = true;
+    try { out.messageId = (JSON.parse(body) || {}).messageId || ''; } catch (err) {}
+  } else {
+    out.error = body.slice(0, 200);
+  }
+  return out;
+}
+
+/** 연결 점검 — 절대 실제 시계로 가지 않도록 '없는 세션'에만 POST 한다 */
+function probeGarmin_() {
+  var out = { ok: false, steps: [], csrfOk: false, sessionUrl: '', note: '가짜 세션 ID로만 검사합니다. 실제 시계로는 아무것도 가지 않습니다.' };
+  var state = getState();
+  out.sessionUrl = state.url || '';
+  var s = parseSessionUrl_(state.url);
+  if (!s) { out.error = '저장된 LiveTrack 링크가 없습니다'; return out; }
+
+  var ctx = garminContext_(s.id, s.token);
+  out.steps.push({ step: 'page', status: ctx.status, cookie: !!ctx.cookie, csrf: !!ctx.csrf });
+  if (!ctx.ok) { out.error = 'CSRF/쿠키를 얻지 못했습니다 (403이면 Google IP 차단 가능)'; return out; }
+
+  var live = garminGet_('/api/v2/sessions/' + s.id + '?token=' + s.token, ctx);
+  out.steps.push({ step: 'session', status: live.status, active: live.json ? isActive_(live.json) : null });
+
+  var url = GARMIN_BASE + '/api/messages/spectator/text?sessionId=00000000-0000-0000-0000-000000000000&token=PROBE';
+  var resp = UrlFetchApp.fetch(url, {
+    method: 'post',
+    headers: garminHeaders_(ctx, s.id, s.token, ''),
+    contentType: 'application/json; charset=utf-8',
+    payload: JSON.stringify({ from: 'probe', content: 'probe' }),
+    muteHttpExceptions: true
+  });
+  out.steps.push({ step: 'csrf-probe', status: resp.getResponseCode(), expect: 404 });
+  out.csrfOk = resp.getResponseCode() === 404;
+  out.ok = out.csrfOk;
+  return out;
+}
+
+/* ============================================================
+ * 5. 메일 확인 — 1분 트리거 (v1 그대로)
  * ============================================================ */
 function checkLiveTrackMail() {
   var props = PropertiesService.getScriptProperties();
@@ -83,7 +594,6 @@ function checkLiveTrackMail() {
 
   for (var i = 0; i < threads.length; i++) {
     var messages = threads[i].getMessages();
-    // 최신 메일부터 (스레드 안에서 마지막이 최신)
     for (var j = messages.length - 1; j >= 0; j--) {
       var msg = messages[j];
       var date = msg.getDate();
@@ -105,14 +615,13 @@ function checkLiveTrackMail() {
     return prev;
   }
 
-  // 이미 저장된 것보다 오래된 메일이면 무시 (순서 꼬임 방지)
   var prevTime = Date.parse(prev.updatedAt || '') || 0;
   if (prev.url && prevTime > found.date.getTime()) {
     Logger.log('이미 더 최신 링크가 저장되어 있음 — 그대로 둠');
     return prev;
   }
   if (prev.url === found.url && prev.updatedAt === found.date.toISOString()) {
-    return prev; // 변화 없음
+    return prev;
   }
 
   var state = {
@@ -135,7 +644,6 @@ function extractLiveTrackUrl(msg) {
   var patterns = [
     /https:\/\/livetrack\.garmin\.com\/[^\s"'<>\\]+/i,
     /https:\/\/connect\.garmin\.com\/[^\s"'<>\\]*livetrack[^\s"'<>\\]*/i,
-    // 메일이 추적 링크로 감싼 경우 (퍼센트 인코딩된 주소)
     /https%3A%2F%2Flivetrack\.garmin\.com%2F[^\s"'<>&]+/i
   ];
 
@@ -158,7 +666,7 @@ function tidyUrl(u) {
   u = String(u).trim();
   u = u.replace(/&amp;/g, '&');
   u = u.replace(/&#38;/g, '&');
-  u = u.replace(/[)\].,;:!?'"]+$/, '');
+  u = u.replace(/[)\]}.,;:!?'"]+$/, '');
   if (u.indexOf('https://livetrack.garmin.com/') !== 0 &&
       u.indexOf('https://connect.garmin.com/') !== 0) {
     return '';
@@ -167,7 +675,7 @@ function tidyUrl(u) {
 }
 
 /* ============================================================
- * 3. 상태 읽기 / 설치
+ * 6. 상태 읽기 / 설치
  * ============================================================ */
 function getState() {
   var props = PropertiesService.getScriptProperties();
@@ -186,7 +694,7 @@ function getState() {
   return state;
 }
 
-/** 최초 1회 실행: 1분 트리거 만들고 바로 한 번 확인 */
+/** 최초 1회 실행: 1분 트리거 + 저장 폴더/시트 만들고 바로 한 번 확인 */
 function setup() {
   var triggers = ScriptApp.getProjectTriggers();
   for (var i = 0; i < triggers.length; i++) {
@@ -195,6 +703,11 @@ function setup() {
     }
   }
   ScriptApp.newTrigger('checkLiveTrackMail').timeBased().everyMinutes(1).create();
+
+  var store = getStore_();
+  Logger.log('응원 저장 폴더: ' + store.folder.getUrl());
+  Logger.log('응원 기록 시트: ' + store.sheet.getParent().getUrl());
+
   checkLiveTrackMail();
   Logger.log('설정 완료 — 1분마다 메일 확인. 이제 웹앱으로 배포하세요.');
 }
@@ -210,8 +723,29 @@ function testCheck() {
   Logger.log(JSON.stringify(s, null, 2));
 }
 
+/** 가민 API 연결 점검 (편집기에서 실행) */
+function testGarmin() {
+  Logger.log(JSON.stringify(probeGarmin_(), null, 2));
+}
+
 function formatKst(iso) {
   var t = Date.parse(iso);
   if (!t) return '';
   return Utilities.formatDate(new Date(t), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
+}
+
+/* ============================================================
+ * 7. JSON 출력 (CORS + JSONP)
+ * ============================================================ */
+function jsonOut(obj, callback) {
+  var json = JSON.stringify(obj);
+  var cb = callback;
+  if (cb && /^[A-Za-z_$][A-Za-z0-9_$.]{0,60}$/.test(cb)) {
+    return ContentService
+      .createTextOutput(cb + '(' + json + ');')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService
+    .createTextOutput(json)
+    .setMimeType(ContentService.MimeType.JSON);
 }

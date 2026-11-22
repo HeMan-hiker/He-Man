@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0f1512">
 <meta name="robots" content="noindex, nofollow">
 <title>LiveTrack · 히맨_He-Man</title>
-<meta name="description" content="히맨의 가민 LiveTrack 고정 링크. 라이브 세션이 시작되면 자동으로 연결됩니다.">
+<meta name="description" content="히맨의 가민 LiveTrack 실시간 위치와 응원 메시지. 음성·텍스트 응원이 시계로 바로 전달되고 영구 저장됩니다.">
 <style>
 :root{
   --bg:#0f1512; --bg2:#151d18; --panel:#18211c; --line:#2a3a31;
@@ -30,10 +30,10 @@ body{
   -webkit-tap-highlight-color:transparent;
 }
 .wrap{
-  max-width:520px;margin:0 auto;padding:18px 18px calc(22px + env(safe-area-inset-bottom));
-  min-height:100dvh;display:flex;flex-direction:column;gap:18px;
+  max-width:520px;margin:0 auto;padding:18px 16px calc(26px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:14px;
 }
-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 2px 4px}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
 .mark{
   width:38px;height:38px;flex:0 0 38px;border-radius:11px;
@@ -48,20 +48,17 @@ header a{
   color:var(--muted);text-decoration:none;font-size:12px;font-weight:650;
   border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:rgba(255,255,255,.02);
 }
-header a:active{background:rgba(255,255,255,.06)}
 
 .card{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
   background:linear-gradient(180deg,rgba(24,33,28,.96),rgba(20,28,24,.98));
   border:1px solid var(--line);border-radius:var(--radius);
-  padding:30px 22px 26px;gap:14px;position:relative;overflow:hidden;
+  padding:18px 16px;position:relative;overflow:hidden;
   box-shadow:0 24px 60px -40px #000, inset 0 1px 0 rgba(255,255,255,.03);
-  min-height:340px;
 }
-.card::before{
+.card.hero{padding:22px 18px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+.card.hero::before{
   content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(320px 160px at 50% 0%, rgba(123,216,143,.14), transparent 70%);
-  opacity:.9;
 }
 .pill{
   display:inline-flex;align-items:center;gap:8px;
@@ -78,50 +75,103 @@ header a:active{background:rgba(255,255,255,.06)}
   70%{box-shadow:0 0 0 8px rgba(123,216,143,0)}
   100%{box-shadow:0 0 0 0 rgba(123,216,143,0)}
 }
-h1{
-  font-size:clamp(21px,5.6vw,26px);line-height:1.28;letter-spacing:-.02em;
-  margin:0;font-weight:750;position:relative;z-index:1;
+h1{font-size:clamp(20px,5.4vw,25px);line-height:1.3;letter-spacing:-.02em;margin:0;font-weight:750;position:relative;z-index:1}
+.desc{color:var(--muted);font-size:13.5px;margin:0;max-width:36ch;position:relative;z-index:1}
+h2{font-size:15px;margin:0 0 2px;font-weight:750;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+h2 .count{
+  font-size:11px;font-weight:700;color:var(--dim);border:1px solid var(--line);
+  border-radius:999px;padding:2px 8px;letter-spacing:.04em;
 }
-.desc{color:var(--muted);font-size:13.5px;margin:0;max-width:34ch;position:relative;z-index:1}
+.sub{font-size:12px;color:var(--dim);margin:0}
 .meta{
   font-size:12px;color:var(--dim);position:relative;z-index:1;
   display:flex;flex-direction:column;gap:3px;align-items:center;
   border-top:1px solid rgba(255,255,255,.05);padding-top:12px;width:100%;margin-top:2px;
 }
 .meta b{color:var(--muted);font-weight:650;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.count{
-  position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;padding:2px 0 2px;
-}
-.count em{
-  font-style:normal;font-size:58px;line-height:1;font-weight:800;color:var(--trail);
-  letter-spacing:-.04em;font-variant-numeric:tabular-nums;
-  text-shadow:0 0 34px rgba(123,216,143,.35);
-}
-.count small{font-size:11.5px;letter-spacing:.06em;color:var(--dim)}
-.bar{width:min(220px,100%);height:3px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
-.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--trail),#b9f0c4);transform-origin:left center}
-.actions{display:flex;flex-direction:column;gap:9px;width:100%;max-width:340px;position:relative;z-index:1;margin-top:2px}
+.actions{display:flex;flex-direction:column;gap:8px;width:100%;max-width:340px;position:relative;z-index:1}
 .btn{
   appearance:none;border:0;border-radius:12px;padding:14px 16px;font:inherit;font-weight:750;font-size:15px;
   cursor:pointer;min-height:50px;display:flex;align-items:center;justify-content:center;gap:8px;
   transition:transform .12s ease,filter .12s ease;
 }
 .btn:active{transform:scale(.985)}
+.btn:disabled{opacity:.5;cursor:default}
 .btn.primary{background:var(--trail);color:var(--trail-ink);box-shadow:0 12px 28px -14px rgba(123,216,143,.9)}
 .btn.primary:active{filter:brightness(.96)}
 .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-size:13px;min-height:44px;font-weight:650}
 .btn.ghost:active{background:rgba(255,255,255,.05)}
-.hint{font-size:11.5px;color:var(--dim);position:relative;z-index:1;min-height:16px}
+.btn.row{flex-direction:row}
+.hint{font-size:11.5px;color:var(--dim);position:relative;z-index:1;min-height:16px;text-align:center}
 .hint.err{color:var(--clay)}
-footer{
-  display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--dim);
-  border-top:1px solid var(--line);padding-top:14px;
+
+/* ── 응원 보내기 ─────────────────────────────── */
+.field{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.field label{font-size:11.5px;color:var(--dim);letter-spacing:.04em}
+input[type=text],textarea{
+  width:100%;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:11px;
+  color:var(--ink);font:inherit;font-size:15px;padding:12px 13px;outline:none;
 }
+input[type=text]:focus,textarea:focus{border-color:rgba(123,216,143,.55);background:rgba(123,216,143,.05)}
+textarea{resize:none;min-height:78px;line-height:1.45}
+.counter{font-size:11px;color:var(--dim);text-align:right}
+.tabs{display:flex;gap:6px;margin-top:14px;background:rgba(255,255,255,.03);padding:4px;border-radius:12px;border:1px solid var(--line)}
+.tab{
+  flex:1;appearance:none;border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:700;
+  padding:10px 6px;border-radius:9px;cursor:pointer;min-height:42px;
+}
+.tab[aria-selected=true]{background:rgba(123,216,143,.14);color:var(--trail);box-shadow:inset 0 0 0 1px rgba(123,216,143,.25)}
+.panel{margin-top:12px}
+
+.rec{
+  display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 12px;
+  border:1px dashed var(--line);border-radius:13px;background:rgba(255,255,255,.015);
+}
+.recbar{width:100%;height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.recbar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--trail),#b9f0c4);transition:width .2s linear}
+.rectime{font-variant-numeric:tabular-nums;font-weight:750;font-size:20px;letter-spacing:-.01em;color:var(--ink)}
+.rectime.live{color:var(--clay)}
+.recnote{font-size:11.5px;color:var(--dim);text-align:center;min-height:16px}
+.recbtn{
+  width:100%;appearance:none;border:0;border-radius:12px;min-height:52px;font:inherit;font-weight:750;font-size:15px;
+  background:rgba(224,122,95,.14);color:#f0b8a6;border:1px solid rgba(224,122,95,.35);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+}
+.recbtn.stop{background:rgba(123,216,143,.16);color:var(--trail);border-color:rgba(123,216,143,.4)}
+audio{width:100%;margin-top:10px;height:38px}
+.two{display:flex;gap:8px;margin-top:10px}
+.two .btn{flex:1;min-height:46px;font-size:14px}
+.sendrow{margin-top:14px}
+.result{
+  margin-top:12px;font-size:12.5px;line-height:1.5;border-radius:12px;padding:11px 12px;
+  border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--muted);
+}
+.result.ok{border-color:rgba(123,216,143,.35);background:rgba(123,216,143,.08);color:#cdeed6}
+.result.warn{border-color:rgba(232,213,168,.3);background:rgba(232,213,168,.07);color:#f0e3c2}
+.result.err{border-color:rgba(224,122,95,.35);background:rgba(224,122,95,.08);color:#f2c2b3}
+.result b{color:var(--ink);font-weight:750}
+
+/* ── 아카이브 ─────────────────────────────── */
+.msgs{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+.msg{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:rgba(255,255,255,.02)}
+.msg.audio{border-color:rgba(142,202,230,.25);background:rgba(142,202,230,.05)}
+.msghead{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--dim);margin-bottom:5px;flex-wrap:wrap}
+.msghead b{color:var(--ink);font-size:12.5px;font-weight:750}
+.msghead .tag{border:1px solid rgba(142,202,230,.3);color:var(--sky);border-radius:99px;padding:1px 7px;font-size:10px;letter-spacing:.06em}
+.msgbody{font-size:14px;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+.msgfoot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px}
+.msgfoot .st{font-size:10.5px;color:var(--dim)}
+.play{
+  appearance:none;border:1px solid rgba(142,202,230,.35);background:rgba(142,202,230,.1);color:var(--sky);
+  border-radius:99px;padding:5px 11px;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer;min-height:30px;
+}
+.play[disabled]{opacity:.55}
+.empty{font-size:12.5px;color:var(--dim);text-align:center;padding:16px 8px;border:1px dashed var(--line);border-radius:12px;margin-top:12px}
+footer{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--dim);padding:4px 4px 0}
 footer a{color:var(--dim);text-decoration:none}
-footer a:active{color:var(--muted)}
 @media (prefers-reduced-motion:reduce){
   .pill.live .dot{animation:none}
-  .btn{transition:none}
+  .btn,.recbar i{transition:none}
 }
 </style>
 </head>
@@ -135,19 +185,66 @@ footer a:active{color:var(--muted)}
     <a href="../">아카이브</a>
   </header>
 
-  <main class="card">
+  <!-- 1) 라이브 상태 -->
+  <section class="card hero" id="statusCard">
     <span class="pill off" id="pill"><i class="dot"></i><span id="pillText">확인 중</span></span>
-    <h1 id="title">LiveTrack 링크 확인 중…</h1>
+    <h1 id="title">LiveTrack 확인 중…</h1>
     <p class="desc" id="desc">가민 라이브트랙 세션을 찾고 있습니다.</p>
-    <div class="count" id="count" hidden>
-      <em id="countNum">2</em>
-      <small>초 뒤 자동으로 이동합니다</small>
-      <div class="bar"><i id="barFill"></i></div>
-    </div>
     <div class="meta" id="meta" hidden></div>
     <div class="actions" id="actions"></div>
     <div class="hint" id="hint"></div>
-  </main>
+  </section>
+
+  <!-- 2) 응원 보내기 -->
+  <section class="card" id="cheerCard">
+    <h2>🎙️ 응원 메시지 보내기</h2>
+    <p class="sub" id="cheerSub">음성(최대 15초)이나 글로 응원을 남겨 주세요. 시계로 바로 전달되고 드라이브에 영구 저장됩니다.</p>
+
+    <div class="field">
+      <label for="fromName">보낸 사람 이름</label>
+      <input type="text" id="fromName" maxlength="60" placeholder="예: 김러너" autocomplete="nickname" enterkeyhint="done">
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tabAudio" aria-selected="true" aria-controls="panelAudio" type="button">🎙️ 음성 응원</button>
+      <button class="tab" role="tab" id="tabText" aria-selected="false" aria-controls="panelText" type="button">💬 텍스트 응원</button>
+    </div>
+
+    <div class="panel" id="panelAudio" role="tabpanel" aria-labelledby="tabAudio">
+      <div class="rec">
+        <div class="rectime" id="recTime">0:00 / 0:15</div>
+        <div class="recbar"><i id="recBar"></i></div>
+        <button class="recbtn" id="recBtn" type="button">● 눌러서 녹음 시작</button>
+        <div class="recnote" id="recNote">최대 15초 · 누르면 바로 녹음됩니다</div>
+        <audio id="recPreview" controls hidden></audio>
+      </div>
+      <div class="two" id="recActions" hidden>
+        <button class="btn ghost" id="recAgain" type="button">다시 녹음</button>
+        <button class="btn primary" id="recSend" type="button">음성 응원 보내기</button>
+      </div>
+    </div>
+
+    <div class="panel" id="panelText" role="tabpanel" aria-labelledby="tabText" hidden>
+      <div class="field" style="margin-top:0">
+        <label for="msgText">응원 메시지</label>
+        <textarea id="msgText" maxlength="200" placeholder="예: 마지막 10km 화이팅! 정상에서 만나요 🔥"></textarea>
+        <div class="counter"><span id="msgCount">0</span> / 200</div>
+      </div>
+      <div class="sendrow">
+        <button class="btn primary" id="textSend" type="button" style="width:100%">텍스트 응원 보내기</button>
+      </div>
+    </div>
+
+    <div class="result" id="result" hidden></div>
+  </section>
+
+  <!-- 3) 아카이브 -->
+  <section class="card" id="archiveCard">
+    <h2>📥 받은 응원 <span class="count" id="msgCountBadge" hidden>0</span></h2>
+    <p class="sub">레이스가 끝나도 여기에 그대로 남습니다.</p>
+    <div class="msgs" id="msgs"></div>
+    <div class="empty" id="msgsEmpty">아직 도착한 응원이 없습니다.</div>
+  </section>
 
   <footer>
     <span>고정 링크 · <a href="../garmin/">러닝 기록</a></span>
@@ -164,18 +261,17 @@ footer a:active{color:var(--muted)}
   "use strict";
 
   /* ── 설정 ───────────────────────────────────────────────
-     Apps Script 웹앱 URL을 여기에 붙여 넣으면 끝.
-     (또는 live/latest.json 의 "endpoint" 값에 넣어도 됩니다.)
-     비워두면 latest.json 만 읽어서 동작합니다.            */
+     Apps Script 웹앱 URL은 live/latest.json 의 "endpoint" 값을 씁니다.
+     (여기에 직접 넣어도 됩니다.)                          */
   var APPS_SCRIPT_URL = "";
 
-  var MAX_AGE_MS = 24 * 60 * 60 * 1000;   // 24시간 지난 세션은 자동 이동 안 함 (?maxage=72 로 조절)
-  var COUNTDOWN_SEC = 2;                  // 자동 이동까지 대기
-  var POLL_MS = 30000;                    // 세션 확인 주기
-
+  var MAX_AGE_MS = 24 * 60 * 60 * 1000;   // 24시간 (?maxage=72 로 조절)
+  var POLL_MS = 30000;
+  var MAX_REC_SEC = 15;
+  var MAX_TEXT = 200;
+  var GARMIN_TEXT_LIMIT = 50;             // 가민 시계 알림은 50자까지
   var ALLOWED_HOSTS = ["livetrack.garmin.com", "connect.garmin.com"];
 
-  // 장거리 레이스용: ?maxage=72 처럼 시간 단위로 늘릴 수 있음 (1~168시간)
   try {
     var _ma = parseFloat(new URLSearchParams(window.location.search).get("maxage"));
     if (isFinite(_ma) && _ma >= 1 && _ma <= 168) MAX_AGE_MS = _ma * 60 * 60 * 1000;
@@ -183,25 +279,26 @@ footer a:active{color:var(--muted)}
 
   var $ = function (id) { return document.getElementById(id); };
   var el = {
-    pill: $("pill"), pillText: $("pillText"),
-    title: $("title"), desc: $("desc"),
-    count: $("count"), countNum: $("countNum"), bar: $("barFill"),
-    meta: $("meta"), actions: $("actions"), hint: $("hint"), checked: $("checked")
+    pill: $("pill"), pillText: $("pillText"), title: $("title"), desc: $("desc"),
+    meta: $("meta"), actions: $("actions"), hint: $("hint"), checked: $("checked"),
+    cheerSub: $("cheerSub"), fromName: $("fromName"),
+    tabAudio: $("tabAudio"), tabText: $("tabText"),
+    panelAudio: $("panelAudio"), panelText: $("panelText"),
+    recTime: $("recTime"), recBar: $("recBar"), recBtn: $("recBtn"), recNote: $("recNote"),
+    recPreview: $("recPreview"), recActions: $("recActions"), recAgain: $("recAgain"), recSend: $("recSend"),
+    msgText: $("msgText"), msgCount: $("msgCount"), textSend: $("textSend"),
+    result: $("result"), msgs: $("msgs"), msgsEmpty: $("msgsEmpty"), msgCountBadge: $("msgCountBadge")
   };
 
   var endpoint = "";
-  var payload = null;      // { url, updatedAt, subject }
+  var gateKey = "";
+  var payload = null;        // latest.json 원본
+  var state = { url: "", updatedAt: "", subject: "", session: null, messages: [] };
   var phase = "loading";
-  var pollTimer = null, cdTimer = null;
-  var autoOn = true;       // 사용자가 자동 이동을 끌 수 있게
-  var target = "";
   var busy = false;
-  var gateKey = "";   // latest.json 에 "key" 를 넣으면 ?k= 값이 맞을 때만 연결 (초대 전용)
+  var audioEnabled = true;   // 기기가 음성을 지원하는지 (모르면 true)
 
-  // ?auto=0 → 자동 이동 없이 버튼만 보여줌
-  try {
-    if (new URLSearchParams(window.location.search).get("auto") === "0") autoOn = false;
-  } catch (e) {}
+  var player = { audio: null, playingId: "", cache: {} };
 
   /* ── 유틸 ─────────────────────────────────────────────── */
   function esc(s) {
@@ -209,31 +306,9 @@ footer a:active{color:var(--muted)}
       return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
     });
   }
-
   function bust(url) {
     return url + (url.indexOf("?") === -1 ? "?" : "&") + "_=" + Date.now();
   }
-
-  function isLiveTrackUrl(u) {
-    if (!u || !/^https:\/\//i.test(u)) return false;
-    var host, path;
-    try {
-      var p = new URL(u);
-      host = p.hostname.toLowerCase();
-      path = p.pathname.toLowerCase();
-    } catch (e) { return false; }
-    if (ALLOWED_HOSTS.indexOf(host) === -1) return false;
-    if (host === "connect.garmin.com") return path.indexOf("livetrack") !== -1;
-    return path.length > 1;
-  }
-
-  function cleanUrl(u) {
-    if (typeof u !== "string") return "";
-    u = u.trim().replace(/&amp;/g, "&");
-    u = u.replace(/[)\].,;!]+$/, "");
-    return u;
-  }
-
   function ts(iso) {
     if (!iso) return NaN;
     var t = Date.parse(iso);
@@ -241,7 +316,21 @@ footer a:active{color:var(--muted)}
     var n = Number(iso);
     return isFinite(n) ? (n < 1e12 ? n * 1000 : n) : NaN;
   }
-
+  function isLiveTrackUrl(u) {
+    if (!u || !/^https:\/\//i.test(u)) return false;
+    var host, path;
+    try { var p = new URL(u); host = p.hostname.toLowerCase(); path = p.pathname.toLowerCase(); }
+    catch (e) { return false; }
+    if (ALLOWED_HOSTS.indexOf(host) === -1) return false;
+    if (host === "connect.garmin.com") return path.indexOf("livetrack") !== -1;
+    return path.length > 1;
+  }
+  function cleanUrl(u) {
+    if (typeof u !== "string") return "";
+    u = u.trim().replace(/&amp;/g, "&");
+    u = u.replace(/[)\].,;!]+$/, "");
+    return u;
+  }
   function relTime(t) {
     if (isNaN(t)) return "";
     var d = Date.now() - t;
@@ -253,58 +342,41 @@ footer a:active{color:var(--muted)}
     if (h < 24) return h + "시간 전";
     return Math.floor(h / 24) + "일 전";
   }
-
   function clock() {
     try {
-      return new Date().toLocaleTimeString("ko-KR", {
-        hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "Asia/Seoul"
-      });
+      return new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "Asia/Seoul" });
     } catch (e) { return ""; }
   }
-
-  function normalize(d) {
-    if (!d || typeof d !== "object") return null;
-    var url = cleanUrl(d.url);
-    if (url && !isLiveTrackUrl(url)) url = "";   // 이상한 주소로는 절대 이동하지 않음
-    return {
-      url: url,
-      updatedAt: typeof d.updatedAt === "string" ? d.updatedAt : (d.updatedAt ? String(d.updatedAt) : ""),
-      subject: typeof d.subject === "string" ? d.subject : ""
-    };
+  function clockFor(t, withDate) {
+    if (isNaN(t)) return "";
+    try {
+      return new Date(t).toLocaleString("ko-KR", withDate
+        ? { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Seoul" }
+        : { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Seoul" });
+    } catch (e) { return ""; }
   }
-
-  function better(a, b) {
-    if (!a) return b;
-    if (!b) return a;
-    var ta = ts(a.updatedAt), tb = ts(b.updatedAt);
-    if (a.url && !b.url) return a;
-    if (b.url && !a.url) return b;
-    if (isNaN(ta)) return b.url ? b : a;
-    if (isNaN(tb)) return a;
-    return tb >= ta ? b : a;
+  function secFmt(s) {
+    s = Math.max(0, Math.floor(s));
+    return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
+  }
+  function randId() {
+    return "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
 
   /* ── 네트워크 ─────────────────────────────────────────── */
   function getJSON(url, ms) {
     if (typeof fetch !== "function") return Promise.reject(new Error("no fetch"));
     var ctrl = typeof AbortController === "function" ? new AbortController() : null;
-    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, ms || 12000) : null;
-    return fetch(bust(url), {
-      cache: "no-store", credentials: "omit", redirect: "follow",
-      signal: ctrl ? ctrl.signal : undefined
-    }).then(function (r) {
-      if (timer) clearTimeout(timer);
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.text();
-    }).then(function (txt) {
-      return JSON.parse(txt);
-    }).catch(function (e) {
-      if (timer) clearTimeout(timer);
-      throw e;
-    });
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, ms || 15000) : null;
+    return fetch(bust(url), { cache: "no-store", credentials: "omit", redirect: "follow", signal: ctrl ? ctrl.signal : undefined })
+      .then(function (r) {
+        if (timer) clearTimeout(timer);
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      })
+      .then(function (txt) { return JSON.parse(txt); })
+      .catch(function (e) { if (timer) clearTimeout(timer); throw e; });
   }
-
-  // CORS가 막힐 때를 위한 JSONP 보조 경로
   function getJSONP(url, ms) {
     return new Promise(function (resolve, reject) {
       var name = "ltcb_" + Math.random().toString(36).slice(2);
@@ -318,135 +390,127 @@ footer a:active{color:var(--muted)}
         if (s.parentNode) s.parentNode.removeChild(s);
         if (err) reject(err); else resolve(data);
       }
-      var timer = setTimeout(function () { finish(new Error("timeout")); }, ms || 12000);
+      var timer = setTimeout(function () { finish(new Error("timeout")); }, ms || 15000);
       window[name] = function (d) { finish(null, d || {}); };
       s.onerror = function () { finish(new Error("script error")); };
       s.src = bust(url + (url.indexOf("?") === -1 ? "?" : "&") + "callback=" + name);
       document.head.appendChild(s);
     });
   }
-
   function getEndpointJSON(url) {
-    return getJSON(url).catch(function (e1) {
-      return getJSONP(url).catch(function () { throw e1; });
+    return getJSON(url).catch(function (e1) { return getJSONP(url).catch(function () { throw e1; }); });
+  }
+
+  /** Apps Script doPost — text/plain 으로 보내 CORS preflight 를 피한다 */
+  function postCheer(body) {
+    if (!endpoint) return Promise.reject(new Error("no-endpoint"));
+    var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 60000) : null;
+    return fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(body),
+      redirect: "follow",
+      cache: "no-store",
+      credentials: "omit",
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) {
+      if (timer) clearTimeout(timer);
+      return r.text().then(function (txt) {
+        var data = null;
+        try { data = JSON.parse(txt); } catch (e) {}
+        if (!data) throw new Error("old-script");
+        return data;
+      });
+    }).catch(function (e) { if (timer) clearTimeout(timer); throw e; });
+  }
+
+  /** 응답을 못 읽어도 서버에는 닿았을 수 있으니 한 번만 더(중복 방지 키 포함) 보낸다 */
+  function postCheerNoCors(body) {
+    if (typeof fetch !== "function") return Promise.reject(new Error("no fetch"));
+    return fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(body),
+      cache: "no-store",
+      credentials: "omit"
     });
   }
 
-  /* ── 화면 ─────────────────────────────────────────────── */
+  /* ── 라이브 상태 ─────────────────────────────────────── */
   function setPill(kind, text) {
     el.pill.className = "pill " + kind;
     el.pillText.textContent = text;
   }
-
   function clearActions() {
     while (el.actions.firstChild) el.actions.removeChild(el.actions.firstChild);
   }
-
-  function button(label, kind, onClick) {
+  function button(label, kind, onClick, after) {
     var b = document.createElement("button");
     b.type = "button";
     b.className = "btn " + kind;
     b.textContent = label;
     b.addEventListener("click", onClick);
     el.actions.appendChild(b);
+    if (after) el.actions.appendChild(after);
     return b;
   }
-
-  function stopCountdown() {
-    if (cdTimer) { clearInterval(cdTimer); cdTimer = null; }
-    el.count.hidden = true;
-    el.bar.style.transition = "none";
-    el.bar.style.transform = "scaleX(0)";
+  function linkButton(label, kind, href) {
+    var a = document.createElement("a");
+    a.className = "btn " + kind;
+    a.textContent = label;
+    a.href = href;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.style.textDecoration = "none";
+    el.actions.appendChild(a);
+    return a;
   }
 
-  function go() {
-    if (!isLiveTrackUrl(target)) return;
-    stopCountdown();
-    window.location.replace(target);
+  function openLive() {
+    if (!isLiveTrackUrl(state.url)) return;
+    window.open(state.url, "_blank", "noopener");
   }
 
-  function startCountdown() {
-    var left = COUNTDOWN_SEC;
-    el.count.hidden = false;
-    el.countNum.textContent = String(left);
-    el.bar.style.transition = "none";
-    el.bar.style.transform = "scaleX(1)";
-    // 강제 리플로우 후 애니메이션
-    void el.bar.offsetWidth;
-    el.bar.style.transition = "transform " + COUNTDOWN_SEC + "s linear";
-    el.bar.style.transform = "scaleX(0)";
+  function renderStatus() {
+    var now = Date.now();
+    var s = state.session || null;
+    var live = false;
+    var startT = NaN, endT = NaN;
+
+    if (s && s.id) {
+      startT = ts(s.start);
+      endT = ts(s.end);
+      if (s.active === true) live = true;
+      else if (s.active === false) live = false;
+      else live = !isNaN(endT) ? endT > now : (!isNaN(startT) && now - startT < MAX_AGE_MS);
+    } else if (isLiveTrackUrl(state.url)) {
+      var t = ts(state.updatedAt);
+      live = !isNaN(t) && now - t < MAX_AGE_MS;
+      startT = t;
+    }
 
     clearActions();
-    button("지금 바로 이동", "primary", go);
-    button("자동 이동 취소", "ghost", function () {
-      autoOn = false;
-      stopCountdown();
-      render();
-    });
-
-    cdTimer = setInterval(function () {
-      left -= 1;
-      el.countNum.textContent = left > 0 ? String(left) : "0";
-      if (left <= 0) {
-        clearInterval(cdTimer); cdTimer = null;
-        go();
-      }
-    }, 1000);
-  }
-
-  function showMeta() {
-    if (!payload || (!payload.subject && !payload.updatedAt)) {
-      el.meta.hidden = true;
-      el.meta.innerHTML = "";
-      return;
-    }
-    var t = ts(payload.updatedAt);
-    var bits = [];
-    if (payload.subject) bits.push("<b>" + esc(payload.subject) + "</b>");
-    if (!isNaN(t)) {
-      var when = relTime(t);
-      if (when) bits.push("<span>" + esc(when) + " 시작 · " + esc(clockFor(t)) + "</span>");
-    }
-    el.meta.innerHTML = bits.join("");
-    el.meta.hidden = bits.length === 0;
-  }
-
-  function clockFor(t) {
-    try {
-      return new Date(t).toLocaleString("ko-KR", {
-        month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Seoul"
-      });
-    } catch (e) { return ""; }
-  }
-
-  function render() {
-    var url = payload && payload.url ? payload.url : "";
-    var t = payload ? ts(payload.updatedAt) : NaN;
-    var fresh = url && !isNaN(t) && (Date.now() - t) <= MAX_AGE_MS;
-    var maxH = Math.round(MAX_AGE_MS / 3600000);
-
-    clearActions();
-    stopCountdown();
     el.hint.className = "hint";
     el.hint.textContent = "";
+    el.meta.innerHTML = "";
+    el.meta.hidden = true;
 
     if (phase === "error") {
       setPill("warn", "연결 오류");
       el.title.textContent = "링크를 확인할 수 없습니다";
-      el.desc.textContent = "잠시 후 다시 시도해 주세요. 계속 안 되면 이 페이지 주소를 그대로 열어 두면 됩니다.";
+      el.desc.textContent = "잠시 후 다시 시도해 주세요. 응원 메시지는 그대로 보낼 수 있습니다.";
       button("다시 확인", "primary", function () { load(); });
-      el.hint.textContent = "자동 확인 중 · 30초마다";
       return;
     }
-
     if (phase === "loading") {
       setPill("off", "확인 중");
-      el.title.textContent = "LiveTrack 링크 확인 중…";
+      el.title.textContent = "LiveTrack 확인 중…";
       el.desc.textContent = "가민 라이브트랙 세션을 찾고 있습니다.";
       return;
     }
 
-    // 초대 전용 키가 걸려 있으면 주소의 ?k= 가 맞을 때만 진행
     if (gateKey) {
       var given = "";
       try { given = new URLSearchParams(window.location.search).get("k") || ""; } catch (e) {}
@@ -454,50 +518,190 @@ footer a:active{color:var(--muted)}
         setPill("warn", "초대 전용");
         el.title.textContent = "초대 링크가 필요합니다";
         el.desc.textContent = "히맨에게 받은 링크 그대로 열어 주세요. 주소 끝에 ?k=… 가 붙어 있어야 합니다.";
-        el.meta.hidden = true;
         el.hint.textContent = "";
         return;
       }
     }
 
-    if (url && fresh) {
-      target = url;
-      setPill("live", "LIVE");
-      el.title.textContent = "지금 라이브 세션이 진행 중입니다";
-      el.desc.textContent = "가민 LiveTrack으로 바로 연결합니다.";
-      showMeta();
-      if (autoOn) {
-        startCountdown();
-      } else {
-        el.count.hidden = true;
-        button("LiveTrack 열기", "primary", go);
-        button("자동 이동 다시 켜기", "ghost", function () {
-          autoOn = true; render();
-        });
-      }
-      el.hint.textContent = "자동 확인 중 · 30초마다";
+    if (live && isLiveTrackUrl(state.url)) {
+      setPill("live", "LIVE · 진행 중");
+      el.title.textContent = (s && s.name) ? s.name : "지금 라이브 세션이 진행 중입니다";
+      el.desc.textContent = "실시간 위치를 보고, 아래에서 응원을 보내면 시계로 바로 전달됩니다.";
+      var bits = [];
+      if (!isNaN(startT)) bits.push("<b>" + esc(clockFor(startT, true)) + " 시작</b>");
+      if (!isNaN(endT)) bits.push("<span>예상 종료 " + esc(clockFor(endT, true)) + "</span>");
+      if (s && s.caps) bits.push("<span>시계 음성 응원 " + (s.audio ? "가능" : "불가") + "</span>");
+      if (bits.length) { el.meta.innerHTML = bits.join(""); el.meta.hidden = false; }
+
+      var main = document.createElement("button");
+      main.type = "button";
+      main.className = "btn primary";
+      main.textContent = "실시간 위치 보기 (Garmin LiveTrack)";
+      main.addEventListener("click", openLive);
+      el.actions.appendChild(main);
+
+      var copy = document.createElement("button");
+      copy.type = "button";
+      copy.className = "btn ghost";
+      copy.textContent = "관전자에게 이 페이지 링크 복사";
+      copy.addEventListener("click", function () { copyLink(copy); });
+      el.actions.appendChild(copy);
+
+      el.hint.textContent = "30초마다 자동 확인";
       return;
     }
 
-    if (url && !fresh) {
-      target = url;
+    if (isLiveTrackUrl(state.url) && !isNaN(startT)) {
       setPill("warn", "지난 세션");
-      el.title.textContent = "마지막 세션이 " + maxH + "시간 넘었습니다";
-      el.desc.textContent = "새 세션이 시작되면 자동으로 연결됩니다. 지난 기록을 보려면 아래 버튼을 누르세요.";
-      showMeta();
-      button("지난 세션 열기", "primary", go);
+      el.title.textContent = "지난 세션 (" + relTime(startT) + " 시작)";
+      el.desc.textContent = "새 세션이 시작되면 자동으로 라이브로 바뀝니다. 지난 기록은 가민에서 볼 수 있습니다.";
+      el.meta.innerHTML = "<b>" + esc(clockFor(startT, true)) + "</b>" + (isNaN(endT) ? "" : "<span>종료 " + esc(clockFor(endT, true)) + "</span>");
+      el.meta.hidden = false;
+      linkButton("지난 세션 열기", "ghost", state.url);
       button("지금 새로 확인", "ghost", function () { load(); });
       el.hint.textContent = "지난 링크는 이미 종료됐을 수 있습니다.";
       return;
     }
 
-    // 진행 중인 세션 없음
     setPill("off", "대기 중");
     el.title.textContent = "아직 진행 중인 LiveTrack이 없습니다";
-    el.desc.textContent = "라이브 세션이 시작되면 이 페이지가 자동으로 연결합니다. 이 화면을 열어 두면 30초마다 다시 확인합니다.";
-    showMeta();
+    el.desc.textContent = "라이브가 시작되면 이 페이지가 자동으로 연결됩니다. 응원 메시지는 지금 미리 남겨도 저장됩니다.";
     button("지금 새로 확인", "primary", function () { load(); });
-    el.hint.textContent = "자동 확인 중 · 30초마다";
+    el.hint.textContent = "30초마다 자동 확인";
+  }
+
+  function copyLink(btn) {
+    var url = window.location.origin + window.location.pathname;
+    var done = function () {
+      var old = btn.textContent;
+      btn.textContent = "링크 복사됨 ✓";
+      setTimeout(function () { btn.textContent = old; }, 1800);
+    };
+    if (navigator.share) {
+      navigator.share({ title: "히맨 LiveTrack 응원", url: url }).then(done).catch(function () {
+        if (navigator.clipboard) navigator.clipboard.writeText(url).then(done);
+      });
+      return;
+    }
+    if (navigator.clipboard) { navigator.clipboard.writeText(url).then(done); return; }
+    window.prompt("이 링크를 복사해 주세요", url);
+  }
+
+  /* ── 아카이브 ─────────────────────────────────────────── */
+  function renderMessages() {
+    var list = state.messages || [];
+    el.msgs.innerHTML = "";
+    el.msgCountBadge.textContent = String(list.length);
+    el.msgCountBadge.hidden = list.length === 0;
+    el.msgsEmpty.hidden = list.length !== 0;
+
+    list.forEach(function (m) {
+      var isAudio = m.type === "audio";
+      var row = document.createElement("div");
+      row.className = "msg" + (isAudio ? " audio" : "");
+
+      var head = document.createElement("div");
+      head.className = "msghead";
+      head.innerHTML = "<b>" + esc(m.from || "익명") + "</b>" +
+        (isAudio ? '<span class="tag">음성</span>' : "") +
+        "<span>" + esc(humanTime(m.timeKst)) + "</span>";
+      row.appendChild(head);
+
+      var body = document.createElement("div");
+      body.className = "msgbody";
+      body.textContent = isAudio ? (m.content || "🎙️ 음성 응원") : (m.content || "");
+      row.appendChild(body);
+
+      var foot = document.createElement("div");
+      foot.className = "msgfoot";
+      var st = document.createElement("span");
+      st.className = "st";
+      st.textContent = m.garmin || "";
+      foot.appendChild(st);
+
+      if (isAudio && (m.audioFileId || m.audioUrl)) {
+        var b = document.createElement("button");
+        b.className = "play";
+        b.type = "button";
+        b.textContent = "▶ 듣기";
+        b.addEventListener("click", function () { playAudio(m, b); });
+        foot.appendChild(b);
+      } else if (isAudio && m.audioUrl) {
+        var a = document.createElement("a");
+        a.className = "play";
+        a.textContent = "드라이브";
+        a.href = m.audioUrl;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.style.textDecoration = "none";
+        foot.appendChild(a);
+      }
+      row.appendChild(foot);
+      el.msgs.appendChild(row);
+    });
+  }
+
+  function humanTime(kst) {
+    if (!kst) return "";
+    var t = Date.parse(kst.replace(" ", "T") + "+09:00");
+    if (isNaN(t)) return kst;
+    var r = relTime(t);
+    return r || kst;
+  }
+
+  function playAudio(m, btn) {
+    if (!endpoint) return;
+    if (player.playingId === m.audioFileId && player.audio) {
+      player.audio.pause();
+      player.audio = null;
+      player.playingId = "";
+      btn.textContent = "▶ 듣기";
+      return;
+    }
+    if (player.audio) { try { player.audio.pause(); } catch (e) {} player.audio = null; }
+    player.playingId = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".play"), function (x) { x.textContent = "▶ 듣기"; });
+
+    var cached = player.cache[m.audioFileId];
+    function start(b64, mime) {
+      try {
+        var bin = atob(b64);
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        var blob = new Blob([bytes], { type: mime || "audio/webm" });
+        var url = URL.createObjectURL(blob);
+        var au = new Audio(url);
+        player.audio = au;
+        player.playingId = m.audioFileId;
+        btn.textContent = "■ 정지";
+        au.addEventListener("ended", function () {
+          btn.textContent = "▶ 듣기";
+          player.playingId = "";
+          URL.revokeObjectURL(url);
+        });
+        au.play().catch(function () { btn.textContent = "▶ 듣기"; });
+      } catch (e) {
+        btn.textContent = "▶ 듣기";
+        if (m.audioUrl) window.open(m.audioUrl, "_blank", "noopener");
+      }
+    }
+
+    if (cached) { start(cached.base64, cached.mimeType); return; }
+
+    btn.textContent = "…";
+    btn.disabled = true;
+    getEndpointJSON(endpoint + (endpoint.indexOf("?") === -1 ? "?" : "&") + "audio=" + encodeURIComponent(m.audioFileId))
+      .then(function (d) {
+        btn.disabled = false;
+        if (!d || !d.ok) throw new Error("load fail");
+        player.cache[m.audioFileId] = { base64: d.base64, mimeType: d.mimeType };
+        start(d.base64, d.mimeType);
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = "▶ 듣기";
+        if (m.audioUrl) window.open(m.audioUrl, "_blank", "noopener");
+      });
   }
 
   /* ── 로드 ─────────────────────────────────────────────── */
@@ -508,55 +712,453 @@ footer a:active{color:var(--muted)}
   function load(silent) {
     if (busy) return Promise.resolve();
     busy = true;
-    if (!silent) { phase = "loading"; render(); }
+    if (!silent) { phase = "loading"; renderStatus(); }
 
     var dm = document.documentElement.dataset;
-    var qparam = "";
-    try { qparam = (new URLSearchParams(window.location.search).get("endpoint") || "").trim(); }
-    catch (e) { qparam = ""; }
-
     return readLocal().then(function (raw) {
-      var local = normalize(raw);
+      payload = raw || null;
       gateKey = raw && typeof raw.key === "string" ? raw.key.trim() : "";
+      var local = {
+        url: raw && typeof raw.url === "string" ? cleanUrl(raw.url) : "",
+        updatedAt: raw && typeof raw.updatedAt === "string" ? raw.updatedAt : "",
+        subject: raw && typeof raw.subject === "string" ? raw.subject : ""
+      };
+      if (local.url && !isLiveTrackUrl(local.url)) local.url = "";
       var rawEp = raw && typeof raw.endpoint === "string" ? raw.endpoint.trim() : "";
-      var eps = qparam || APPS_SCRIPT_URL || rawEp || dm.endpoint || "";
-      endpoint = eps;
+      var qp = "";
+      try { qp = (new URLSearchParams(window.location.search).get("endpoint") || "").trim(); } catch (e) {}
+      endpoint = qp || APPS_SCRIPT_URL || rawEp || dm.endpoint || "";
+
       if (!endpoint) return { local: local, remote: null };
 
-      return getEndpointJSON(endpoint).then(normalize).then(function (remote) {
+      return getEndpointJSON(endpoint).then(function (remote) {
         return { local: local, remote: remote };
       }).catch(function () {
         return { local: local, remote: null };
       });
     }).then(function (res) {
-      payload = better(res.local, res.remote);
+      var local = res.local, remote = res.remote;
+      var url = local.url;
+      var updatedAt = local.updatedAt;
+      var subject = local.subject;
+
+      if (remote) {
+        var ru = cleanUrl(remote.url || "");
+        if (ru && isLiveTrackUrl(ru)) {
+          var rt = ts(remote.updatedAt), lt = ts(updatedAt);
+          if (!url || isNaN(lt) || (!isNaN(rt) && rt >= lt)) { url = ru; updatedAt = remote.updatedAt || updatedAt; subject = remote.subject || subject; }
+        }
+        state.session = remote.session && remote.session.id ? remote.session : null;
+        state.messages = Array.isArray(remote.messages) ? remote.messages : [];
+        if (state.session && typeof state.session.audio === "boolean" && state.session.caps) {
+          audioEnabled = state.session.audio !== false;
+        }
+      } else {
+        state.session = null;
+        state.messages = state.messages || [];
+      }
+
+      state.url = url;
+      state.updatedAt = updatedAt;
+      state.subject = subject;
       phase = "ready";
       busy = false;
       el.checked.textContent = clock() ? clock() + " 확인" : "";
-      render();
+      renderStatus();
+      renderMessages();
+      updateCheerHint();
     }).catch(function () {
       busy = false;
       phase = payload ? "ready" : "error";
-      render();
+      renderStatus();
     });
   }
 
+  function updateCheerHint() {
+    var s = state.session;
+    if (s && s.id && s.active) {
+      if (s.caps && !s.audio) {
+        el.cheerSub.textContent = "이 기기는 음성 응원을 지원하지 않습니다. 텍스트 응원을 남겨 주세요. (둘 다 드라이브에 저장됩니다)";
+        el.recBtn.disabled = true;
+        el.recNote.textContent = "음성 응원은 이 시계에서 재생되지 않습니다";
+      } else {
+        el.cheerSub.textContent = "음성(최대 15초)이나 글로 응원을 남겨 주세요. 시계로 바로 전달되고 드라이브에 영구 저장됩니다.";
+        el.recBtn.disabled = false;
+      }
+    } else {
+      el.cheerSub.textContent = "지금은 라이브가 아니어도 괜찮아요. 남긴 응원은 드라이브에 저장되고, 라이브 중에 보낸 것은 시계로도 전달됩니다.";
+    }
+  }
+
   function startPolling() {
-    if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(function () {
+    setInterval(function () {
       if (document.hidden) return;
       if (phase === "loading") return;
-      if (payload && payload.url && ts(payload.updatedAt) && (Date.now() - ts(payload.updatedAt)) <= MAX_AGE_MS && autoOn) return;
       load(true);
     }, POLL_MS);
   }
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) load(true); });
 
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) load(true);
+  /* ── 탭 ───────────────────────────────────────────────── */
+  function selectTab(which) {
+    var audio = which === "audio";
+    el.tabAudio.setAttribute("aria-selected", audio ? "true" : "false");
+    el.tabText.setAttribute("aria-selected", audio ? "false" : "true");
+    el.panelAudio.hidden = !audio;
+    el.panelText.hidden = audio;
+    if (!audio) setTimeout(function () { el.msgText.focus(); }, 30);
+  }
+  el.tabAudio.addEventListener("click", function () { selectTab("audio"); });
+  el.tabText.addEventListener("click", function () { selectTab("text"); });
+
+  el.msgText.addEventListener("input", function () {
+    el.msgCount.textContent = String(el.msgText.value.length);
   });
 
-  render();
+  /* ── 녹음 ─────────────────────────────────────────────── */
+  var rec = null, recChunks = [], recStream = null, recTimer = null, recSecs = 0;
+  var recBlob = null, recUrl = "", recMime = "";
+  var recording = false;
+
+  function pickMime() {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return "";
+    var list = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
+    for (var i = 0; i < list.length; i++) {
+      try { if (MediaRecorder.isTypeSupported(list[i])) return list[i]; } catch (e) {}
+    }
+    return "";
+  }
+
+  function setRecUI(mode) {
+    recording = mode === "recording";
+    if (recording) {
+      el.recBtn.className = "recbtn stop";
+      el.recBtn.textContent = "■ 녹음 끝내기 (" + (MAX_REC_SEC - recSecs) + "초 남음)";
+      el.recTime.className = "rectime live";
+    } else {
+      el.recBtn.className = "recbtn";
+      el.recBtn.textContent = "● 눌러서 녹음 시작";
+      el.recTime.className = "rectime";
+    }
+  }
+
+  function stopTracks() {
+    if (recStream) {
+      try { recStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+      recStream = null;
+    }
+  }
+
+  function startRecording() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+      showResult("err", "이 브라우저에서는 녹음이 지원되지 않습니다. 텍스트 응원을 이용해 주세요.");
+      return;
+    }
+    clearRecPreview();
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      recStream = stream;
+      recChunks = [];
+      recMime = pickMime();
+      try {
+        rec = new MediaRecorder(stream, recMime ? { mimeType: recMime, audioBitsPerSecond: 32000 } : { audioBitsPerSecond: 32000 });
+      } catch (e) {
+        rec = new MediaRecorder(stream);
+      }
+      recMime = rec.mimeType || recMime || "audio/webm";
+
+      rec.ondataavailable = function (ev) { if (ev.data && ev.data.size > 0) recChunks.push(ev.data); };
+      rec.onstop = function () {
+        stopTracks();
+        clearInterval(recTimer);
+        recTimer = null;
+        setRecUI("idle");
+        if (!recChunks.length) { el.recNote.textContent = "녹음이 비어 있습니다. 다시 시도해 주세요."; return; }
+        recBlob = new Blob(recChunks, { type: recMime });
+        recUrl = URL.createObjectURL(recBlob);
+        el.recPreview.src = recUrl;
+        el.recPreview.hidden = false;
+        el.recActions.hidden = false;
+        el.recNote.textContent = "미리 들어 보세요. 괜찮으면 보내기!";
+        el.recTime.textContent = secFmt(recSecs) + " / " + secFmt(MAX_REC_SEC);
+      };
+
+      rec.start(250);
+      recSecs = 0;
+      el.recBar.style.width = "0%";
+      el.recTime.textContent = "0:00 / " + secFmt(MAX_REC_SEC);
+      el.recNote.textContent = "녹음 중… 최대 15초";
+      el.recActions.hidden = true;
+      setRecUI("recording");
+
+      recTimer = setInterval(function () {
+        recSecs += 1;
+        el.recTime.textContent = secFmt(recSecs) + " / " + secFmt(MAX_REC_SEC);
+        el.recBar.style.width = Math.min(100, (recSecs / MAX_REC_SEC) * 100) + "%";
+        if (recording) el.recBtn.textContent = "■ 녹음 끝내기 (" + Math.max(0, MAX_REC_SEC - recSecs) + "초 남음)";
+        if (recSecs >= MAX_REC_SEC) stopRecording();
+      }, 1000);
+    }).catch(function (err) {
+      stopTracks();
+      var msg = "마이크를 쓸 수 없습니다.";
+      try {
+        if (err && (err.name === "NotAllowedError" || err.name === "SecurityError")) msg = "마이크 권한이 거부되었습니다. 브라우저 설정에서 허용해 주세요.";
+        else if (err && err.name === "NotFoundError") msg = "마이크를 찾을 수 없습니다.";
+      } catch (e) {}
+      showResult("err", msg + " 텍스트 응원은 그대로 보낼 수 있습니다.");
+      setRecUI("idle");
+    });
+  }
+
+  function stopRecording() {
+    if (rec && rec.state !== "inactive") {
+      try { rec.stop(); } catch (e) {}
+    }
+    clearInterval(recTimer);
+    recTimer = null;
+  }
+
+  function clearRecPreview() {
+    if (recUrl) { URL.revokeObjectURL(recUrl); recUrl = ""; }
+    recBlob = null;
+    el.recPreview.hidden = true;
+    el.recPreview.removeAttribute("src");
+    el.recActions.hidden = true;
+    el.recBar.style.width = "0%";
+    el.recTime.textContent = "0:00 / " + secFmt(MAX_REC_SEC);
+    el.recNote.textContent = "최대 15초 · 누르면 바로 녹음됩니다";
+  }
+
+  el.recBtn.addEventListener("click", function () {
+    if (recording) stopRecording(); else startRecording();
+  });
+  el.recAgain.addEventListener("click", function () {
+    clearRecPreview();
+    setTimeout(startRecording, 120);
+  });
+
+  /* ── 보내기 ───────────────────────────────────────────── */
+  function nameValue() {
+    var v = (el.fromName.value || "").trim();
+    if (v) {
+      try { localStorage.setItem("lt_from", v); } catch (e) {}
+    }
+    return v;
+  }
+
+  function showResult(kind, html) {
+    el.result.className = "result " + (kind || "");
+    el.result.innerHTML = html;
+    el.result.hidden = false;
+  }
+
+  function resultHtml(d) {
+    var parts = [];
+    if (d.saved) parts.push("<b>드라이브 저장 완료</b>");
+    if (d.garminSent) parts.push("<b>시계로 전송됨</b>");
+    else if (d.garminStatus) parts.push("시계 전송: " + esc(d.garminStatus));
+    if (!parts.length) parts.push("전송 결과를 받지 못했습니다");
+    return parts.join(" · ");
+  }
+
+  function fileToBase64(blob) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () {
+        var s = String(fr.result || "");
+        var i = s.indexOf(",");
+        resolve(i >= 0 ? s.slice(i + 1) : "");
+      };
+      fr.onerror = function () { reject(new Error("read fail")); };
+      fr.readAsDataURL(blob);
+    });
+  }
+
+  function sendPayload(body, btn, okMessage) {
+    if (!endpoint) {
+      showResult("err", "아직 서버 주소가 연결되지 않았습니다. <b>히맨에게 알려 주세요.</b>");
+      return;
+    }
+    if (!body.from) {
+      showResult("err", "보낸 사람 이름을 먼저 적어 주세요.");
+      el.fromName.focus();
+      return;
+    }
+    btn.disabled = true;
+    var old = btn.textContent;
+    btn.textContent = "보내는 중…";
+    showResult("", "전송 중…");
+
+    postCheer(body).then(function (d) {
+      btn.disabled = false;
+      btn.textContent = old;
+      if (d && d.ok) {
+        showResult(d.garminSent ? "ok" : "warn", resultHtml(d));
+        load(true);
+        return;
+      }
+      showResult("err", "저장하지 못했습니다: " + esc((d && d.error) || "알 수 없는 오류"));
+    }).catch(function (err) {
+      // 응답을 못 읽었을 때: 서버에는 닿았을 수 있으므로 중복 방지 키를 그대로 두고 한 번만 더 보낸다
+      var isOld = err && err.message === "old-script";
+      if (isOld) {
+        btn.disabled = false;
+        btn.textContent = old;
+        showResult("err", "아직 <b>새 버전 스크립트</b>가 배포되지 않았습니다. 히맨이 스크립트를 붙여넣고 새 버전으로 배포하면 바로 동작합니다.");
+        return;
+      }
+      postCheerNoCors(body).then(function () {
+        btn.disabled = false;
+        btn.textContent = old;
+        showResult("warn", "전송했습니다. 응답 확인이 지연되어 <b>아래 목록</b>에서 확인해 주세요 (중복 전송은 자동으로 걸러집니다).");
+        setTimeout(function () { load(true); }, 4000);
+        setTimeout(function () { load(true); }, 12000);
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = old;
+        showResult("err", "전송에 실패했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.");
+      });
+    });
+  }
+
+  function sessionUrlForSend() {
+    return isLiveTrackUrl(state.url) ? state.url : "";
+  }
+
+  el.textSend.addEventListener("click", function () {
+    var from = nameValue();
+    var text = (el.msgText.value || "").trim();
+    if (!from) { showResult("err", "보낸 사람 이름을 먼저 적어 주세요."); el.fromName.focus(); return; }
+    if (!text) { showResult("err", "응원 메시지를 적어 주세요."); el.msgText.focus(); return; }
+    var body = {
+      from: from,
+      type: "text",
+      text: text.slice(0, MAX_TEXT),
+      sessionUrl: sessionUrlForSend(),
+      msgId: randId()
+    };
+    if (state.session && state.session.id) body.sessionId = state.session.id;
+    var btn = el.textSend;
+    var old = btn.textContent;
+    btn.textContent = "보내는 중…";
+    btn.disabled = true;
+    showResult("", "전송 중…");
+    postCheer(body).then(function (d) {
+      btn.disabled = false;
+      btn.textContent = old;
+      if (d && d.ok) {
+        el.msgText.value = "";
+        el.msgCount.textContent = "0";
+        var extra = (text.length > GARMIN_TEXT_LIMIT && d.garminSent)
+          ? " <span style=\"color:var(--dim)\">(시계에는 앞 " + GARMIN_TEXT_LIMIT + "자까지 전달)</span>" : "";
+        showResult(d.garminSent ? "ok" : "warn", resultHtml(d) + extra);
+        load(true);
+        return;
+      }
+      showResult("err", "저장하지 못했습니다: " + esc((d && d.error) || "알 수 없는 오류"));
+    }).catch(function (err) {
+      var isOld = err && err.message === "old-script";
+      if (isOld) {
+        btn.disabled = false; btn.textContent = old;
+        showResult("err", "아직 <b>새 버전 스크립트</b>가 배포되지 않았습니다. 히맨이 스크립트를 붙여넣고 새 버전으로 배포하면 바로 동작합니다.");
+        return;
+      }
+      postCheerNoCors(body).then(function () {
+        btn.disabled = false; btn.textContent = old;
+        el.msgText.value = ""; el.msgCount.textContent = "0";
+        showResult("warn", "전송했습니다. 응답 확인이 지연되어 <b>아래 목록</b>에서 확인해 주세요.");
+        setTimeout(function () { load(true); }, 4000);
+        setTimeout(function () { load(true); }, 12000);
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = old;
+        showResult("err", "전송에 실패했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.");
+      });
+    });
+  });
+
+  el.recSend.addEventListener("click", function () {
+    var from = nameValue();
+    if (!from) { showResult("err", "보낸 사람 이름을 먼저 적어 주세요."); el.fromName.focus(); return; }
+    if (!recBlob) { showResult("err", "먼저 음성을 녹음해 주세요."); return; }
+    if (recBlob.size > 3 * 1024 * 1024) { showResult("err", "녹음이 너무 큽니다. 짧게 다시 녹음해 주세요."); return; }
+    var btn = el.recSend;
+    var old = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "보내는 중…";
+    showResult("", "음성을 올리는 중…");
+
+    fileToBase64(recBlob).then(function (b64) {
+      var body = {
+        from: from,
+        type: "audio",
+        text: "",
+        audioBase64: b64,
+        mimeType: recMime || "audio/webm",
+        duration: recSecs,
+        sessionUrl: sessionUrlForSend(),
+        msgId: randId()
+      };
+      if (state.session && state.session.id) body.sessionId = state.session.id;
+      return postCheer(body).then(function (d) {
+        btn.disabled = false;
+        btn.textContent = old;
+        if (d && d.ok) {
+          clearRecPreview();
+          showResult(d.garminSent ? "ok" : "warn", resultHtml(d));
+          load(true);
+          return;
+        }
+        showResult("err", "저장하지 못했습니다: " + esc((d && d.error) || "알 수 없는 오류"));
+      }).catch(function (err) {
+        var isOld = err && err.message === "old-script";
+        if (isOld) {
+          btn.disabled = false; btn.textContent = old;
+          showResult("err", "아직 <b>새 버전 스크립트</b>가 배포되지 않았습니다. 히맨이 스크립트를 붙여넣고 새 버전으로 배포하면 바로 동작합니다.");
+          return;
+        }
+        return postCheerNoCors(body).then(function () {
+          btn.disabled = false; btn.textContent = old;
+          clearRecPreview();
+          showResult("warn", "전송했습니다. 응답 확인이 지연되어 <b>아래 목록</b>에서 확인해 주세요.");
+          setTimeout(function () { load(true); }, 4000);
+          setTimeout(function () { load(true); }, 12000);
+        }).catch(function () {
+          btn.disabled = false; btn.textContent = old;
+          showResult("err", "전송에 실패했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.");
+        });
+      });
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = old;
+      showResult("err", "음성 파일을 읽지 못했습니다. 다시 녹음해 주세요.");
+    });
+  });
+
+  /* ── 초기화 ───────────────────────────────────────────── */
+  try {
+    var saved = localStorage.getItem("lt_from");
+    if (saved) el.fromName.value = saved;
+  } catch (e) {}
+  el.fromName.addEventListener("blur", function () { nameValue(); });
+
+  renderStatus();
+  updateCheerHint();
   load();
+
+  // ?auto=1 이면 라이브일 때 곧바로 가민으로 이동 (기존 동작)
+  (function () {
+    var auto = false;
+    try { auto = new URLSearchParams(window.location.search).get("auto") === "1"; } catch (e) {}
+    if (!auto) return;
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries += 1;
+      var s = state.session;
+      if (s && s.id && s.active === true && isLiveTrackUrl(state.url)) {
+        clearInterval(iv);
+        setTimeout(openLive, 800);
+      } else if (tries > 10) clearInterval(iv);
+    }, 700);
+  })();
+
   startPolling();
 })();
 </script>
