@@ -152,6 +152,32 @@ audio{width:100%;margin-top:10px;height:38px}
 .result b{color:var(--ink);font-weight:750}
 
 /* ── 아카이브 ─────────────────────────────── */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{
+  appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);
+  font:inherit;font-size:11.5px;font-weight:700;line-height:1.2;border-radius:999px;padding:8px 11px;
+  cursor:pointer;min-height:34px;display:inline-flex;align-items:center;gap:7px;max-width:100%;
+  transition:background .12s ease,border-color .12s ease,color .12s ease;
+}
+.chip:active{transform:scale(.985)}
+.chip .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:11em}
+.chip .n{font-size:10.5px;font-weight:750;color:var(--dim);border-left:1px solid var(--line);padding-left:7px;flex:0 0 auto}
+.chip[aria-pressed="true"]{border-color:rgba(123,216,143,.55);background:rgba(123,216,143,.14);color:var(--trail)}
+.chip[aria-pressed="true"] .n{color:var(--trail);border-left-color:rgba(123,216,143,.3)}
+
+.groups{display:flex;flex-direction:column;gap:13px;margin-top:12px}
+.group{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.018);overflow:hidden}
+.grouphead{padding:12px 13px 11px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(123,216,143,.055),rgba(123,216,143,0))}
+.gtop{display:flex;align-items:center;gap:8px;min-width:0}
+.gdate{font-size:13.5px;font-weight:800;letter-spacing:-.015em;flex:0 0 auto}
+.gtitle{font-size:11.5px;color:var(--muted);flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.glink{flex:0 0 auto;font-size:10.5px;font-weight:700;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:3px 9px;background:rgba(255,255,255,.03)}
+.gmeta{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:7px;font-size:10.5px;color:var(--dim)}
+.gmeta .b{border:1px solid var(--line);border-radius:99px;padding:1px 7px;letter-spacing:.02em}
+.gmeta .b.a{border-color:rgba(142,202,230,.3);color:var(--sky)}
+.gmeta .b.t{border-color:rgba(123,216,143,.28);color:#9ee0ad}
+.gmeta .w{letter-spacing:.02em}
+.group .msgs{padding:10px 9px 11px;margin-top:0;gap:8px}
 .msgs{display:flex;flex-direction:column;gap:9px;margin-top:12px}
 .msg{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:rgba(255,255,255,.02)}
 .msg.audio{border-color:rgba(142,202,230,.25);background:rgba(142,202,230,.05)}
@@ -238,11 +264,12 @@ footer a{color:var(--dim);text-decoration:none}
     <div class="result" id="result" hidden></div>
   </section>
 
-  <!-- 3) 아카이브 -->
+  <!-- 3) 아카이브 — 활동(세션)별 -->
   <section class="card" id="archiveCard">
-    <h2>📥 받은 응원 <span class="count" id="msgCountBadge" hidden>0</span></h2>
-    <p class="sub">레이스가 끝나도 여기에 그대로 남습니다.</p>
-    <div class="msgs" id="msgs"></div>
+    <h2>📥 받은 응원 아카이브 <span class="count" id="msgCountBadge" hidden>0</span></h2>
+    <p class="sub" id="archiveSub">레이스가 끝나도 여기에 그대로 남습니다.</p>
+    <div class="chips" id="chips" role="group" aria-label="활동 선택" hidden></div>
+    <div class="groups" id="groups"></div>
     <div class="empty" id="msgsEmpty">아직 도착한 응원이 없습니다.</div>
   </section>
 
@@ -287,7 +314,8 @@ footer a{color:var(--dim);text-decoration:none}
     recTime: $("recTime"), recBar: $("recBar"), recBtn: $("recBtn"), recNote: $("recNote"),
     recPreview: $("recPreview"), recActions: $("recActions"), recAgain: $("recAgain"), recSend: $("recSend"),
     msgText: $("msgText"), msgCount: $("msgCount"), textSend: $("textSend"),
-    result: $("result"), msgs: $("msgs"), msgsEmpty: $("msgsEmpty"), msgCountBadge: $("msgCountBadge")
+    result: $("result"), groups: $("groups"), chips: $("chips"),
+    archiveSub: $("archiveSub"), msgsEmpty: $("msgsEmpty"), msgCountBadge: $("msgCountBadge")
   };
 
   var endpoint = "";
@@ -599,67 +627,316 @@ footer a{color:var(--dim);text-decoration:none}
     window.prompt("이 링크를 복사해 주세요", url);
   }
 
-  /* ── 아카이브 ─────────────────────────────────────────── */
-  function renderMessages() {
-    var list = state.messages || [];
-    el.msgs.innerHTML = "";
-    el.msgCountBadge.textContent = String(list.length);
-    el.msgCountBadge.hidden = list.length === 0;
-    el.msgsEmpty.hidden = list.length !== 0;
+  /* ── 아카이브 · 활동(세션)별 ───────────────────────────── */
+  var SESSION_RE = /livetrack\.garmin\.com\/session\/([0-9a-fA-F-]{36})/;
+  var archiveFilter = "all";
 
+  function sessionIdOf(u) {
+    var m = SESSION_RE.exec(String(u || ""));
+    return m ? m[1].toLowerCase() : "";
+  }
+  function kstDate(kst) {
+    var m = String(kst || "").replace("T", " ").match(/(\d{4})-(\d{2})-(\d{2})/);
+    return m ? m[1] + "-" + m[2] + "-" + m[3] : "";
+  }
+  function kstMs(kst) {
+    if (!kst) return NaN;
+    var s = String(kst).trim();
+    if (/Z$|[+-]\d{2}:?\d{2}$/.test(s)) return Date.parse(s);
+    var t = Date.parse(s.replace(" ", "T") + "+09:00");
+    return isNaN(t) ? ts(s) : t;
+  }
+  function fmtHm(t) {
+    if (!isFinite(t)) return "";
+    try {
+      return new Date(t).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Seoul" });
+    } catch (e) { return ""; }
+  }
+  /** "2026-11-22 20:32:45" → "20:32" (withDate 면 "11.22 20:32") */
+  function msgTime(kst, withDate) {
+    var t = kstMs(kst);
+    var hm = isFinite(t) ? fmtHm(t) : String(kst || "");
+    if (!withDate) return hm;
+    var d = kstDate(kst);
+    return d ? d.slice(5).replace("-", ".") + " " + hm : hm;
+  }
+  function dayInfo(dateStr) {
+    var m = String(dateStr || "").match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return { full: "", short: "", md: "" };
+    var t = kstMs(dateStr + " 12:00:00");
+    var dow = "";
+    try { dow = new Date(t).toLocaleDateString("ko-KR", { weekday: "short", timeZone: "Asia/Seoul" }); } catch (e) {}
+    var sameYear = String(new Date(t).getFullYear()) === String(new Date().getFullYear());
+    var md = m[2] + "." + m[3];
+    return {
+      full: m[1] + "." + m[2] + "." + m[3] + (dow ? " (" + dow + ")" : ""),
+      short: (sameYear ? "" : m[1].slice(2) + ".") + md,
+      md: md
+    };
+  }
+  /** "He-Man 님의 LiveTrack 보기" 같은 메일 제목에서 군더더기를 걷어낸다 */
+  function activityTitle(subject) {
+    var t = String(subject || "").replace(/\s+/g, " ").trim();
+    if (!t) return "";
+    t = t.replace(/^\[?LiveTrack\]?\s*[:·\-–]?\s*/i, "")
+         .replace(/\s*[-–|·]\s*LiveTrack.*$/i, "")
+         .replace(/\s*님의\s*/g, " ")
+         .replace(/LiveTrack\s*(보기|세션|링크|기록)?\s*$/i, "")
+         .replace(/\s*보기\s*$/i, "")
+         .replace(/^Re:\s*/i, "")
+         .replace(/[\s:·\-–,]+$/, "")
+         .trim();
+    return t.length >= 2 ? t : "";
+  }
+  /** 라이브 밖에서 보낸(시계로 못 간) 응원인가 */
+  function isPendingMsg(m) {
+    if (/세션 링크 없음/.test(String(m.garmin || ""))) return true;
+    if (!m.sessionUrl && !String(m.sessionSubject || "").trim()) return true;
+    return false;
+  }
+
+  /** 응원 목록 → 활동(세션) 묶음 (최근 활동이 앞) */
+  function buildActivities(list) {
+    var groups = [], bySid = {}, byKey = {};
+
+    function make(key, sid, url, title) {
+      return {
+        key: key, sid: sid || "", url: url || "", title: title || "",
+        days: {}, msgs: [], audio: 0, text: 0, latest: -Infinity, pending: false
+      };
+    }
+    function add(g, m) {
+      g.msgs.push(m);
+      if (m.type === "audio") g.audio++; else g.text++;
+      var d = kstDate(m.timeKst);
+      if (d) g.days[d] = true;
+      var t = kstMs(m.timeKst);
+      if (isFinite(t) && t > g.latest) g.latest = t;
+      if (!g.url && isLiveTrackUrl(m.sessionUrl)) g.url = m.sessionUrl;
+      if (!g.title) g.title = activityTitle(m.sessionSubject);
+    }
+
+    // (1) 세션 주소가 있는 응원 → 세션(활동)별
     list.forEach(function (m) {
-      var isAudio = m.type === "audio";
-      var row = document.createElement("div");
-      row.className = "msg" + (isAudio ? " audio" : "");
-
-      var head = document.createElement("div");
-      head.className = "msghead";
-      head.innerHTML = "<b>" + esc(m.from || "익명") + "</b>" +
-        (isAudio ? '<span class="tag">음성</span>' : "") +
-        "<span>" + esc(humanTime(m.timeKst)) + "</span>";
-      row.appendChild(head);
-
-      var body = document.createElement("div");
-      body.className = "msgbody";
-      body.textContent = isAudio ? (m.content || "🎙️ 음성 응원") : (m.content || "");
-      row.appendChild(body);
-
-      var foot = document.createElement("div");
-      foot.className = "msgfoot";
-      var st = document.createElement("span");
-      st.className = "st";
-      st.textContent = m.garmin || "";
-      foot.appendChild(st);
-
-      if (isAudio && (m.audioFileId || m.audioUrl)) {
-        var b = document.createElement("button");
-        b.className = "play";
-        b.type = "button";
-        b.textContent = "▶ 듣기";
-        b.addEventListener("click", function () { playAudio(m, b); });
-        foot.appendChild(b);
-      } else if (isAudio && m.audioUrl) {
-        var a = document.createElement("a");
-        a.className = "play";
-        a.textContent = "드라이브";
-        a.href = m.audioUrl;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.style.textDecoration = "none";
-        foot.appendChild(a);
+      if (isPendingMsg(m)) return;
+      var sid = sessionIdOf(m.sessionUrl);
+      if (!sid) return;
+      var g = bySid[sid];
+      if (!g) {
+        g = bySid[sid] = make("s:" + sid, sid, isLiveTrackUrl(m.sessionUrl) ? m.sessionUrl : "", activityTitle(m.sessionSubject));
+        groups.push(g);
       }
-      row.appendChild(foot);
-      el.msgs.appendChild(row);
+      add(g, m);
     });
+
+    // (2) 라이브 밖에서 남긴 응원 → '일반 응원'
+    list.forEach(function (m) {
+      if (!isPendingMsg(m)) return;
+      var g = byKey["!pending"];
+      if (!g) { g = byKey["!pending"] = make("!pending", "", "", ""); groups.push(g); }
+      g.pending = true;
+      add(g, m);
+    });
+
+    // (3) 세션 주소가 없는 옛 기록 → 같은 날·같은 제목의 세션에 붙이고, 아니면 날짜 묶음
+    list.forEach(function (m) {
+      if (isPendingMsg(m) || sessionIdOf(m.sessionUrl)) return;
+      var day = kstDate(m.timeKst);
+      var title = activityTitle(m.sessionSubject);
+      var g = null;
+      if (day) {
+        for (var i = 0; i < groups.length; i++) {
+          var h = groups[i];
+          if (h.sid && !h.pending && h.days[day] && (!title || !h.title || h.title === title)) { g = h; break; }
+        }
+      }
+      if (!g) {
+        var key = "d:" + (day || "?") + "|" + title;
+        g = byKey[key];
+        if (!g) { g = byKey[key] = make(key, "", "", title); groups.push(g); }
+      }
+      add(g, m);
+    });
+
+    groups.forEach(function (g) {
+      var days = Object.keys(g.days).sort();
+      g.day = days.length ? days[0] : "";
+      g.multiDay = days.length > 1;
+      g.msgs.sort(function (a, b) { return (kstMs(b.timeKst) || 0) - (kstMs(a.timeKst) || 0); });
+      if (!isFinite(g.latest)) g.latest = 0;
+    });
+    groups.sort(function (a, b) { return b.latest - a.latest; });
+    return groups;
   }
 
-  function humanTime(kst) {
-    if (!kst) return "";
-    var t = Date.parse(kst.replace(" ", "T") + "+09:00");
-    if (isNaN(t)) return kst;
-    var r = relTime(t);
-    return r || kst;
+  function renderArchive() {
+    var list = state.messages || [];
+    var groups = buildActivities(list);
+    var total = list.length;
+
+    el.msgCountBadge.textContent = String(total);
+    el.msgCountBadge.hidden = total === 0;
+    el.msgsEmpty.hidden = total !== 0;
+    el.chips.innerHTML = "";
+    el.groups.innerHTML = "";
+
+    if (!total) {
+      el.chips.hidden = true;
+      el.archiveSub.textContent = "레이스가 끝나도 여기에 그대로 남습니다.";
+      return;
+    }
+
+    var audioN = 0;
+    groups.forEach(function (g) { audioN += g.audio; });
+    el.archiveSub.textContent = "활동 " + groups.length + "개 · 음성 " + audioN + "개 · 텍스트 " + (total - audioN) + "개";
+
+    var known = { all: true };
+    groups.forEach(function (g) { known[g.key] = true; });
+    if (!known[archiveFilter]) archiveFilter = "all";
+
+    el.chips.hidden = false;
+    el.chips.appendChild(chipNode("전체", total, "all"));
+    groups.forEach(function (g) {
+      var label;
+      if (g.pending) {
+        label = "일반 응원";
+      } else {
+        var di = dayInfo(g.day);
+        label = di.short
+          ? (g.title ? di.short + " · " + g.title : di.short)
+          : (g.title || "LiveTrack 활동");
+      }
+      el.chips.appendChild(chipNode(label, g.msgs.length, g.key));
+    });
+
+    var shown = groups;
+    if (archiveFilter !== "all") {
+      shown = groups.filter(function (g) { return g.key === archiveFilter; });
+      if (!shown.length) { archiveFilter = "all"; shown = groups; }
+    }
+    shown.forEach(function (g) { el.groups.appendChild(groupNode(g)); });
   }
+
+  function chipNode(label, count, key) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.setAttribute("data-key", key);
+    b.setAttribute("aria-pressed", archiveFilter === key ? "true" : "false");
+    var t = document.createElement("span");
+    t.className = "t";
+    t.textContent = label;
+    b.appendChild(t);
+    var n = document.createElement("span");
+    n.className = "n";
+    n.textContent = count + "개";
+    b.appendChild(n);
+    return b;
+  }
+
+  function groupNode(g) {
+    var wrap = document.createElement("div");
+    wrap.className = "group" + (g.pending ? " pending" : "");
+
+    var head = document.createElement("div");
+    head.className = "grouphead";
+
+    var top = document.createElement("div");
+    top.className = "gtop";
+
+    var dateEl = document.createElement("div");
+    dateEl.className = "gdate";
+    if (g.pending) dateEl.textContent = "일반 응원";
+    else if (g.day) dateEl.textContent = dayInfo(g.day).full;
+    else dateEl.textContent = "LiveTrack 활동";
+    top.appendChild(dateEl);
+
+    var titleEl = document.createElement("div");
+    titleEl.className = "gtitle";
+    titleEl.textContent = g.pending ? "라이브 밖에서 보낸 응원" : (g.title || "LiveTrack 활동");
+    titleEl.title = titleEl.textContent;
+    top.appendChild(titleEl);
+
+    if (g.url) {
+      var a = document.createElement("a");
+      a.className = "glink";
+      a.href = g.url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = "세션 열기";
+      a.title = "가민 LiveTrack 세션 페이지";
+      top.appendChild(a);
+    }
+    head.appendChild(top);
+
+    var meta = document.createElement("div");
+    meta.className = "gmeta";
+    meta.innerHTML = '<span class="b a">음성 ' + g.audio + '</span>' +
+      '<span class="b t">텍스트 ' + g.text + '</span>' +
+      (g.latest ? '<span class="w">최근 ' + esc(fmtHm(g.latest)) + '</span>' : "");
+    head.appendChild(meta);
+    wrap.appendChild(head);
+
+    var box = document.createElement("div");
+    box.className = "msgs";
+    g.msgs.forEach(function (m) { box.appendChild(msgNode(m, g.multiDay)); });
+    wrap.appendChild(box);
+    return wrap;
+  }
+
+  function msgNode(m, withDate) {
+    var isAudio = m.type === "audio";
+    var row = document.createElement("div");
+    row.className = "msg" + (isAudio ? " audio" : "");
+
+    var head = document.createElement("div");
+    head.className = "msghead";
+    head.innerHTML = "<b>" + esc(m.from || "익명") + "</b>" +
+      (isAudio ? '<span class="tag">음성</span>' : "") +
+      "<span>" + esc(msgTime(m.timeKst, withDate)) + "</span>";
+    row.appendChild(head);
+
+    var body = document.createElement("div");
+    body.className = "msgbody";
+    body.textContent = isAudio ? (m.content || "🎙️ 음성 응원") : (m.content || "");
+    row.appendChild(body);
+
+    var foot = document.createElement("div");
+    foot.className = "msgfoot";
+    var st = document.createElement("span");
+    st.className = "st";
+    st.textContent = m.garmin || "";
+    foot.appendChild(st);
+
+    if (isAudio && m.audioFileId) {
+      var b = document.createElement("button");
+      b.className = "play";
+      b.type = "button";
+      b.textContent = "▶ 듣기";
+      b.addEventListener("click", function () { playAudio(m, b); });
+      foot.appendChild(b);
+    } else if (isAudio && m.audioUrl) {
+      var a = document.createElement("a");
+      a.className = "play";
+      a.textContent = "드라이브";
+      a.href = m.audioUrl;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.style.textDecoration = "none";
+      foot.appendChild(a);
+    }
+    row.appendChild(foot);
+    return row;
+  }
+
+  el.chips.addEventListener("click", function (ev) {
+    var n = ev.target;
+    while (n && n !== el.chips && !(n.getAttribute && n.getAttribute("data-key"))) n = n.parentNode;
+    if (!n || n === el.chips) return;
+    archiveFilter = n.getAttribute("data-key") || "all";
+    renderArchive();
+    try { el.chips.scrollIntoView({ block: "nearest" }); } catch (e) {}
+  });
 
   function playAudio(m, btn) {
     if (!endpoint) return;
@@ -777,7 +1054,7 @@ footer a{color:var(--dim);text-decoration:none}
       busy = false;
       el.checked.textContent = clock() ? clock() + " 확인" : "";
       renderStatus();
-      renderMessages();
+      renderArchive();
       updateCheerHint();
     }).catch(function () {
       busy = false;
