@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>모바일 렌더 점검</title>
+<style>
+  body{margin:0;padding:20px;background:#222;color:#eee;font:13px/1.5 -apple-system,sans-serif}
+  h1{font-size:16px;margin:0 0 12px}
+  .row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+  .dev{display:flex;flex-direction:column;gap:6px}
+  .dev b{font-size:12px;color:#9fd}
+  iframe{border:1px solid #555;background:#000;display:block}
+  pre{background:#111;padding:8px;font-size:11px;white-space:pre-wrap;max-width:640px}
+</style>
+</head>
+<body>
+<h1>LiveTrack 모바일 렌더 점검</h1>
+<div class="row">
+  <div class="dev"><b>390 × 844 (Galaxy 기본)</b>
+    <iframe id="f390" src="./" width="390" height="844" scrolling="no"></iframe></div>
+  <div class="dev"><b>412 × 915</b>
+    <iframe id="f412" src="./" width="412" height="915" scrolling="no"></iframe></div>
+</div>
+<pre id="log">측정 중…</pre>
+<script>
+function probe(id){
+  var f = document.getElementById(id);
+  var d = f.contentDocument, w = f.contentWindow;
+  var de = d.documentElement;
+  var out = {
+    id: id, viewport: w.innerWidth + "x" + w.innerHeight,
+    scrollWidth: de.scrollWidth, clientWidth: de.clientWidth,
+    bodyScrollWidth: d.body.scrollWidth,
+    wrapWidth: Math.round(d.getElementById("wrap").getBoundingClientRect().width),
+    h1: getComputedStyle(d.querySelector("h1")).fontSize,
+    desc: getComputedStyle(d.querySelector(".desc")).fontSize,
+    btn: getComputedStyle(d.querySelector(".btn")).fontSize,
+    wrapPad: getComputedStyle(d.getElementById("wrap")).paddingLeft,
+    zoom: de.style.zoom || "(none)",
+    errors: (w.__ltErrors||[]).slice(0,5)
+  };
+  var offenders = [];
+  Array.prototype.forEach.call(d.querySelectorAll("*"), function(el){
+    var r = el.getBoundingClientRect();
+    if (r.right > de.clientWidth + 1 && r.width > 4) {
+      offenders.push((el.tagName.toLowerCase()+(el.className&&typeof el.className==="string"?"."+el.className.split(" ")[0]:""))+" w="+Math.round(r.width)+" right="+Math.round(r.right));
+    }
+  });
+  out.overflow = offenders.slice(0,6);
+  return out;
+}
+window.addEventListener("load", function(){
+  setTimeout(function(){
+    var res = [probe("f390"), probe("f412")];
+    document.getElementById("log").textContent = JSON.stringify(res, null, 1);
+    document.title = "MCHECK " + res.map(function(r){return r.id+":"+r.viewport+" sw"+r.scrollWidth+"/"+r.clientWidth+" wrap"+r.wrapWidth;}).join(" | ");
+  }, 1500);
+});
+</script>
+</body>
+</html>
