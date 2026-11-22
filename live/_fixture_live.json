@@ -1,0 +1,111 @@
+{
+  "url": "https://livetrack.garmin.com/session/aaaaaaaa-1111-2222-3333-444444444444/token/FIXTURETOKENA",
+  "updatedAt": "2026-11-22T12:10:00.000Z",
+  "subject": "He-Man 님의 LiveTrack 보기",
+  "updatedAtKst": "2026-11-22 21:10:00",
+  "session": {
+    "id": "aaaaaaaa-1111-2222-3333-444444444444",
+    "active": true,
+    "start": "2026-11-22T11:50:00.000Z",
+    "end": "2026-11-22T15:00:00.000Z",
+    "name": "Nov 22, 2026",
+    "audio": true,
+    "text": true,
+    "caps": true,
+    "checkedAt": "2026-11-22T12:10:00.000Z"
+  },
+  "messages": [
+    {
+      "timeKst": "2026-11-22 21:10:12",
+      "sessionSubject": "He-Man 님의 LiveTrack 보기",
+      "sessionUrl": "https://livetrack.garmin.com/session/aaaaaaaa-1111-2222-3333-444444444444/token/FIXTURETOKENA",
+      "from": "김러너",
+      "type": "text",
+      "content": "마지막 10km 화이팅!",
+      "audioUrl": "",
+      "audioFileId": "",
+      "garmin": "성공 (a1b2c3d4)"
+    },
+    {
+      "timeKst": "2026-11-22 21:05:40",
+      "sessionSubject": "He-Man 님의 LiveTrack 보기",
+      "sessionUrl": "https://livetrack.garmin.com/session/aaaaaaaa-1111-2222-3333-444444444444/token/FIXTURETOKENA",
+      "from": "산악러버",
+      "type": "audio",
+      "content": "🎙️ 음성 응원 (8초)",
+      "audioUrl": "https://drive.google.com/file/d/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF/view",
+      "audioFileId": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+      "garmin": "성공 (b2c3d4e5)"
+    },
+    {
+      "timeKst": "2026-11-22 21:00:40",
+      "sessionSubject": "He-Man 님의 LiveTrack 보기",
+      "sessionUrl": "",
+      "from": "제이오오엔",
+      "type": "audio",
+      "content": "🎙️ 음성 응원 (8초)",
+      "audioUrl": "https://drive.google.com/file/d/GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG/view",
+      "audioFileId": "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+      "garmin": "대기 — 세션 종료"
+    },
+    {
+      "timeKst": "2026-11-22 20:47:24",
+      "sessionSubject": "He-Man 님의 LiveTrack 보기",
+      "sessionUrl": "",
+      "from": "히맨",
+      "type": "text",
+      "content": "test",
+      "audioUrl": "",
+      "audioFileId": "",
+      "garmin": "성공 (1c46f4b6)"
+    },
+    {
+      "timeKst": "2026-11-22 20:32:45",
+      "sessionSubject": "He-Man 님의 LiveTrack 보기",
+      "sessionUrl": "",
+      "from": "청쑤",
+      "type": "text",
+      "content": "비활동 중에도 남겨 봅니다",
+      "audioUrl": "",
+      "audioFileId": "",
+      "garmin": "세션 링크 없음"
+    },
+    {
+      "timeKst": "2026-11-15 09:30:05",
+      "sessionSubject": "He-Man 님의 LiveTrack 보기",
+      "sessionUrl": "https://livetrack.garmin.com/session/bbbbbbbb-5555-6666-7777-888888888888/token/FIXTURETOKENB",
+      "from": "박페이서",
+      "type": "text",
+      "content": "고생했어요! 정상에서 봐요",
+      "audioUrl": "",
+      "audioFileId": "",
+      "garmin": "성공 (c3d4e5f6)"
+    },
+    {
+      "timeKst": "2026-11-15 09:20:11",
+      "sessionSubject": "He-Man 님의 LiveTrack 보기",
+      "sessionUrl": "https://livetrack.garmin.com/session/bbbbbbbb-5555-6666-7777-888888888888/token/FIXTURETOKENB",
+      "from": "정토리",
+      "type": "audio",
+      "content": "🎙️ 음성 응원 (5초)",
+      "audioUrl": "https://drive.google.com/file/d/HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH/view",
+      "audioFileId": "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
+      "garmin": "대기 — 세션 종료"
+    },
+    {
+      "timeKst": "2026-11-14 22:10:33",
+      "sessionSubject": "He-Man 님의 LiveTrack 보기",
+      "sessionUrl": "",
+      "from": "익명",
+      "type": "audio",
+      "content": "🎙️ 음성 응원 (6초)",
+      "audioUrl": "https://drive.google.com/file/d/IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII/view",
+      "audioFileId": "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
+      "garmin": "성공 (d4e5f6a7)"
+    }
+  ],
+  "sessionNames": {
+    "s:bbbbbbbb-5555-6666-7777-888888888888": "2026 장수트레일레이스 100M"
+  },
+  "features": ["renameSession"]
+}
