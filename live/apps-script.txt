@@ -172,10 +172,14 @@ function handleCheer_(d, res) {
   }
 
   /* ── 2) 가민 워치로 전송 ───────────────────────────── */
+  var targetUrl = sessionUrl;
+  if (!targetUrl) {
+    try { targetUrl = getState().url || ''; } catch (err) { targetUrl = ''; }
+  }
   var garmin = { sent: false, status: 'skipped', error: '', messageId: '' };
-  if (sessionUrl) {
+  if (targetUrl) {
     try {
-      garmin = garminSend_(sessionUrl, from, type, text, d.audioBase64, mime);
+      garmin = garminSend_(targetUrl, from, type, text, d.audioBase64, mime);
     } catch (err) {
       garmin = { sent: false, status: 'error', error: String(err), messageId: '' };
     }
@@ -186,25 +190,33 @@ function handleCheer_(d, res) {
   res.garminStatus = garminLabel_(garmin);
 
   /* ── 3) 시트에 영구 기록 ───────────────────────────── */
-  var sessionLabel = stateLabel_(sessionUrl);
+  var sessionLabel = stateLabel_(targetUrl);
   var contentCell = type === 'audio'
     ? ('🎙️ 음성 응원' + (duration > 0 ? ' (' + Math.round(duration) + '초)' : ''))
     : text;
 
-  store.sheet.appendRow([
-    res.timeKst,
-    sessionLabel,
-    from,
-    type === 'audio' ? '음성' : '텍스트',
-    contentCell,
-    res.audioUrl,
-    res.garminStatus
-  ]);
-
-  res.ok = true;
-  res.saved = true;
-
+  // 워치로 나간 뒤 시트 저장이 실패해도 같은 메시지가 다시 전송되지 않도록 먼저 캐시에 남긴다
   try { cache.put(doneKey, JSON.stringify(res), 21600); } catch (err) {} // 6시간 중복 방지
+
+  try {
+    store.sheet.appendRow([
+      res.timeKst,
+      sessionLabel,
+      from,
+      type === 'audio' ? '음성' : '텍스트',
+      contentCell,
+      res.audioUrl,
+      res.garminStatus
+    ]);
+    res.saved = true;
+    res.ok = true;
+  } catch (errSheet) {
+    res.saved = false;
+    res.ok = false;
+    res.error = '시트 기록 실패: ' + errSheet;
+  }
+
+  try { cache.put(doneKey, JSON.stringify(res), 21600); } catch (err) {}
   return res;
 }
 
@@ -223,6 +235,7 @@ function garminLabel_(g) {
   if (g.sent) return '성공' + (g.messageId ? ' (' + g.messageId.slice(0, 8) + ')' : '');
   switch (g.status) {
     case 'no-session': return '대기 — 세션 링크 없음';
+    case 'csrf': return '실패 — CSRF 준비 실패';
     case 'ended': return '대기 — 세션 종료';
     case 'not-found': return '대기 — 세션 없음(404)';
     case '403': return '실패 — 권한/CSRF(403)';
@@ -492,8 +505,8 @@ function garminSend_(sessionUrl, from, type, text, audioBase64, mime) {
 
   var ctx = garminContext_(s.id, s.token);
   if (!ctx.ok) {
-    out.status = String(ctx.status || 'page');
-    out.error = 'CSRF 준비 실패 (페이지 ' + ctx.status + ')';
+    out.status = 'csrf';
+    out.error = 'CSRF 준비 실패 (페이지 ' + (ctx.status || '연결 실패') + ')';
     return out;
   }
 
