@@ -1018,7 +1018,9 @@ footer a{color:var(--dim);text-decoration:none}
   }
   /** 활동 밖에서 보낸 응원(일반 응원·방명록)인가 */
   function isGuestMsg(m) {
-    if (/세션 링크 없음/.test(String(m.garmin || ""))) return true;
+    var g = String(m.garmin || "");
+    if (/세션 링크 없음/.test(g)) return true;
+    if (/세션 종료/.test(g)) return true;   // 활동이 끝난 뒤에 보낸 것 → 방명록
     return !activityKeyOf(m);
   }
 
@@ -2203,8 +2205,9 @@ footer a{color:var(--dim);text-decoration:none}
     });
   }
 
+  /** 응원을 보낼 때 함께 보낼 세션 주소 — 진행 중인 활동이 있을 때만 (비활동 중 방명록은 세션 없이) */
   function sessionUrlForSend() {
-    return isLiveTrackUrl(state.url) ? state.url : "";
+    return (computeLive() && isLiveTrackUrl(state.url)) ? state.url : "";
   }
 
   el.textSend.addEventListener("click", function () {
@@ -2219,7 +2222,7 @@ footer a{color:var(--dim);text-decoration:none}
       sessionUrl: sessionUrlForSend(),
       msgId: randId()
     };
-    if (state.session && state.session.id) body.sessionId = state.session.id;
+    if (body.sessionUrl && state.session && state.session.id) body.sessionId = state.session.id;
     var btn = el.textSend;
     var old = btn.textContent;
     btn.textContent = "보내는 중…";
@@ -2280,7 +2283,7 @@ footer a{color:var(--dim);text-decoration:none}
         sessionUrl: sessionUrlForSend(),
         msgId: randId()
       };
-      if (state.session && state.session.id) body.sessionId = state.session.id;
+      if (body.sessionUrl && state.session && state.session.id) body.sessionId = state.session.id;
       return postCheer(body).then(function (d) {
         btn.disabled = false;
         btn.textContent = old;
