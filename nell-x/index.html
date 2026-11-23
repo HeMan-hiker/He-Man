@@ -1048,10 +1048,13 @@ body[data-fs="l"]{--fs:20px}
 
   /* ── 유튜브 뮤직 링크 ──────────────────────────────────────────────
      안드로이드(삼성 인터넷 포함)에서는 music.youtube.com 주소를 눌러도 앱이 아닌
-     웹으로 열리는 경우가 있습니다. 그래서 안드로이드에서는 링크의 href 자체를
-     intent:// 로 바꿔 유튜브 뮤직 앱(com.google.android.apps.youtube.music)을
-     지정해 열고, 앱이 설치되어 있지 않으면 S.browser_fallback_url 로 원래 웹
-     주소를 엽니다. intent:// 는 안드로이드 전용이라 iOS·PC 에서는 건드리지 않습니다.
+     웹으로 열리는 경우가 있습니다. intent:// + scheme=https +
+     S.browser_fallback_url 조합은 브라우저 설정("다른 앱에서 링크 열기" 꺼짐 등)이나
+     인텐트 필터 우선순위 때문에 fallback 웹 주소로 바로 빠지기 때문입니다.
+     그래서 안드로이드에서는 유튜브 뮤직 앱(MusicActivity)이 직접 받는 커스텀 스킴
+     vnd.youtube.music:// 로 바꿉니다. 웹 fallback 이 없으므로 브라우저가 웹으로
+     대신 열 수 없고, OS 가 이 스킴을 받는 유튜브 뮤직 앱으로 넘깁니다.
+     커스텀 스킴은 안드로이드 전용이라 iOS·PC 에서는 https 주소 그대로 둡니다.
      마우스로 보는 화면에서는 이 가사 페이지를 잃지 않도록 새 탭으로 엽니다. */
   var ytLinks=[].slice.call(document.querySelectorAll('a[href*="music.youtube.com"]'));
   var ua=navigator.userAgent;
@@ -1063,11 +1066,10 @@ body[data-fs="l"]{--fs:20px}
     ytLinks.forEach(function(a){ a.target='_blank'; });
   }
 
-  /* 웹 주소 → 유튜브 뮤직 앱 인텐트 주소 */
+  /* 웹 주소 → 유튜브 뮤직 앱 커스텀 스킴 주소
+     https://music.youtube.com/watch?v=…  →  vnd.youtube.music://music.youtube.com/watch?v=… */
   function ytIntent(web){
-    return 'intent://' + String(web).replace(/^https?:\/\//,'') +
-      '#Intent;scheme=https;package=com.google.android.apps.youtube.music' +
-      ';S.browser_fallback_url=' + encodeURIComponent(web) + ';end';
+    return String(web).replace(/^https?:\/\//, 'vnd.youtube.music://');
   }
 
   if(useAppLink){
