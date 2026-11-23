@@ -388,6 +388,7 @@ body[data-fs="l"]{--fs:19.5px}
     <div class="empty" id="resEmpty" hidden></div>
   </div>
   <div id="albums"></div>
+  <div class="empty" id="albEmpty" hidden>이 조건에 맞는 앨범이 없습니다.<br>유형과 시대 필터를 바꿔 보세요.</div>
 </main>
 
 <footer>
@@ -447,6 +448,7 @@ body[data-fs="l"]{--fs:19.5px}
   var sNext=document.getElementById('sNext');
   var sPos=document.getElementById('sPos');
   var toTop=document.getElementById('toTop');
+  var albEmpty=document.getElementById('albEmpty');
 
   /* ── 유튜브 뮤직 링크 ──────────────────────────────────────────────
      안드로이드(삼성 인터넷 포함)에서는 music.youtube.com 주소가 앱이 아닌
@@ -634,6 +636,7 @@ body[data-fs="l"]{--fs:19.5px}
     });
     sumL.textContent=(st.type==='전체'&&st.era==='전체')?'앨범 전체':(st.type+' · '+st.era);
     sumR.textContent=shown+'장 · '+songs+'곡';
+    albEmpty.hidden=shown>0;
     if(!shown){ sumR.textContent='해당 앨범 없음'; }
   }
 
@@ -650,6 +653,7 @@ body[data-fs="l"]{--fs:19.5px}
     }
     searchWrap.classList.add('has');
     body.classList.add('searching');
+    albEmpty.hidden=true;
     var hits=[], albs=[];
     RELS.forEach(function(rel,ri){
       if(!passes(rel)) return;
