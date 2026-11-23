@@ -397,6 +397,7 @@ body[data-fs="l"]{--fs:19.5px}
     <a href="https://heman-hiker.github.io/He-Man/">히맨 아카이브</a>
   </div>
   <p>가사 © 김종완 / SPACE BOHEMIAN, 각 권리자. 벅스·유튜브 뮤직에 공개된 가사를 그대로 옮겼습니다.<br>이 페이지는 개인 감상용으로 만든 비공식 아카이브이며, 영어 가사 아래의 우리말은 감상을 돕기 위한 해석으로 공식 번역이 아닙니다.</p>
+  <p style="margin-top:8px">여러 아티스트가 함께 실린 OST 컴필레이션 《취하는 로맨스 OST》·《투윅스 OST Special》은 넬의 곡만 각 OST Part 싱글로 실었습니다.</p>
   <p style="margin-top:8px">가사 출처: Bugs · YouTube Music (LyricFind) &nbsp;·&nbsp; 앨범 커버: Bugs</p>
 </footer>
 
@@ -545,7 +546,7 @@ body[data-fs="l"]{--fs:19.5px}
       b.addEventListener('click',function(){
         st.type=t;
         Array.prototype.forEach.call(typeChips.children,function(x){ x.classList.toggle('on',x.dataset.v===t); });
-        render();
+        if(st.q) doSearch(qEl.value); else render();
       });
       typeChips.appendChild(b);
     });
@@ -558,7 +559,7 @@ body[data-fs="l"]{--fs:19.5px}
       b.addEventListener('click',function(){
         st.era=e;
         Array.prototype.forEach.call(eraChips.children,function(x){ x.classList.toggle('on',x.dataset.v===e); });
-        render();
+        if(st.q) doSearch(qEl.value); else render();
       });
       eraChips.appendChild(b);
     });
@@ -816,10 +817,12 @@ body[data-fs="l"]{--fs:19.5px}
     document.getElementById('stat').textContent='2001 — 2026 · '+RELS.length+' releases · '+songs+' tracks';
     buildChips();
     var frag=document.createDocumentFragment();
+    var newestAlbum=-1;
+    RELS.forEach(function(rel,i){ if(newestAlbum<0 && rel.ty==='정규') newestAlbum=i; });
     RELS.forEach(function(rel,i){
       var sec=makeAlbum(rel,i);
       sec.dataset.i=i;
-      if(i===0){ sec.classList.add('open'); sec.querySelector('.alb-h').setAttribute('aria-expanded','true'); }
+      if(i===0 || i===newestAlbum){ sec.classList.add('open'); sec.querySelector('.alb-h').setAttribute('aria-expanded','true'); }
       frag.appendChild(sec);
     });
     albumsEl.appendChild(frag);
