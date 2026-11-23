@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
+<title>NELL 《X》 가사 — 정규 10집 전곡</title>
+<meta name="description" content="넬(NELL) 정규 10집 《X》(2026) 11곡 가사와 영어 가사 우리말 해석. 곡별 바로가기.">
+<style>
+:root{
+  --bg:#08090b; --bg2:#0d0f13; --card:#111419; --line:#232830;
+  --ink:#eceef1; --muted:#9aa3ae; --dim:#6b7481;
+  --hot:#cf4630;
+  --fs:17.5px; --barH:104px;
+  --radius:20px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1000px 520px at 12% -8%, #171b22 0%, rgba(23,27,34,0) 62%),
+    radial-gradient(760px 420px at 96% 2%, #1a1416 0%, rgba(26,20,22,0) 58%),
+    var(--bg);
+  background-attachment:fixed;
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+  overscroll-behavior-y:none;
+}
+body::after{
+  content:"";
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    linear-gradient(35deg, transparent 49.86%, rgba(255,255,255,.035) 50%, transparent 50.14%),
+    linear-gradient(-35deg, transparent 49.86%, rgba(255,255,255,.035) 50%, transparent 50.14%);
+  opacity:.5;
+}
+.wrap{position:relative; z-index:1; max-width:720px; margin:0 auto; padding:0 18px}
+
+/* ── hero ── */
+.hero{position:relative; z-index:1; max-width:720px; margin:0 auto; padding:46px 22px 30px; text-align:center}
+.xlogo{width:46px;height:46px;margin:0 auto 20px;color:#e8ecf2;opacity:.9;filter:drop-shadow(0 0 14px rgba(200,215,235,.28))}
+.xlogo svg{width:100%;height:100%;display:block}
+.eyebrow{margin:0;font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--dim)}
+h1{
+  margin:10px 0 0; font-size:86px; line-height:.92; font-weight:300; letter-spacing:.04em;
+  background:linear-gradient(180deg,#ffffff 0%,#cfd6e0 46%,#7d8794 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.album-meta{margin:14px 0 0;font-size:12.5px;color:var(--dim);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.lede{margin:16px auto 0;max-width:44ch;font-size:14px;line-height:1.8;color:var(--muted);word-break:keep-all}
+.album-yt{
+  display:inline-flex;align-items:center;gap:8px;margin-top:20px;
+  padding:10px 18px;border-radius:999px;background:var(--ink);color:#0a0b0d;
+  text-decoration:none;font-size:13px;font-weight:700;letter-spacing:-.01em;
+}
+.album-yt:active{transform:scale(.98)}
+
+/* ── sticky bar ── */
+.sticky{
+  position:sticky;top:0;z-index:30;
+  background:rgba(8,9,11,.9);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);
+  backdrop-filter:blur(16px) saturate(140%);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  padding-top:env(safe-area-inset-top,0);
+}
+.tools{display:flex;align-items:center;gap:8px;max-width:720px;margin:0 auto;padding:9px 18px 0}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:0 0 auto}
+.seg button{
+  appearance:none;background:transparent;border:0;color:var(--muted);
+  font:inherit;font-size:12px;padding:6px 10px;cursor:pointer;letter-spacing:-.01em;
+}
+.seg button.on{background:rgba(255,255,255,.12);color:var(--ink)}
+.chip{
+  appearance:none;display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;
+  background:transparent;border:1px solid var(--line);border-radius:999px;
+  color:var(--muted);font:inherit;font-size:12px;padding:6px 12px;cursor:pointer;
+}
+.chip.on{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.3);color:var(--ink)}
+.chip .state{font-size:10.5px;color:var(--dim)}
+.chip.on .state{color:#9fb2c6}
+.spacer{flex:1 1 auto}
+.ytmini{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;text-decoration:none;
+  color:var(--muted);font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 11px;
+}
+.pills{
+  display:flex;gap:7px;overflow-x:auto;max-width:720px;margin:0 auto;
+  padding:9px 18px 10px;scrollbar-width:none;-ms-overflow-style:none;
+  scroll-snap-type:x proximity;
+}
+.pills::-webkit-scrollbar{display:none}
+.pill{
+  flex:0 0 auto;scroll-snap-align:center;display:inline-flex;align-items:center;gap:6px;
+  padding:7px 13px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(255,255,255,.035);color:var(--muted);text-decoration:none;
+  font-size:12.5px;letter-spacing:-.01em;white-space:nowrap;transition:background .16s,color .16s,border-color .16s;
+}
+.pill b{font-size:10px;font-weight:700;color:var(--dim);font-variant-numeric:tabular-nums}
+.pill.active{background:var(--ink);border-color:var(--ink);color:#0a0b0d}
+.pill.active b{color:rgba(0,0,0,.42)}
+
+/* ── tracks ── */
+main{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:6px 18px 0}
+.track{
+  background:linear-gradient(180deg,#12151a 0%,#0e1116 100%);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px 18px 12px;
+  margin:16px 0 18px;
+  scroll-margin-top:calc(var(--barH) + 12px);
+  box-shadow:0 1px 0 rgba(255,255,255,.03) inset;
+}
+.thead{display:flex;align-items:flex-start;gap:12px}
+.num{
+  font-size:11px;font-weight:700;color:var(--dim);font-variant-numeric:tabular-nums;
+  letter-spacing:.04em;padding-top:5px;flex:0 0 auto;
+}
+.th{flex:1 1 auto;min-width:0}
+.th h2{margin:0;font-size:19.5px;line-height:1.28;font-weight:700;letter-spacing:-.025em;word-break:keep-all}
+.th h2 .ko{font-size:14px;font-weight:500;color:var(--muted);letter-spacing:-.01em;margin-left:6px}
+.sub{margin:5px 0 0;font-size:11.5px;color:var(--dim);display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.sub .t{font-variant-numeric:tabular-nums}
+.tag{
+  font-size:10.5px;line-height:1;padding:4px 7px;border-radius:999px;
+  border:1px solid rgba(207,70,48,.45);color:#e57a67;letter-spacing:.01em;
+}
+.tag.gray{border-color:rgba(255,255,255,.16);color:var(--muted)}
+.miniyt{
+  flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
+  display:inline-flex;align-items:center;justify-content:center;color:var(--muted);
+  text-decoration:none;font-size:11px;
+}
+.miniyt:active{background:rgba(255,255,255,.08)}
+
+.lyr{
+  margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.055);
+  font-size:var(--fs);line-height:1.95;letter-spacing:-.005em;word-break:keep-all;
+  color:#e4e9ef;
+}
+.part{
+  margin:24px 0 9px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--dim);font-weight:600;display:flex;align-items:center;gap:8px;
+}
+.part:first-child{margin-top:0}
+.part .rep{
+  font-size:9.5px;letter-spacing:.06em;color:#8d97a4;border:1px solid var(--line);
+  border-radius:999px;padding:1px 6px;text-transform:none;
+}
+.ln{margin:0 0 .5em}
+.ln:last-child{margin-bottom:0}
+.ln .tr{
+  display:none;margin-top:.2em;font-size:.84em;line-height:1.62;color:var(--muted);
+  letter-spacing:0;font-style:normal;
+}
+body.show-tr .ln .tr{display:block}
+.ln.en{color:#dfe7f0}
+.ln.en .tr{color:#8d97a4}
+.inst{
+  margin:18px 0 6px;padding:18px 16px;border-radius:14px;
+  background:rgba(255,255,255,.028);border:1px dashed rgba(255,255,255,.12);
+  color:var(--muted);font-size:13.5px;line-height:1.8;text-align:center;letter-spacing:-.01em;
+}
+.inst b{display:block;color:var(--ink);font-size:14.5px;margin-bottom:6px}
+
+.note{
+  margin:20px 0 4px;padding:12px 14px;border-radius:12px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  color:var(--muted);font-size:12.5px;line-height:1.75;word-break:keep-all;
+}
+.note .lbl{display:block;font-size:9.5px;letter-spacing:.2em;color:var(--dim);margin-bottom:5px}
+
+.pager{
+  display:flex;align-items:center;gap:8px;margin-top:22px;padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.055);font-size:12.5px;
+}
+.pager a,.pager span{color:var(--dim);text-decoration:none;padding:6px 0}
+.pager a:active{color:var(--ink)}
+.pager .mid{flex:1 1 auto;text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.pager .dis{opacity:.3}
+
+footer{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:30px 24px 64px;text-align:center;color:var(--dim);font-size:11px;line-height:1.85}
+footer a{color:var(--muted)}
+
+.to-top{
+  position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0));z-index:40;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line);
+  background:rgba(20,24,30,.92);color:var(--ink);font-size:15px;cursor:pointer;
+  opacity:0;pointer-events:none;transition:opacity .2s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.to-top.show{opacity:1;pointer-events:auto}
+
+body[data-fs="s"]{--fs:15.5px}
+body[data-fs="m"]{--fs:17.5px}
+body[data-fs="l"]{--fs:20px}
+
+@media (min-width:640px){
+  h1{font-size:104px}
+  .track{padding:24px 24px 14px}
+  .th h2{font-size:21px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto !important;transition:none !important}
+}
+</style>
+</head>
+<body data-fs="m" class="show-tr">
+
+<header class="hero">
+  <div class="xlogo" aria-hidden="true">
+    <svg viewBox="0 0 48 48" fill="none">
+      <path d="M7 5 L41 43" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M41 5 L7 43" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <p class="eyebrow">NELL · 10th Album</p>
+  <h1>X</h1>
+  <p class="album-meta">2026.06.17 · 11곡 · 50분 16초</p>
+  <p class="lede">5년 만의 정규 10집. 바깥을 향한 비판이 앞쪽에, 상실을 붙잡고 있는 마음이 뒤쪽에 놓인 11곡입니다. 영어 가사 아래 우리말은 감상을 돕기 위한 해석입니다.</p>
+  <a class="album-yt" href="https://music.youtube.com/search?q=NELL%20X" target="_blank" rel="noopener">▶ 유튜브 뮤직에서 《X》 열기</a>
+</header>
+
+<div class="sticky" id="stickyBar">
+  <div class="tools">
+    <div class="seg" role="group" aria-label="글자 크기">
+      <button type="button" data-size="s">작게</button>
+      <button type="button" data-size="m" class="on">보통</button>
+      <button type="button" data-size="l">크게</button>
+    </div>
+    <button type="button" class="chip on" id="trBtn" aria-pressed="true">영어 해석 <span class="state">켬</span></button>
+    <span class="spacer"></span>
+    <a class="ytmini" href="https://music.youtube.com/search?q=NELL%20X" target="_blank" rel="noopener" aria-label="유튜브 뮤직">▶ YT</a>
+  </div>
+  <nav class="pills" id="pills" aria-label="곡 바로가기">
+    <a class="pill" href="#t1"><b>01</b>Rats</a>
+    <a class="pill" href="#t2"><b>02</b>Sweet Delusion</a>
+    <a class="pill" href="#t3"><b>03</b>Only One</a>
+    <a class="pill" href="#t4"><b>04</b>Losers Recipe</a>
+    <a class="pill" href="#t5"><b>05</b>Don't Let Me Go</a>
+    <a class="pill" href="#t6"><b>06</b>Blue Eyes</a>
+    <a class="pill" href="#t7"><b>07</b>VAMP</a>
+    <a class="pill" href="#t8"><b>08</b>상실의 관성</a>
+    <a class="pill" href="#t9"><b>09</b>Deep Inside</a>
+    <a class="pill" href="#t10"><b>10</b>I Will Always Be</a>
+    <a class="pill" href="#t11"><b>11</b>Farewell Song</a>
+  </nav>
+</div>
+
+<main>
+
+<!-- 01 -->
+<section class="track" id="t1">
+  <div class="thead">
+    <span class="num">01</span>
+    <div class="th">
+      <h2>Rats</h2>
+      <p class="sub"><span class="t">04:06</span><span class="tag gray">Instrumental</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20Rats" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="inst">
+      <b>가사 없는 연주곡</b>
+      4분 6초 동안 어둡고 영화적인 분위기로 앨범 전체의 톤을 잡는 오프닝.
+    </div>
+    <div class="note"><span class="lbl">NOTE</span>원래는 가사가 붙어 있던 곡이지만, 작업 과정에서 연주 버전만으로도 충분하다는 판단에 인스트루멘탈로 실렸습니다. 보컬 버전이 나중에 공개될 가능성도 열려 있다고 합니다.</div>
+  </div>
+  <div class="pager">
+    <span class="dis">← 이전 곡</span>
+    <a class="mid" href="#t1">01 / 11</a>
+    <a href="#t2">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="track" id="t2">
+  <div class="thead">
+    <span class="num">02</span>
+    <div class="th">
+      <h2>Sweet Delusion</h2>
+      <p class="sub"><span class="t">04:11</span><span class="tag">타이틀</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20Sweet%20Delusion" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Verse 1</div>
+    <p class="ln">싹 다 핥아 밑바닥 보일 때까지</p>
+    <p class="ln">갓 튀겨낸 팝콘처럼 고소하지</p>
+    <p class="ln">온통 하늘을 뒤덮은 아니 땐 굴뚝에서 피어난 연기가</p>
+
+    <div class="part">Pre-Chorus</div>
+    <p class="ln">어차피 다들 눈 가리고 아웅</p>
+    <p class="ln">독이 든 잔을 들고 춤추자</p>
+    <p class="ln">재미대가리 없어 진실 따윈</p>
+    <p class="ln">쓰잘데기가 없어 진심 따윈</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln en" lang="en"><span class="o">We all dance in a trance</span><span class="tr">우린 모두 황홀경 속에서 춤을 춰</span></p>
+    <p class="ln en" lang="en"><span class="o">And no one wants to wake</span><span class="tr">그 누구도 깨어나려 하지 않아</span></p>
+
+    <div class="part">Verse 2</div>
+    <p class="ln">오싹하지 실체를 마주칠 땐</p>
+    <p class="ln">마치 죽은 자들의 행렬같이</p>
+    <p class="ln">싸늘하지 텅 빈 영혼의 한기</p>
+    <p class="ln">불태우자 또다시 집단 광기</p>
+
+    <div class="part">Pre-Chorus</div>
+    <p class="ln">어차피 다들 눈 가리고 아웅</p>
+    <p class="ln">독이 든 잔을 들고 춤추자</p>
+    <p class="ln">허구한 날 헛구역질 해도</p>
+    <p class="ln">어차피 이미 모두 다 중독</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln en" lang="en"><span class="o">We all live in a trance</span><span class="tr">우린 모두 황홀경 속에서 살아가</span></p>
+    <p class="ln en" lang="en"><span class="o">And no one wants to wake</span><span class="tr">그 누구도 깨어나려 하지 않아</span></p>
+    <p class="ln">여기 온 걸 환영해</p>
+    <p class="ln en" lang="en"><span class="o">Where we bow before the fake</span><span class="tr">거기서 우린 가짜 앞에 머리를 조아려</span></p>
+    <p class="ln en" lang="en"><span class="o">Delusions lead the way</span><span class="tr">망상이 앞장서서 길을 이끌어</span></p>
+
+    <div class="part">Bridge</div>
+    <p class="ln">어차피 다들 눈 가리고 아웅</p>
+
+    <div class="part">Chorus <span class="rep">×2</span></div>
+    <p class="ln en" lang="en"><span class="o">We all live in a trance</span><span class="tr">우린 모두 황홀경 속에서 살아가</span></p>
+    <p class="ln en" lang="en"><span class="o">And no one wants to wake</span><span class="tr">그 누구도 깨어나려 하지 않아</span></p>
+    <p class="ln">여기 온 걸 환영해</p>
+    <p class="ln en" lang="en"><span class="o">Where we bow before the fake</span><span class="tr">거기서 우린 가짜 앞에 머리를 조아려</span></p>
+    <p class="ln en" lang="en"><span class="o">Delusions lead the way</span><span class="tr">망상이 앞장서서 길을 이끌어</span></p>
+
+    <div class="note"><span class="lbl">NOTE</span>트럼펫·색소폰 같은 금관악기가 전면에 나서는 NELL로서는 드문 편성. 알면서도 다 같이 눈 감아주는 집단적 자기기만을 파티처럼 그렸습니다.</div>
+  </div>
+  <div class="pager">
+    <a href="#t1">← 이전 곡</a>
+    <a class="mid" href="#top">02 / 11</a>
+    <a href="#t3">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="track" id="t3">
+  <div class="thead">
+    <span class="num">03</span>
+    <div class="th">
+      <h2>Only One</h2>
+      <p class="sub"><span class="t">04:20</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20Only%20One" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Verse 1</div>
+    <p class="ln">꿈보다 추억이 많아질 때</p>
+    <p class="ln">말없이 사라져 줄 거야</p>
+    <p class="ln">아직은 아냐</p>
+    <p class="ln">때로는 악몽이지만</p>
+    <p class="ln"><span class="o">넌 언제나 My only one</span><span class="tr">너는 언제나 나의 유일한 사람</span></p>
+
+    <div class="part">Chorus</div>
+    <p class="ln en" lang="en"><span class="o">Take my breath away</span><span class="tr">내 숨을 가져가</span></p>
+    <p class="ln">난 뭐든 준비가 돼 있어</p>
+    <p class="ln en" lang="en"><span class="o">Chain my heart into your flames</span><span class="tr">내 마음을 네 불꽃에 묶어둬</span></p>
+
+    <div class="part">Verse 2</div>
+    <p class="ln">앙상한 가지만 남는데도</p>
+    <p class="ln">여전히 언제나 함께일 거야</p>
+    <p class="ln">빈말이 아냐</p>
+    <p class="ln">상상조차 못 할 거야</p>
+    <p class="ln"><span class="o">넌 영원히 My only one</span><span class="tr">너는 영원히 나의 유일한 사람</span></p>
+
+    <div class="part">Chorus</div>
+    <p class="ln en" lang="en"><span class="o">Take my breath away</span><span class="tr">내 숨을 가져가</span></p>
+    <p class="ln">난 뭐든 준비가 돼 있어</p>
+    <p class="ln en" lang="en"><span class="o">Chain my heart into your flames</span><span class="tr">내 마음을 네 불꽃에 묶어둬</span></p>
+    <p class="ln en" lang="en"><span class="o">Take my breath away</span><span class="tr">내 숨을 가져가</span></p>
+    <p class="ln">난 전부 준비가 돼 있어</p>
+    <p class="ln en" lang="en"><span class="o">Chain my heart until the end</span><span class="tr">끝까지 내 마음을 묶어둬</span></p>
+
+    <div class="part">Bridge</div>
+    <p class="ln">불구덩이에 처박히든</p>
+    <p class="ln">괴물의 먹잇감이 되든 말든</p>
+    <p class="ln">그건 안 중요해</p>
+    <p class="ln en" lang="en"><span class="o">If that's what it takes</span><span class="tr">그게 필요한 일이라면</span></p>
+    <p class="ln en" lang="en"><span class="o">'Cause you, you're my only one</span><span class="tr">왜냐면 너, 너는 나의 유일한 사람</span></p>
+    <p class="ln en" lang="en"><span class="o">Losing you is my only fear, I know</span><span class="tr">너를 잃는 것, 그게 내 유일한 두려움인 걸 알아</span></p>
+    <p class="ln en" lang="en"><span class="o">Losing you is my only fear, I know</span><span class="tr">너를 잃는 것, 그게 내 유일한 두려움인 걸 알아</span></p>
+
+    <div class="part">Chorus</div>
+    <p class="ln en" lang="en"><span class="o">Take my breath away</span><span class="tr">내 숨을 가져가</span></p>
+    <p class="ln">난 뭐든 준비가 돼 있어</p>
+    <p class="ln en" lang="en"><span class="o">Chain my heart into your flames</span><span class="tr">내 마음을 네 불꽃에 묶어둬</span></p>
+    <p class="ln en" lang="en"><span class="o">Take my breath away</span><span class="tr">내 숨을 가져가</span></p>
+    <p class="ln">난 전부 준비가 돼 있어</p>
+    <p class="ln en" lang="en"><span class="o">Chain my heart until the end</span><span class="tr">끝까지 내 마음을 묶어둬</span></p>
+
+    <div class="part">Outro</div>
+    <p class="ln en" lang="en"><span class="o">My only one</span><span class="tr">나의 유일한 사람</span></p>
+    <p class="ln en" lang="en"><span class="o">My only one</span><span class="tr">나의 유일한 사람</span></p>
+    <p class="ln en" lang="en"><span class="o">My only one</span><span class="tr">나의 유일한 사람</span></p>
+
+    <div class="note"><span class="lbl">NOTE</span>꿈보다 추억이 많아지는 때 — 앞으로 살날보다 지나온 날이 많아지는 순간을 다루는 헌신의 노래. 한국어가 조건을 세우고, 영어가 "숨을 가져가도 좋다"는 직접적인 선언을 맡습니다.</div>
+  </div>
+  <div class="pager">
+    <a href="#t2">← 이전 곡</a>
+    <a class="mid" href="#top">03 / 11</a>
+    <a href="#t4">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="track" id="t4">
+  <div class="thead">
+    <span class="num">04</span>
+    <div class="th">
+      <h2>Losers Recipe <span class="ko">(Feat. TABLO)</span></h2>
+      <p class="sub"><span class="t">04:02</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20Losers%20Recipe" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Verse 1</div>
+    <p class="ln">두리번두리번대 어디 붙어먹을 데 없나 서성거리다</p>
+    <p class="ln">여기저기 구걸해</p>
+    <p class="ln">신나게 떠들어대 빈 수레가 요란해</p>
+    <p class="ln">욕심은 끝이 없고 노력은 늘 평범해</p>
+
+    <div class="part">Refrain</div>
+    <p class="ln">가벼워 너무 가벼워서</p>
+    <p class="ln">와닿기도 전에 사라져 버려</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln">백번 천번 양보해 이해까진 하겠는데</p>
+    <p class="ln">동참해달란 말이라면 그건 사양할게</p>
+    <p class="ln">놀 거 다 놀고 난 다음에 좀 남는 시간에 대충 하는 건</p>
+    <p class="ln">전혀 맞질 않아 내 취향엔</p>
+    <p class="ln">입맛에 별로야 너의 Recipe</p>
+
+    <div class="part">Verse 2</div>
+    <p class="ln">망각이란 수면제 탐욕이란 흥분제</p>
+    <p class="ln">깡통 같은 머리에 망상을 꽃피우네</p>
+    <p class="ln">칼자루를 쥐고 싶네 쥔 게 없는 두 손에</p>
+    <p class="ln">전부 다 난도질해 망쳐놔야 속이 편해</p>
+
+    <div class="part">Refrain</div>
+    <p class="ln">얄팍해 너무 얄팍해서</p>
+    <p class="ln">놀아주는 것도 재미가 없어</p>
+
+    <div class="part">Bridge — TABLO</div>
+    <p class="ln en" lang="en"><span class="o">Jealousy, hate, envy, bad memories…</span><span class="tr">질투, 증오, 시기, 나쁜 기억들…</span></p>
+    <p class="ln">무색무취한 삶에 섞은 한 스푼의 Fantasy</p>
+    <p class="ln">너란 Recipe, 언제나 반만 남은 컵</p>
+    <p class="ln">겹겹 쌓인 철면피 그 속에 가린 겁</p>
+    <p class="ln">귀를 찢는 불협 Melody 뱉던 입가엔 Blood</p>
+    <p class="ln"><span class="o">어디든 끼고 싶은 책갈피 the story's never yours</span><span class="tr" lang="en">어디든 끼고 싶어 하는 책갈피 — 그 이야기는 끝내 네 것이 아니야</span></p>
+    <p class="ln">너를 평생 긁고 괴롭히던 거울 속의 적</p>
+    <p class="ln">대신 화면들을 깨겠지 피범벅인 주먹</p>
+    <p class="ln">혼자 맞기 두렵던 새벽 비에 세상이 잠겨 허우적거리는 게 재밌지</p>
+    <p class="ln en" lang="en"><span class="o">'Cause you don't give a<br>You don't give a f*ck</span><span class="tr">넌 아무것도 신경 쓰지 않으니까</span></p>
+    <p class="ln">제발 좀 사라져 공기가 아까워</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln">고상한 가식 떨기 전 제발 침이나 좀 닦아</p>
+    <p class="ln">남의 떡이 더 커 보여? 그 뒤에 노력은 안 보여?</p>
+    <p class="ln">평생 무임승차 해온 니가 뭐를 알겠냐마는</p>
+    <p class="ln">선택엔 늘 대가가 따라 그러니 그 아가리 좀 닫아</p>
+    <p class="ln">대가리는 텅 비었어도 뱀처럼 날름대는 혀</p>
+    <p class="ln">궁색한 변명하기 전 그 입술에 침이나 발라</p>
+    <p class="ln">남의 등이나 쳐 먹는 니가 또 뭐를 얼마나 알겠냐만</p>
+    <p class="ln">칼질을 하려거든 도마부터 닦고 좀</p>
+    <p class="ln">기본이 안 되어있어</p>
+
+    <div class="part">Outro</div>
+    <p class="ln">말해줘 봐야 뭐해</p>
+    <p class="ln">피곤해지기만 해</p>
+    <p class="ln">내 입만 아프지 또</p>
+    <p class="ln">시간만 아깝지 또</p>
+
+    <div class="note"><span class="lbl">NOTE</span>NELL 곡으로는 처음으로 피처링이 들어간 곡 — 에픽하이 타블로가 브리지를 맡았습니다. 사운드는 부드럽고 편안한데, 가사는 앨범에서 가장 직설적입니다.</div>
+  </div>
+  <div class="pager">
+    <a href="#t3">← 이전 곡</a>
+    <a class="mid" href="#top">04 / 11</a>
+    <a href="#t5">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="track" id="t5">
+  <div class="thead">
+    <span class="num">05</span>
+    <div class="th">
+      <h2>Don't Let Me Go</h2>
+      <p class="sub"><span class="t">03:35</span><span class="tag">타이틀</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20Don%27t%20Let%20Me%20Go" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Verse 1</div>
+    <p class="ln">살얼음판 위야 아슬아슬한데</p>
+    <p class="ln">이 상실의 무게 버틸 수 있으려나</p>
+
+    <div class="part">Pre-Chorus</div>
+    <p class="ln">언제 깨져버린대도 이상하지 않을</p>
+    <p class="ln">시간들의 연속일 뿐야</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln">먹구름 가득 낀 하늘에</p>
+    <p class="ln">분명 어딘가 숨어있을 무지개</p>
+    <p class="ln">피어오르게 (Rainbow, Rainbow)</p>
+    <p class="ln">비를 뿌려대 (Pour that rain on me)</p>
+    <p class="ln">니가 날 붙잡아 줘야 돼</p>
+    <p class="ln">다 으스러져 버린 마음에</p>
+    <p class="ln">불을 지펴대 (Fire, Fire)</p>
+    <p class="ln">불타오르게</p>
+    <p class="ln en" lang="en"><span class="o">Don't let me go</span><span class="tr">놓아주지 마</span></p>
+
+    <div class="part">Verse 2</div>
+    <p class="ln">벼랑 끝인 거야 아슬아슬한데</p>
+    <p class="ln">버텨보는 손끝의 힘이 빠져나가네</p>
+
+    <div class="part">Pre-Chorus</div>
+    <p class="ln">언제 떨어진다 해도 놀랍지가 않을</p>
+    <p class="ln">시간들의 연속일 뿐야</p>
+
+    <div class="part">Chorus <span class="rep">×2</span></div>
+    <p class="ln">먹구름 가득 낀 하늘에</p>
+    <p class="ln">분명 어딘가 숨어있을 무지개</p>
+    <p class="ln">피어오르게 (Rainbow, Rainbow)</p>
+    <p class="ln">비를 뿌려대 (Pour that rain on me)</p>
+    <p class="ln">니가 날 붙잡아 줘야 돼</p>
+    <p class="ln">다 으스러져 버린 마음에</p>
+    <p class="ln">불을 지펴대 (Fire, Fire)</p>
+    <p class="ln">불타오르게</p>
+    <p class="ln en" lang="en"><span class="o">Don't let me go</span><span class="tr">놓아주지 마</span></p>
+
+    <div class="part">Post-Chorus <span class="rep">×2</span></div>
+    <p class="ln en" lang="en"><span class="o">Don't let me go</span><span class="tr">놓아주지 마</span></p>
+    <p class="ln en" lang="en"><span class="o">Don't let me go</span><span class="tr">놓아주지 마</span></p>
+    <p class="ln en" lang="en"><span class="o">Don't let me go</span><span class="tr">놓아주지 마</span></p>
+    <p class="ln en" lang="en"><span class="o">Don't let me drown in fear</span><span class="tr">두려움에 빠져 허우적대게 두지 마</span></p>
+    <p class="ln en" lang="en"><span class="o">Don't let me disappear</span><span class="tr">내가 사라지게 두지 마</span></p>
+    <p class="ln en" lang="en"><span class="o">Don't leave me stranded here</span><span class="tr">여기 혼자 남겨두지 마</span></p>
+    <p class="ln en" lang="en"><span class="o">Don't leave me dying here</span><span class="tr">여기서 죽어가게 두지 마</span></p>
+
+    <div class="part">Outro</div>
+    <p class="ln en" lang="en"><span class="o">Don't let me go</span><span class="tr">놓아주지 마</span></p>
+    <p class="ln en" lang="en"><span class="o">Don't let me go</span><span class="tr">놓아주지 마</span></p>
+    <p class="ln en" lang="en"><span class="o">Don't let me go</span><span class="tr">놓아주지 마</span></p>
+
+    <div class="note"><span class="lbl">NOTE</span>후렴의 "Don't let me go"에는 밴드와 가까운 사람들의 목소리가 함께 녹음되어 있습니다. 공연에서 관객이 받아 부르도록 미리 만들어 둔 구조.</div>
+  </div>
+  <div class="pager">
+    <a href="#t4">← 이전 곡</a>
+    <a class="mid" href="#top">05 / 11</a>
+    <a href="#t6">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="track" id="t6">
+  <div class="thead">
+    <span class="num">06</span>
+    <div class="th">
+      <h2>Blue Eyes</h2>
+      <p class="sub"><span class="t">02:24</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20Blue%20Eyes" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Verse 1</div>
+    <p class="ln">전부 다 줄게</p>
+    <p class="ln">말만 해 그러면 돼</p>
+    <p class="ln">온전히 다 너의 선택</p>
+    <p class="ln">나머진 운명에 맡기게</p>
+
+    <div class="part">Pre-Chorus</div>
+    <p class="ln">널 원해 원해 원해 원해 널</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes, do you believe me</span><span class="tr">블루 아이즈, 내 말을 믿어?</span></p>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes, take it or leave it</span><span class="tr">블루 아이즈, 받아들이든지, 아니면 됐고</span></p>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes, do you believe me</span><span class="tr">블루 아이즈, 내 말을 믿어?</span></p>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes, take it or leave it</span><span class="tr">블루 아이즈, 받아들이든지, 아니면 됐고</span></p>
+
+    <div class="part">Verse 2 / Bridge <span class="rep">×2</span></div>
+    <p class="ln">넌 늘 암적인 존재</p>
+    <p class="ln">영혼을 팔아 속죄해도 모자랄 판에</p>
+    <p class="ln">욕망을 키워가네</p>
+
+    <div class="part">Chorus <span class="rep">×2</span></div>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes, do you believe me</span><span class="tr">블루 아이즈, 내 말을 믿어?</span></p>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes, take it or leave it</span><span class="tr">블루 아이즈, 받아들이든지, 아니면 됐고</span></p>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes, do you believe me</span><span class="tr">블루 아이즈, 내 말을 믿어?</span></p>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes, take it or leave it</span><span class="tr">블루 아이즈, 받아들이든지, 아니면 됐고</span></p>
+
+    <div class="part">Verse 2 / Bridge <span class="rep">×2</span></div>
+    <p class="ln">넌 늘 암적인 존재</p>
+    <p class="ln">영혼을 팔아 속죄해도 모자랄 판에</p>
+    <p class="ln">욕망을 키워가네</p>
+
+    <div class="part">Outro</div>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes</span><span class="tr">블루 아이즈</span></p>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes</span><span class="tr">블루 아이즈</span></p>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes</span><span class="tr">블루 아이즈</span></p>
+    <p class="ln en" lang="en"><span class="o">Blue Eyes</span><span class="tr">블루 아이즈</span></p>
+
+    <div class="note"><span class="lbl">NOTE</span>앨범에서 가장 무겁고 공격적인 트랙. 단순한 기타 리프 하나로 곡 전체를 밀어붙입니다. 영혼을 팔아 원하는 것을 얻는 파우스트적 거래 — 그러나 결국엔 우리 모두가 하는 작은 타협 이야기이기도 합니다.</div>
+  </div>
+  <div class="pager">
+    <a href="#t5">← 이전 곡</a>
+    <a class="mid" href="#top">06 / 11</a>
+    <a href="#t7">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="track" id="t7">
+  <div class="thead">
+    <span class="num">07</span>
+    <div class="th">
+      <h2>VAMP</h2>
+      <p class="sub"><span class="t">06:19</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20VAMP" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Verse 1</div>
+    <p class="ln">결말을 바꿔 보려 해도 부질없지</p>
+    <p class="ln">돌고 돌아 또 결국 모두 같은 엔딩</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln">사람에 지쳐가도 그 사람 붙잡고 싶더라</p>
+    <p class="ln">모든 걸 다 잊겠다고 말하는 그 와중에도</p>
+    <p class="ln">어느새 가슴 깊이 또 새겨넣고 있더라</p>
+    <p class="ln">흩어진 그 흔적 애써 주워 담고 있더라</p>
+    <p class="ln">이렇게</p>
+
+    <div class="part">Verse 2</div>
+    <p class="ln">행여 답을 알고 있다 해도 의미 없지</p>
+    <p class="ln">도망쳐 숨을 곳, 피할 곳도 없어 여긴</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln">슬픔에 지쳐가도 기다려 주질 않더라</p>
+    <p class="ln">모든 걸 다 잊겠다고 말하는 그 와중에도</p>
+    <p class="ln">어느새 파도처럼 또 밀려오고 있더라</p>
+    <p class="ln">움켜쥔 그 상처 애써 열어내고 있더라</p>
+    <p class="ln">이렇게</p>
+    <p class="ln">(불타버린 내 마음)</p>
+
+    <div class="part">Bridge</div>
+    <p class="ln">하루가 멀다하고 타들어 가는 마음</p>
+    <p class="ln">가려질 수조차 없는 벌거벗겨진 마음</p>
+    <p class="ln">후회의 조각들로 가득 채워진 잔</p>
+    <p class="ln">한잔, 또 한잔 취할 때까지 비워낸 다음</p>
+    <p class="ln">도망쳐 숨은 곳이 고작 유다의 마음</p>
+    <p class="ln">그마저도 이미 모두 다 끝나버린 다음</p>
+    <p class="ln">내 안의 불길은 점점 더 빨리 번져가</p>
+    <p class="ln">지켜내지 못한 그 모든 게 사라져가</p>
+    <p class="ln">(불타버린 내 마음)</p>
+
+    <div class="note"><span class="lbl">NOTE</span>제목의 VAMP는 뱀파이어가 아니라 음악 용어입니다. 곡이 본격적으로 시작되기 전이나 파트 사이에 반복되는 짧은 반주 구절을 뜻합니다. 관현악 편성이 가장 큰 곡이고, 후렴마다 "…더라"로 끝나 스스로도 어쩔 수 없이 되돌아가는 마음을 관찰합니다.</div>
+  </div>
+  <div class="pager">
+    <a href="#t6">← 이전 곡</a>
+    <a class="mid" href="#top">07 / 11</a>
+    <a href="#t8">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="track" id="t8">
+  <div class="thead">
+    <span class="num">08</span>
+    <div class="th">
+      <h2>상실의 관성 <span class="ko">Loss in Motion</span></h2>
+      <p class="sub"><span class="t">04:53</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20%EC%83%81%EC%8B%A4%EC%9D%98%20%EA%B4%80%EC%84%B1" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Verse 1</div>
+    <p class="ln">어떻게 지내 늘 그게 궁금해</p>
+    <p class="ln">당장이라도 전화를 걸어 물어보고 싶은데</p>
+
+    <div class="part">Verse 2</div>
+    <p class="ln">혹시라도 내 생각을 하는지</p>
+    <p class="ln">여느 때보다 하루가 더 길진 않은지</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln">난 말야, 아직도 널 많이 생각해</p>
+    <p class="ln">사람들 틈 속에 섞여 웃다가도</p>
+    <p class="ln">어느새 다시 너를 떠올리게 돼</p>
+    <p class="ln">함께하고픈 사람이 그저 너밖에 없는 것처럼</p>
+    <p class="ln">난 말야, 아직도 널 많이 생각해</p>
+    <p class="ln">너무 힘들거나 혹은 슬플 때면</p>
+    <p class="ln">어쩔 수 없이 너를 떠올리게 돼</p>
+    <p class="ln">내가 알고 있는 사람이 그저 너밖엔 없는 것처럼</p>
+    <p class="ln">말야</p>
+
+    <div class="part">Verse 3</div>
+    <p class="ln">어떻게 지내 늘 그게 궁금해</p>
+    <p class="ln">당장이라도 내게 달려와 줄 것만 같은데</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln">난 말야, 아직도 널 많이 생각해</p>
+    <p class="ln">사람들 틈 속에 섞여 웃다가도</p>
+    <p class="ln">어느새 다시 너를 떠올리게 돼</p>
+    <p class="ln">함께하고픈 사람이 그저 너밖에 없는 것처럼</p>
+    <p class="ln">난 말야, 아직도 널 많이 생각해</p>
+    <p class="ln">너무 힘들거나 혹은 슬플 때면</p>
+    <p class="ln">어쩔 수 없이 너를 떠올리게 돼</p>
+    <p class="ln">내가 알고 있는 사람이 그저 너밖엔 없는 것처럼</p>
+    <p class="ln">말야</p>
+
+    <div class="part">Chorus 3</div>
+    <p class="ln">난 말야, 아직도 널 많이 생각해</p>
+    <p class="ln">기억의 틈 속에 숨어 울다가도</p>
+    <p class="ln">어느새 다시 너를 떠올리게 돼</p>
+    <p class="ln">함께하고픈 사람이 그저 너밖에 없는 것처럼</p>
+    <p class="ln">난 말야, 아직도 널 많이 생각해</p>
+    <p class="ln">너무 힘들거나 혹은 슬플 때면</p>
+    <p class="ln">어쩔 수 없이 너를 떠올리게 돼</p>
+    <p class="ln">내가 알고 있는 사람이 그저 너밖엔 없는 것처럼</p>
+    <p class="ln">말야</p>
+
+    <div class="note"><span class="lbl">NOTE</span>관성은 물체가 계속 움직이려는 성질. 상실도 사건이 지나간 뒤에도 한동안 계속 작용하는 힘이라는 뜻을 담았습니다. 웃다가도, 울다가도 어느새 너를 떠올리게 된다 — 내가 선택한 것이 아니라 그렇게 되어버리는 기억.</div>
+  </div>
+  <div class="pager">
+    <a href="#t7">← 이전 곡</a>
+    <a class="mid" href="#top">08 / 11</a>
+    <a href="#t9">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="track" id="t9">
+  <div class="thead">
+    <span class="num">09</span>
+    <div class="th">
+      <h2>Deep Inside</h2>
+      <p class="sub"><span class="t">04:00</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20Deep%20Inside" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Verse 1</div>
+    <p class="ln">난 니 생각 이불 삼아 잠들지만</p>
+    <p class="ln">꿈에서 마저 우린 아파</p>
+    <p class="ln">내 마음 깊은 곳엔 항상</p>
+    <p class="ln">너란 비가 내리고 있고, 또 날 울려</p>
+
+    <div class="part">Pre-Chorus</div>
+    <p class="ln">애처롭게 널 떠나보내야 했던</p>
+    <p class="ln">청승맞은 기억 끊어내려 해도 난</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln">그게 잘 안돼</p>
+    <p class="ln">말처럼 쉽게</p>
+    <p class="ln">어떻게 그래</p>
+    <p class="ln">어떻게 그래</p>
+    <p class="ln">타들어 간 내 그을린 마음에</p>
+    <p class="ln">니가 가득한데</p>
+    <p class="ln">어떻게 그래</p>
+
+    <div class="part">Verse 2</div>
+    <p class="ln">난 취해 잠이 들지만</p>
+    <p class="ln">이렇게 또 꿈에서 마저 너를 찾고</p>
+
+    <div class="part">Pre-Chorus</div>
+    <p class="ln">아파하는 널 지켜봐야만 했던</p>
+    <p class="ln">안쓰러운 기억 끊어내려 해도 난</p>
+
+    <div class="part">Chorus</div>
+    <p class="ln">그게 잘 안돼</p>
+    <p class="ln">말처럼 쉽게</p>
+    <p class="ln">어떻게 그래</p>
+    <p class="ln">어떻게 그래</p>
+    <p class="ln">타들어 간 내 그을린 마음에</p>
+    <p class="ln">니가 가득한데</p>
+    <p class="ln">어떻게 그래</p>
+
+    <div class="part">Bridge</div>
+    <p class="ln en" lang="en"><span class="o">Nights fading</span><span class="tr">밤이 희미해지고</span></p>
+    <p class="ln en" lang="en"><span class="o">Tears dripping</span><span class="tr">눈물이 떨어지고</span></p>
+    <p class="ln en" lang="en"><span class="o">Hearts aching</span><span class="tr">가슴이 아려오고</span></p>
+    <p class="ln en" lang="en"><span class="o">Souls breaking</span><span class="tr">영혼이 부서지고</span></p>
+    <p class="ln en" lang="en"><span class="o">Nights fading</span><span class="tr">밤이 희미해지고</span></p>
+    <p class="ln en" lang="en"><span class="o">Dreams shaking</span><span class="tr">꿈이 흔들리고</span></p>
+    <p class="ln en" lang="en"><span class="o">Hearts aching</span><span class="tr">가슴이 아려오고</span></p>
+    <p class="ln en" lang="en"><span class="o">Souls breaking</span><span class="tr">영혼이 부서지고</span></p>
+
+    <div class="part">Chorus <span class="rep">×2</span></div>
+    <p class="ln">그게 잘 안돼</p>
+    <p class="ln">말처럼 쉽게</p>
+    <p class="ln">어떻게 그래</p>
+    <p class="ln">어떻게 그래</p>
+    <p class="ln">타들어 간 내 그을린 마음에</p>
+    <p class="ln">니가 가득한데</p>
+    <p class="ln">어떻게 그래</p>
+
+    <div class="note"><span class="lbl">NOTE</span>끊어내려 해도 끊어지지 않는 기억에 대한 곡. 후렴의 "그게 잘 안돼"는 소리치듯 거절하는 말이 아니라, 안 된다고 고백하는 말입니다.</div>
+  </div>
+  <div class="pager">
+    <a href="#t8">← 이전 곡</a>
+    <a class="mid" href="#top">09 / 11</a>
+    <a href="#t10">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="track" id="t10">
+  <div class="thead">
+    <span class="num">10</span>
+    <div class="th">
+      <h2>I Will Always Be</h2>
+      <p class="sub"><span class="t">06:28</span><span class="tag gray">영어 가사</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20I%20Will%20Always%20Be" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Refrain</div>
+    <p class="ln en" lang="en"><span class="o">I will always be</span><span class="tr">난 언제나 그대로 있을 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I will always be</span><span class="tr">난 언제나 그대로 있을 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I will always be</span><span class="tr">난 언제나 그대로 있을 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I will always be thinking of you</span><span class="tr">난 언제나 너를 생각하고 있을 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">Thinking of you</span><span class="tr">너를 생각하면서</span></p>
+    <p class="ln en" lang="en"><span class="o">Thinking of you</span><span class="tr">너를 생각하면서</span></p>
+    <p class="ln en" lang="en"><span class="o">Thinking of you</span><span class="tr">너를 생각하면서</span></p>
+    <p class="ln en" lang="en"><span class="o">Thinking of you</span><span class="tr">너를 생각하면서</span></p>
+    <p class="ln en" lang="en"><span class="o">I will always be</span><span class="tr">난 언제나 그대로 있을 거야</span></p>
+
+    <div class="part">Refrain 2</div>
+    <p class="ln en" lang="en"><span class="o">I will always be</span><span class="rep">×8</span><span class="tr">난 언제나 그대로 있을 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">Thinking of you</span><span class="rep">×4</span><span class="tr">너를 생각하면서</span></p>
+    <p class="ln en" lang="en"><span class="o">I will always be</span><span class="tr">난 언제나 그대로 있을 거야</span></p>
+
+    <div class="part">Outro</div>
+    <p class="ln en" lang="en"><span class="o">I'd break for you if I have to</span><span class="tr">그래야 한다면 너를 위해 부서질 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd bleed for you if I have to</span><span class="tr">그래야 한다면 너를 위해 피 흘릴 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd die for you if I have to</span><span class="tr">그래야 한다면 너를 위해 죽을 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd kill for you if I have to</span><span class="tr">그래야 한다면 너를 위해 사람을 죽일 수도 있어</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd break for you if I have to</span><span class="tr">그래야 한다면 너를 위해 부서질 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd bleed for you if I have to</span><span class="tr">그래야 한다면 너를 위해 피 흘릴 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd die for you if I have to</span><span class="tr">그래야 한다면 너를 위해 죽을 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd kill for you if I have to</span><span class="tr">그래야 한다면 너를 위해 사람을 죽일 수도 있어</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd break for you if I have to</span><span class="tr">그래야 한다면 너를 위해 부서질 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd bleed for you if I have to</span><span class="tr">그래야 한다면 너를 위해 피 흘릴 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd die for you if I have to</span><span class="tr">그래야 한다면 너를 위해 죽을 거야</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd kill for you if I have to</span><span class="tr">그래야 한다면 너를 위해 사람을 죽일 수도 있어</span></p>
+    <p class="ln en" lang="en"><span class="o">I'd die for you</span><span class="tr">너를 위해 죽을 거야</span></p>
+
+    <div class="note"><span class="lbl">NOTE</span>"I will always be thinking of you"가 주문처럼 반복되다가, 마지막에 부서짐 → 피 → 죽음 → 살해로 치달립니다. 선공개 EP 《X : 3 / ?》에 먼저 실린 곡.</div>
+  </div>
+  <div class="pager">
+    <a href="#t9">← 이전 곡</a>
+    <a class="mid" href="#top">10 / 11</a>
+    <a href="#t11">다음 곡 →</a>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="track" id="t11">
+  <div class="thead">
+    <span class="num">11</span>
+    <div class="th">
+      <h2>Farewell Song</h2>
+      <p class="sub"><span class="t">05:58</span><span class="tag gray">영어 가사</span></p>
+    </div>
+    <a class="miniyt" href="https://music.youtube.com/search?q=NELL%20Farewell%20Song" target="_blank" rel="noopener" aria-label="유튜브 뮤직에서 듣기">▶</a>
+  </div>
+  <div class="lyr">
+    <div class="part">Chorus</div>
+    <p class="ln en" lang="en"><span class="o">So long, farewell</span><span class="tr">잘 가, 이제 안녕</span></p>
+    <p class="ln en" lang="en"><span class="o">Though you're always in my heart</span><span class="tr">네가 늘 내 마음속에 있는데도</span></p>
+    <p class="ln en" lang="en"><span class="o">So long, farewell</span><span class="tr">잘 가, 이제 안녕</span></p>
+    <p class="ln en" lang="en"><span class="o">Everything is breaking apart</span><span class="tr">모든 게 부서져 가고 있어</span></p>
+
+    <div class="part">Verse 1</div>
+    <p class="ln en" lang="en"><span class="o">I still wish you were here</span><span class="tr">난 아직도 네가 여기 있길 바라</span></p>
+    <p class="ln en" lang="en"><span class="o">This foolish disappointment won't disappear</span><span class="tr">이 어리석은 실망은 사라지지 않아</span></p>
+    <p class="ln en" lang="en"><span class="o">All love hurts when it burns</span><span class="tr">모든 사랑은 타오를 때 아파</span></p>
+    <p class="ln en" lang="en"><span class="o">Then we learn</span><span class="tr">그리고서야 알게 되지</span></p>
+    <p class="ln en" lang="en"><span class="o">That it's not a loser's game</span><span class="tr">그건 지는 자의 게임이 아니라</span></p>
+    <p class="ln en" lang="en"><span class="o">But it's a losing game</span><span class="tr">지는 게임이라는 걸</span></p>
+    <p class="ln en" lang="en"><span class="o">It's a cruel, tempting game</span><span class="tr">잔인하고도 황홀한 게임이라는 걸</span></p>
+
+    <div class="part">Chorus</div>
+    <p class="ln en" lang="en"><span class="o">So long, farewell</span><span class="tr">잘 가, 이제 안녕</span></p>
+    <p class="ln en" lang="en"><span class="o">Though you're always in my heart</span><span class="tr">네가 늘 내 마음속에 있는데도</span></p>
+    <p class="ln en" lang="en"><span class="o">So long, farewell</span><span class="tr">잘 가, 이제 안녕</span></p>
+    <p class="ln en" lang="en"><span class="o">Everything is breaking apart</span><span class="tr">모든 게 부서져 가고 있어</span></p>
+
+    <div class="part">Verse 2</div>
+    <p class="ln en" lang="en"><span class="o">It still feels like you are here</span><span class="tr">아직도 네가 여기 있는 것 같아</span></p>
+    <p class="ln en" lang="en"><span class="o">This foolish expectation won't disappear</span><span class="tr">이 어리석은 기대는 사라지지 않아</span></p>
+    <p class="ln en" lang="en"><span class="o">All love burns when it hurts</span><span class="tr">모든 사랑은 아플 때 타올라</span></p>
+    <p class="ln en" lang="en"><span class="o">Then we learn</span><span class="tr">그리고서야 알게 되지</span></p>
+    <p class="ln en" lang="en"><span class="o">That it's not a loser's game</span><span class="tr">그건 지는 자의 게임이 아니라</span></p>
+    <p class="ln en" lang="en"><span class="o">But it's a losing game</span><span class="tr">지는 게임이라는 걸</span></p>
+    <p class="ln en" lang="en"><span class="o">It's a cruel, tempting game</span><span class="tr">잔인하고도 황홀한 게임이라는 걸</span></p>
+
+    <div class="part">Chorus <span class="rep">×4</span></div>
+    <p class="ln en" lang="en"><span class="o">So long, farewell</span><span class="tr">잘 가, 이제 안녕</span></p>
+    <p class="ln en" lang="en"><span class="o">Though you're always in my heart</span><span class="tr">네가 늘 내 마음속에 있는데도</span></p>
+    <p class="ln en" lang="en"><span class="o">So long, farewell</span><span class="tr">잘 가, 이제 안녕</span></p>
+    <p class="ln en" lang="en"><span class="o">Everything is breaking apart</span><span class="tr">모든 게 부서져 가고 있어</span></p>
+
+    <div class="note"><span class="lbl">NOTE</span>앨범의 마지막 곡. 소중한 것들이 무너지는 과정을 담담히 받아들이는 순간을 노래합니다. "though" 하나가 곡 전체를 떠받칩니다 — 모든 게 부서지는데도, 너는 여전히 내 마음속에.</div>
+  </div>
+  <div class="pager">
+    <a href="#t10">← 이전 곡</a>
+    <a class="mid" href="#top">11 / 11</a>
+    <a href="#top">처음으로 ↑</a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>가사 © 김종완 / SPACE BOHEMIAN · 지니뮤직. 이 페이지는 개인 감상용으로 만든 비공식 가사 페이지입니다.<br>영어 가사 아래의 우리말은 감상을 돕기 위한 해석이며, 공식 번역이 아닙니다.</p>
+  <p>NELL 《X》 · 2026.06.17 · 11곡 50분 16초</p>
+</footer>
+
+<button type="button" class="to-top" id="toTop" aria-label="맨 위로">↑</button>
+
+<script>
+(function(){
+  var root=document.documentElement, body=document.body;
+  var bar=document.getElementById('stickyBar');
+  var pills=[].slice.call(document.querySelectorAll('.pill'));
+  var tracks=[].slice.call(document.querySelectorAll('.track'));
+  var sizeBtns=[].slice.call(document.querySelectorAll('.seg button'));
+  var trBtn=document.getElementById('trBtn');
+  var trState=trBtn.querySelector('.state');
+  var toTop=document.getElementById('toTop');
+
+  function barH(){ return bar.offsetHeight || 0; }
+  function setBarH(){ root.style.setProperty('--barH', barH()+'px'); }
+  setBarH();
+  window.addEventListener('resize', setBarH);
+  window.addEventListener('orientationchange', function(){ setTimeout(setBarH, 200); });
+  if (window.ResizeObserver){ new ResizeObserver(setBarH).observe(bar); }
+
+  function store(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function read(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+
+  /* 글자 크기 */
+  var fs=read('nellx-fs')||'m';
+  function applyFs(v){
+    fs=v; body.setAttribute('data-fs',v);
+    sizeBtns.forEach(function(b){ b.classList.toggle('on', b.dataset.size===v); });
+    store('nellx-fs',v);
+  }
+  applyFs(fs);
+  sizeBtns.forEach(function(b){ b.addEventListener('click', function(){ applyFs(b.dataset.size); }); });
+
+  /* 영어 해석 토글 */
+  var trOn = read('nellx-tr');
+  trOn = (trOn===null) ? true : (trOn==='1');
+  function applyTr(v){
+    trOn=v;
+    body.classList.toggle('show-tr', v);
+    trBtn.classList.toggle('on', v);
+    trBtn.setAttribute('aria-pressed', v?'true':'false');
+    trState.textContent = v?'켬':'끔';
+    store('nellx-tr', v?'1':'0');
+  }
+  applyTr(trOn);
+  trBtn.addEventListener('click', function(){ applyTr(!trOn); });
+
+  /* 부드러운 이동 */
+  function scrollToEl(el){
+    var y=el.getBoundingClientRect().top + window.pageYOffset - barH() - 10;
+    window.scrollTo({top:(y<0?0:y), behavior:'smooth'});
+  }
+  pills.forEach(function(p){
+    p.addEventListener('click', function(e){
+      e.preventDefault();
+      var id=p.getAttribute('href').slice(1);
+      var t=document.getElementById(id);
+      if(!t) return;
+      scrollToEl(t);
+      if(history.replaceState){ history.replaceState(null,'','#'+id); }
+      else { location.hash=id; }
+    });
+  });
+  toTop.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+
+  /* 현재 곡 표시 */
+  var last=-1, ticking=false;
+  function update(){
+    var h=barH(), idx=0;
+    for(var i=0;i<tracks.length;i++){
+      if(tracks[i].getBoundingClientRect().top <= h+64) idx=i;
+    }
+    if(idx!==last){
+      pills.forEach(function(p,i){
+        p.classList.toggle('active', i===idx);
+        if(i===idx){ p.setAttribute('aria-current','true'); } else { p.removeAttribute('aria-current'); }
+      });
+      var p=pills[idx];
+      if(p){
+        var box=p.parentNode;
+        var left=p.offsetLeft - box.clientWidth/2 + p.offsetWidth/2;
+        if(box.scrollTo){ box.scrollTo({left:Math.max(0,left), behavior:'smooth'}); }
+        else { box.scrollLeft = left; }
+      }
+      last=idx;
+    }
+    toTop.classList.toggle('show', window.pageYOffset > 700);
+  }
+  function onScroll(){
+    if(ticking) return;
+    ticking=true;
+    requestAnimationFrame(function(){ update(); ticking=false; });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  update();
+
+  /* 해시로 들어온 경우 머리 위 여백 보정 */
+  if(location.hash){
+    var target=document.getElementById(location.hash.slice(1));
+    if(target){ setTimeout(function(){ scrollToEl(target); }, 80); }
+  }
+})();
+</script>
+</body>
+</html>
