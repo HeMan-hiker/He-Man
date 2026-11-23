@@ -806,6 +806,7 @@ body[data-fs="l"]{--fs:19.5px}
   fetch(DATA_URL,{cache:'no-cache'}).then(function(r){ return r.json(); }).then(function(data){
     RELS=data.rels||data;
     TR=data.tr||{};
+    RELS.sort(function(a,b){ return String(b.d).localeCompare(String(a.d)); });
     var songs=0;
     RELS.forEach(function(rel,i){
       years[eraOf(yearOf(rel.d))]=(years[eraOf(yearOf(rel.d))]||0)+1;
