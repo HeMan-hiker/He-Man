@@ -18,6 +18,8 @@
   --hot:#cf4630;
   --fs:17.5px; --barH:104px;
   --radius:20px;
+  /* 본문 폭: 데스크톱은 읽기 좋은 폭, 터치 기기는 아래에서 100%로 풀립니다 */
+  --wrap:720px;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
@@ -41,10 +43,10 @@ body::after{
     linear-gradient(-35deg, transparent 49.86%, rgba(255,255,255,.035) 50%, transparent 50.14%);
   opacity:.5;
 }
-.wrap{position:relative; z-index:1; max-width:720px; margin:0 auto; padding:0 18px}
+.wrap{position:relative; z-index:1; max-width:var(--wrap); margin:0 auto; padding:0 18px}
 
 /* ── hero ── */
-.hero{position:relative; z-index:1; max-width:720px; margin:0 auto; padding:46px 22px 30px; text-align:center}
+.hero{position:relative; z-index:1; max-width:var(--wrap); margin:0 auto; padding:46px 22px 30px; text-align:center}
 .eyebrow{margin:0;font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--dim)}
 h1{
   margin:10px 0 0; font-size:86px; line-height:.92; font-weight:300; letter-spacing:.04em;
@@ -69,7 +71,7 @@ h1{
   border-bottom:1px solid rgba(255,255,255,.07);
   padding-top:env(safe-area-inset-top,0);
 }
-.tools{display:flex;align-items:center;gap:8px;max-width:720px;margin:0 auto;padding:9px 18px 0}
+.tools{display:flex;align-items:center;gap:8px;max-width:var(--wrap);margin:0 auto;padding:9px 18px 0}
 .seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:0 0 auto}
 .seg button{
   appearance:none;background:transparent;border:0;color:var(--muted);
@@ -90,7 +92,7 @@ h1{
   color:var(--muted);font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 11px;
 }
 .pills{
-  display:flex;gap:7px;overflow-x:auto;max-width:720px;margin:0 auto;
+  display:flex;gap:7px;overflow-x:auto;max-width:var(--wrap);margin:0 auto;
   padding:9px 18px 10px;scrollbar-width:none;-ms-overflow-style:none;
   scroll-snap-type:x proximity;
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 22px),transparent 100%);
@@ -108,7 +110,7 @@ h1{
 .pill.active b{color:rgba(0,0,0,.42)}
 
 /* ── tracks ── */
-main{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:6px 18px 0}
+main{position:relative;z-index:1;max-width:var(--wrap);margin:0 auto;padding:6px 18px 0}
 .track{
   background:linear-gradient(180deg,#12151a 0%,#0e1116 100%);
   border:1px solid var(--line);
@@ -190,7 +192,7 @@ body.show-tr .ln .tr{display:block}
 .pager .mid{flex:1 1 auto;text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .pager .dis{opacity:.3}
 
-footer{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:30px 24px 64px;text-align:center;color:var(--dim);font-size:11px;line-height:1.85}
+footer{position:relative;z-index:1;max-width:var(--wrap);margin:0 auto;padding:30px 24px 64px;text-align:center;color:var(--dim);font-size:11px;line-height:1.85}
 footer a{color:var(--muted)}
 
 .to-top{
@@ -205,8 +207,9 @@ body[data-fs="s"]{--fs:15.5px}
 body[data-fs="m"]{--fs:17.5px}
 body[data-fs="l"]{--fs:20px}
 
-/* ── phones (≤520px) ── */
-@media (max-width:520px){
+/* ── 휴대폰 성능: 폭이 좁거나(≤520px) 터치 기기 ──
+   삼성 인터넷은 CSS 뷰포트가 900px 넘게 잡히는 경우가 있어 폭 조건만으로는 안 잡힙니다. */
+@media (max-width:520px),(hover:none),(pointer:coarse){
   /* 고정(fixed) 오버레이는 안드로이드 스크롤마다 다시 그려집니다.
      같은 결의 사선 무늬를 반복 배경으로 바꿔 스크롤 비용 없이 유지합니다. */
   body::after{display:none}
@@ -222,7 +225,10 @@ body[data-fs="l"]{--fs:20px}
 
   /* 스티키 바: 블러 한 겹을 걷어내 스크롤 프레임을 아낍니다 */
   .sticky{background:rgba(8,9,11,.96);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
 
+/* ── 좁은 화면 (≤520px) ── */
+@media (max-width:520px){
   .hero{padding:24px 16px 18px}
   .eyebrow{font-size:9.5px;letter-spacing:.28em}
   h1{font-size:56px;margin-top:8px}
@@ -257,7 +263,53 @@ body[data-fs="l"]{--fs:20px}
   body[data-fs="l"]{--fs:18px}
 }
 
-@media (min-width:640px){
+/* ── 터치 기기: 720px 상자 배제, 화면 폭 그대로 ──
+   삼성 인터넷(PC 보기·자동 축소 등)에서는 CSS 뷰포트가 900px 넘게 잡히면서
+   520px 미디어쿼리가 아예 걸지지 않았습니다. 터치 여부로 잡아 화면을 꽉 채웁니다. */
+@media (hover:none),(pointer:coarse){
+  :root{--wrap:100%;--radius:15px}
+
+  /* 히어로를 낮춰 첫 곡이 위에서 바로 시작하게 */
+  .hero{padding:20px 14px 12px}
+  .eyebrow{font-size:10px;letter-spacing:.3em}
+  h1{font-size:clamp(54px,8.5vw,92px);margin-top:6px}
+  .album-meta{margin-top:10px;font-size:clamp(12px,1.35vw,14px)}
+  .lede{margin-top:12px;max-width:none;font-size:clamp(13px,1.4vw,15px);line-height:1.65}
+  .album-yt{margin-top:14px;padding:10px 18px;font-size:clamp(12.5px,1.4vw,14px)}
+
+  .tools{padding:8px 10px 0;gap:6px}
+  .seg button{padding:6px 9px;font-size:clamp(11.5px,1.3vw,14px)}
+  .chip{padding:6px 10px;font-size:clamp(11.5px,1.3vw,14px)}
+  .chip .state{font-size:clamp(10px,1.15vw,12px)}
+  .ytmini{padding:6px 10px;font-size:clamp(11.5px,1.3vw,14px)}
+  .pills{padding:8px 10px 9px;gap:6px}
+  .pill{padding:6px 11px;font-size:clamp(12px,1.35vw,14.5px)}
+  .pill b{font-size:clamp(9.5px,1.1vw,11.5px)}
+
+  main{padding:4px 8px 0}
+  .track{padding:14px 12px 10px;border-radius:var(--radius);margin:10px 0}
+  .thead{gap:10px}
+  .num{font-size:clamp(11px,1.2vw,13px)}
+  .th h2{font-size:clamp(18px,2.15vw,23px)}
+  .th h2 .ko{font-size:clamp(12.5px,1.5vw,15px);margin-left:5px}
+  .sub{font-size:clamp(11.5px,1.3vw,14px)}
+  .lyr{margin-top:10px;padding-top:10px;line-height:1.55}
+  .ln{margin:0 0 .3em}
+  .ln .tr{margin-top:.18em;line-height:1.55}
+  .part{margin:14px 0 5px;font-size:clamp(10px,1.15vw,12px)}
+  .inst{margin:12px 0 4px;padding:14px 12px;font-size:clamp(13px,1.45vw,15px)}
+  .inst b{font-size:clamp(14.5px,1.6vw,17px)}
+  .note{margin:12px 0 4px;padding:10px 12px;font-size:clamp(12.5px,1.4vw,14.5px)}
+  .pager{margin-top:14px;padding-top:10px;font-size:clamp(12.5px,1.4vw,14px)}
+  footer{padding:24px 14px 56px;font-size:clamp(11px,1.25vw,13px)}
+
+  /* 글자 크기를 vw로 같이 키워, 화면이 넓게(축소되어) 잡혀도 가사는 크게 남습니다 */
+  body[data-fs="s"]{--fs:clamp(15px,1.85vw,19px)}
+  body[data-fs="m"]{--fs:clamp(16.5px,2.15vw,21.5px)}
+  body[data-fs="l"]{--fs:clamp(18.5px,2.4vw,24px)}
+}
+
+@media (min-width:640px) and (hover:hover) and (pointer:fine){
   h1{font-size:104px}
   .track{padding:24px 24px 14px}
   .th h2{font-size:21px}
