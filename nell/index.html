@@ -54,7 +54,7 @@ h1{
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .album-meta{margin:14px 0 0;font-size:12.5px;color:var(--dim);letter-spacing:.02em;font-variant-numeric:tabular-nums}
-.lede{margin:14px auto 0;max-width:46ch;font-size:14px;line-height:1.8;color:var(--muted);word-break:keep-all}
+.lede{margin:14px auto 0;max-width:58ch;font-size:14px;line-height:1.8;color:var(--muted);word-break:keep-all}
 .lede b{color:#cdd5df;font-weight:600}
 
 /* ── sticky bar ── */
@@ -205,14 +205,14 @@ body.searching #albums{display:none}
 }
 .sheet-b{
   flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:20px 20px 40px;max-width:var(--wrap);width:100%;margin:0 auto;
+  padding:20px max(20px, calc((100% - 760px) / 2)) 40px;
   font-size:var(--fs);line-height:1.9;letter-spacing:-.005em;word-break:keep-all;color:#e4e9ef;
 }
 .sheet-b .stanza{margin:0 0 1.15em}
 .ln{margin:0}
 .ln .tr{display:none;margin-top:.12em;font-size:.82em;line-height:1.6;color:var(--muted)}
 body.show-tr .ln.has .tr{display:block}
-.ln.has{padding:.02em 0}
+.ln.has{padding:.02em 0 .28em}
 .nolyr{
   margin:18px 0;padding:20px 16px;border-radius:14px;text-align:center;
   background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.12);
@@ -225,9 +225,8 @@ body.show-tr .ln.has .tr{display:block}
 }
 .sheet-f{
   flex:0 0 auto;display:flex;align-items:center;gap:10px;
-  padding:8px 16px calc(8px + env(safe-area-inset-bottom,0));
+  padding:8px max(16px, calc((100% - 760px) / 2)) calc(8px + env(safe-area-inset-bottom,0));
   border-top:1px solid rgba(255,255,255,.08);background:rgba(10,11,14,.96);
-  max-width:var(--wrap);width:100%;margin:0 auto;
 }
 .sheet-f button{
   flex:0 0 auto;background:transparent;border:1px solid var(--line);border-radius:999px;
