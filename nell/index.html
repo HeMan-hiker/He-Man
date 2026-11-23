@@ -377,7 +377,6 @@ body[data-fs="l"]{--fs:19.5px}
   </div>
   <div class="chips" id="typeChips" role="group" aria-label="앨범 유형"></div>
   <div class="chips" id="eraChips" role="group" aria-label="시대"></div>
-  <div class="chips" id="optChips" role="group" aria-label="보기 옵션"></div>
 </div>
 
 <main>
@@ -436,7 +435,6 @@ body[data-fs="l"]{--fs:19.5px}
   var clrBtn=document.getElementById('clr');
   var typeChips=document.getElementById('typeChips');
   var eraChips=document.getElementById('eraChips');
-  var optChips=document.getElementById('optChips');
   var sumL=document.getElementById('sumL');
   var sumR=document.getElementById('sumR');
   var sheet=document.getElementById('sheet');
@@ -527,7 +525,7 @@ body[data-fs="l"]{--fs:19.5px}
     store('nell-tr',trOn?'1':'0');
   }
   trChip.addEventListener('click',function(){ trOn=!trOn; paintTr(); });
-  optChips.appendChild(trChip);
+  eraChips.appendChild(trChip);
   paintTr();
 
   /* ── 데이터 ── */
@@ -564,6 +562,7 @@ body[data-fs="l"]{--fs:19.5px}
       });
       eraChips.appendChild(b);
     });
+    eraChips.appendChild(trChip);
   }
 
   function trackCount(rel){ return rel.tr.length; }
