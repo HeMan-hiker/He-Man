@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
+<title>NELL 전곡 가사 아카이브 — 정규·EP·싱글·OST 46장</title>
+<meta name="description" content="넬(NELL) 2001년 인디 1집부터 2026년까지 전곡 가사 아카이브. 앨범별 가사와 영어 가사 우리말 해석, 유튜브 뮤직 바로 듣기.">
+<meta property="og:title" content="NELL 전곡 가사 아카이브">
+<meta property="og:description" content="2001—2026, 46장의 앨범과 전곡 가사. 영어 가사는 우리말 해석과 함께.">
+<meta property="og:type" content="music.playlist">
+<meta property="og:url" content="https://heman-hiker.github.io/He-Man/nell/">
+<meta name="twitter:card" content="summary">
+<style>
+:root{
+  --bg:#08090b; --bg2:#0d0f13; --card:#111419; --line:#232830;
+  --ink:#eceef1; --muted:#9aa3ae; --dim:#6b7481;
+  --hot:#cf4630;
+  --fs:17px; --barH:118px;
+  --radius:20px;
+  --wrap:760px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;overflow-x:clip}
+body{
+  background:
+    radial-gradient(1000px 520px at 12% -8%, #171b22 0%, rgba(23,27,34,0) 62%),
+    radial-gradient(760px 420px at 96% 2%, #1a1416 0%, rgba(26,20,22,0) 58%),
+    var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+  overscroll-behavior-y:none;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(35deg, transparent 49.86%, rgba(255,255,255,.035) 50%, transparent 50.14%),
+    linear-gradient(-35deg, transparent 49.86%, rgba(255,255,255,.035) 50%, transparent 50.14%);
+  opacity:.45;
+}
+.wrap{position:relative;z-index:1;max-width:var(--wrap);margin:0 auto;padding:0 18px}
+a{color:inherit}
+button{font:inherit;color:inherit}
+
+/* ── hero ── */
+.hero{position:relative;z-index:1;max-width:var(--wrap);margin:0 auto;padding:44px 22px 24px;text-align:center}
+.eyebrow{margin:0;font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--dim)}
+h1{
+  margin:8px 0 0;font-size:88px;line-height:.9;font-weight:300;letter-spacing:.05em;
+  background:linear-gradient(180deg,#ffffff 0%,#cfd6e0 46%,#7d8794 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.album-meta{margin:14px 0 0;font-size:12.5px;color:var(--dim);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.lede{margin:14px auto 0;max-width:46ch;font-size:14px;line-height:1.8;color:var(--muted);word-break:keep-all}
+.lede b{color:#cdd5df;font-weight:600}
+
+/* ── sticky bar ── */
+.sticky{
+  position:sticky;top:0;z-index:30;
+  background:rgba(8,9,11,.92);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);
+  backdrop-filter:blur(16px) saturate(140%);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  padding-top:env(safe-area-inset-top,0);
+}
+.tools{display:flex;align-items:center;gap:8px;max-width:var(--wrap);margin:0 auto;padding:9px 18px 0}
+.search{position:relative;flex:1 1 auto;min-width:0}
+.search input{
+  width:100%;appearance:none;border:1px solid var(--line);border-radius:999px;
+  background:rgba(255,255,255,.045);color:var(--ink);font:inherit;font-size:13px;
+  padding:8px 34px 8px 34px;outline:none;
+}
+.search input::placeholder{color:var(--dim)}
+.search input:focus{border-color:rgba(255,255,255,.34);background:rgba(255,255,255,.07)}
+.search .ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--dim);pointer-events:none}
+.search .clr{
+  position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  width:26px;height:26px;border-radius:50%;border:0;background:transparent;color:var(--dim);
+  font-size:14px;display:none;cursor:pointer;
+}
+.search.has .clr{display:block}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:0 0 auto}
+.seg button{appearance:none;background:transparent;border:0;color:var(--muted);font-size:12px;padding:6px 9px;cursor:pointer}
+.seg button.on{background:rgba(255,255,255,.12);color:var(--ink)}
+.chips{
+  display:flex;gap:7px;overflow-x:auto;max-width:var(--wrap);margin:0 auto;
+  padding:9px 18px 0;scrollbar-width:none;-ms-overflow-style:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 22px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 22px),transparent 100%);
+}
+.chips:last-of-type{padding-bottom:10px}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+  padding:6px 12px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(255,255,255,.03);color:var(--muted);cursor:pointer;font-size:12px;letter-spacing:-.01em;
+}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#0a0b0d}
+.chip .cnt{font-size:10px;opacity:.6;font-variant-numeric:tabular-nums}
+.chip.trchip{color:#9fb2c6;border-color:rgba(159,178,198,.32)}
+.chip.trchip.on{background:#9fb2c6;border-color:#9fb2c6;color:#0a0b0d}
+
+/* ── list ── */
+main{position:relative;z-index:1;max-width:var(--wrap);margin:0 auto;padding:8px 18px 40px}
+.sum{margin:2px 4px 4px;font-size:11.5px;color:var(--dim);display:flex;justify-content:space-between;gap:10px}
+.sum .n{font-variant-numeric:tabular-nums}
+
+.alb{
+  border:1px solid var(--line);border-radius:var(--radius);margin:12px 0;
+  background:linear-gradient(180deg,#12151a 0%,#0e1116 100%);
+  overflow:hidden;scroll-margin-top:calc(var(--barH) + 10px);
+  box-shadow:0 1px 0 rgba(255,255,255,.03) inset;
+}
+.alb.open{border-color:rgba(255,255,255,.16)}
+.alb-h{
+  width:100%;display:flex;align-items:center;gap:13px;text-align:left;
+  padding:12px 14px;background:transparent;border:0;cursor:pointer;
+}
+.cov{
+  width:58px;height:58px;flex:0 0 auto;border-radius:10px;object-fit:cover;
+  background:#1a1d22;border:1px solid rgba(255,255,255,.07);
+}
+.alb-meta{flex:1 1 auto;min-width:0}
+.alb-meta h2{
+  margin:0;font-size:16.5px;line-height:1.3;font-weight:700;letter-spacing:-.025em;
+  word-break:keep-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.alb-meta .sub{margin:4px 0 0;font-size:11.5px;color:var(--dim);display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.tag{font-size:10px;line-height:1;padding:4px 7px;border-radius:999px;border:1px solid rgba(255,255,255,.16);color:var(--muted);letter-spacing:.01em}
+.tag.new{border-color:rgba(207,70,48,.5);color:#e57a67}
+.caret{flex:0 0 auto;color:var(--dim);font-size:12px;transition:transform .18s}
+.alb.open .caret{transform:rotate(180deg);color:var(--ink)}
+
+.alb-b{display:none;padding:0 8px 8px;border-top:1px solid rgba(255,255,255,.06)}
+.alb.open .alb-b{display:block}
+.alb-play{
+  display:inline-flex;align-items:center;gap:7px;margin:10px 6px 4px;
+  padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);color:#dfe6ee;text-decoration:none;font-size:12px;
+}
+.alb-play:active{background:rgba(255,255,255,.12)}
+
+.tracks{list-style:none;margin:2px 0 0;padding:0}
+.track{
+  width:100%;display:flex;align-items:center;gap:10px;text-align:left;
+  padding:9px 6px;background:transparent;border:0;border-radius:10px;cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,.045);
+}
+.tracks li:last-child .track{border-bottom:0}
+.track:active{background:rgba(255,255,255,.05)}
+.track .n{flex:0 0 auto;width:20px;font-size:10.5px;color:var(--dim);font-variant-numeric:tabular-nums;letter-spacing:.03em}
+.track .tt{
+  flex:1 1 auto;min-width:0;font-size:14px;color:#e4e9ef;letter-spacing:-.01em;word-break:keep-all;
+}
+.track.no .tt{color:var(--dim)}
+.track .en{font-size:9.5px;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:1px 5px;flex:0 0 auto}
+.track .go{flex:0 0 auto;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);
+  display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);text-decoration:none}
+.track .go:active{background:rgba(255,255,255,.1)}
+
+/* ── search results ── */
+#results{display:none}
+body.searching #results{display:block}
+body.searching #albums{display:none}
+.res-h{margin:14px 4px 8px;font-size:11.5px;color:var(--dim);letter-spacing:.02em}
+.res-h b{color:#cdd5df;font-weight:600;font-variant-numeric:tabular-nums}
+.res{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#0f1217}
+.res li+li{border-top:1px solid rgba(255,255,255,.05)}
+.res button{width:100%;display:flex;align-items:center;gap:10px;padding:11px 13px;background:transparent;border:0;text-align:left;cursor:pointer}
+.res button:active{background:rgba(255,255,255,.05)}
+.res .rt{flex:1 1 auto;min-width:0;font-size:14px;color:#e4e9ef;word-break:keep-all}
+.res .ra{flex:0 0 auto;font-size:11px;color:var(--dim);max-width:42%;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res .mark{color:#e9b1a4}
+.empty{padding:26px 10px;text-align:center;color:var(--dim);font-size:13px;line-height:1.8}
+.empty b{color:var(--muted)}
+
+/* ── lyric sheet ── */
+.sheet{
+  position:fixed;inset:0;z-index:60;display:none;flex-direction:column;
+  background:var(--bg);
+  padding-top:env(safe-area-inset-top,0);
+}
+.sheet.show{display:flex}
+.sheet-h{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:rgba(10,11,14,.96);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  flex:0 0 auto;
+}
+.x{
+  flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
+  background:transparent;color:var(--muted);font-size:15px;cursor:pointer;
+}
+.sheet-h .hm{flex:1 1 auto;min-width:0}
+.sheet-h h2{margin:0;font-size:16px;line-height:1.3;font-weight:700;letter-spacing:-.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet-h .hm p{margin:3px 0 0;font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet-h .play{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+  padding:8px 13px;border-radius:999px;background:var(--ink);color:#0a0b0d;font-size:12px;font-weight:700;
+}
+.sheet-b{
+  flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:20px 20px 40px;max-width:var(--wrap);width:100%;margin:0 auto;
+  font-size:var(--fs);line-height:1.9;letter-spacing:-.005em;word-break:keep-all;color:#e4e9ef;
+}
+.sheet-b .stanza{margin:0 0 1.15em}
+.ln{margin:0}
+.ln .tr{display:none;margin-top:.12em;font-size:.82em;line-height:1.6;color:var(--muted)}
+body.show-tr .ln.has .tr{display:block}
+.ln.has{padding:.02em 0}
+.nolyr{
+  margin:18px 0;padding:20px 16px;border-radius:14px;text-align:center;
+  background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.12);
+  color:var(--muted);font-size:13.5px;line-height:1.8;
+}
+.nolyr b{display:block;color:var(--ink);font-size:14.5px;margin-bottom:6px}
+.srcnote{
+  margin:26px 0 0;padding-top:14px;border-top:1px solid rgba(255,255,255,.07);
+  font-size:11px;color:var(--dim);line-height:1.75;
+}
+.sheet-f{
+  flex:0 0 auto;display:flex;align-items:center;gap:10px;
+  padding:8px 16px calc(8px + env(safe-area-inset-bottom,0));
+  border-top:1px solid rgba(255,255,255,.08);background:rgba(10,11,14,.96);
+  max-width:var(--wrap);width:100%;margin:0 auto;
+}
+.sheet-f button{
+  flex:0 0 auto;background:transparent;border:1px solid var(--line);border-radius:999px;
+  color:var(--muted);padding:7px 12px;font-size:12px;cursor:pointer;
+}
+.sheet-f button:disabled{opacity:.3}
+.sheet-f .pos{flex:1 1 auto;text-align:center;font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums;letter-spacing:.06em}
+
+/* ── footer ── */
+footer{position:relative;z-index:1;max-width:var(--wrap);margin:0 auto;padding:26px 22px 60px;text-align:center;color:var(--dim);font-size:11px;line-height:1.85}
+footer a{color:var(--muted)}
+footer .links{margin-bottom:8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+.to-top{
+  position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom,0));z-index:40;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line);
+  background:rgba(20,24,30,.92);color:var(--ink);font-size:15px;cursor:pointer;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.to-top.show{opacity:1;pointer-events:auto}
+
+body[data-fs="s"]{--fs:15px}
+body[data-fs="m"]{--fs:17px}
+body[data-fs="l"]{--fs:19.5px}
+
+/* ── 터치 기기 ── */
+@media (max-width:520px),(hover:none),(pointer:coarse){
+  body::after{display:none}
+  body{
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(1000px 520px at 12% -8%, #171b22 0%, rgba(23,27,34,0) 62%),
+      radial-gradient(760px 420px at 96% 2%, #1a1416 0%, rgba(26,20,22,0) 58%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='52'%3E%3Cpath d='M0 52 52 0' stroke='%23ffffff' stroke-opacity='.035' stroke-width='1'/%3E%3C/svg%3E");
+    background-repeat:no-repeat,no-repeat,repeat;
+  }
+  .sticky{background:rgba(8,9,11,.97);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .sheet-h,.sheet-f{-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+
+@media (max-width:520px){
+  .hero{padding:26px 16px 18px}
+  .eyebrow{font-size:9.5px;letter-spacing:.28em}
+  h1{font-size:56px}
+  .album-meta{margin-top:10px;font-size:12px}
+  .lede{margin-top:10px;font-size:13px;line-height:1.7}
+  .tools{padding:7px 12px 0;gap:6px}
+  .search input{font-size:12.5px;padding:7px 30px}
+  .search .ico{left:11px}
+  .seg button{padding:5px 7px;font-size:11.5px}
+  .chips{padding:7px 12px 0;gap:6px}
+  .chips:last-of-type{padding-bottom:9px}
+  .chip{padding:5px 10px;font-size:11.5px}
+  main{padding:6px 10px 30px}
+  .alb-h{padding:10px 11px;gap:10px}
+  .cov{width:52px;height:52px;border-radius:9px}
+  .alb-meta h2{font-size:15.5px}
+  .track{padding:9px 4px}
+  .track .tt{font-size:13.5px}
+  .sheet-b{padding:16px 16px 36px}
+  body[data-fs="s"]{--fs:14.5px}
+  body[data-fs="m"]{--fs:16.5px}
+  body[data-fs="l"]{--fs:19px}
+}
+
+/* 삼성 인터넷: CSS 뷰포트가 900px 넘게 잡히는 경우가 있어 터치 여부로 잡습니다 */
+@media (hover:none),(pointer:coarse){
+  :root{--wrap:100%;--radius:15px}
+  .hero{padding:20px 14px 12px}
+  .eyebrow{font-size:clamp(10px,2.3vw,19px);letter-spacing:.3em}
+  h1{font-size:clamp(54px,8.6vw,92px);margin-top:6px}
+  .album-meta{margin-top:10px;font-size:clamp(12px,2.7vw,23px)}
+  .lede{margin-top:10px;max-width:none;font-size:clamp(13px,2.6vw,24px);line-height:1.6}
+
+  .tools{padding:8px 10px 0;gap:clamp(6px,1.4vw,12px)}
+  .search input{font-size:clamp(12.5px,2.7vw,23px);padding:.5em 2.4em}
+  .search .ico{left:.9em;font-size:clamp(11px,2.3vw,19px)}
+  .search .clr{width:1.9em;height:1.9em;font-size:clamp(13px,2.6vw,22px)}
+  .seg button{padding:.35em .55em;font-size:clamp(11.5px,2.6vw,22px)}
+  .chips{padding:8px 10px 0;gap:clamp(6px,1.4vw,12px)}
+  .chips:last-of-type{padding-bottom:10px}
+  .chip{padding:.35em .8em;font-size:clamp(12px,2.7vw,23px)}
+
+  main{padding:6px clamp(8px,1.6vw,14px) 30px}
+  .sum{font-size:clamp(11px,2.3vw,20px)}
+  .alb{margin:clamp(10px,2vw,18px) 0;border-radius:var(--radius)}
+  .alb-h{padding:clamp(10px,2vw,18px) clamp(10px,2vw,18px);gap:clamp(10px,2vw,18px)}
+  .cov{width:clamp(52px,11vw,86px);height:clamp(52px,11vw,86px);border-radius:clamp(9px,1.6vw,14px)}
+  .alb-meta h2{font-size:clamp(16px,3.5vw,30px)}
+  .alb-meta .sub{font-size:clamp(11.5px,2.5vw,21px);gap:clamp(5px,1vw,9px)}
+  .tag{font-size:clamp(10px,2.2vw,18px);padding:.35em .6em}
+  .caret{font-size:clamp(12px,2.4vw,20px)}
+  .alb-play{font-size:clamp(12px,2.5vw,21px);padding:.45em .9em;margin:clamp(8px,1.6vw,14px) 6px 4px}
+  .track{padding:clamp(9px,1.9vw,16px) 6px;gap:clamp(8px,1.6vw,14px)}
+  .track .n{width:clamp(20px,3.6vw,32px);font-size:clamp(10.5px,2.1vw,18px)}
+  .track .tt{font-size:clamp(14px,2.9vw,25px)}
+  .track .en{font-size:clamp(9.5px,1.9vw,16px)}
+  .track .go{width:clamp(28px,5.4vw,44px);height:clamp(28px,5.4vw,44px);font-size:clamp(10px,2vw,17px)}
+  .res .rt{font-size:clamp(14px,2.9vw,25px)}
+  .res .ra{font-size:clamp(11px,2.3vw,20px)}
+
+  .sheet-h{padding:clamp(9px,1.8vw,16px) clamp(12px,2.4vw,20px);gap:clamp(8px,1.6vw,14px)}
+  .x{width:clamp(34px,6.6vw,52px);height:clamp(34px,6.6vw,52px);font-size:clamp(15px,3vw,26px)}
+  .sheet-h h2{font-size:clamp(16px,3.4vw,29px)}
+  .sheet-h .hm p{font-size:clamp(11px,2.3vw,20px)}
+  .sheet-h .play{font-size:clamp(12px,2.5vw,21px);padding:.5em 1em}
+  .sheet-b{padding:clamp(16px,3vw,28px) clamp(16px,3.4vw,30px) 40px;line-height:1.62}
+  body[data-fs="s"]{--fs:clamp(14.5px,3.3vw,29px)}
+  body[data-fs="m"]{--fs:clamp(16.5px,3.7vw,32px)}
+  body[data-fs="l"]{--fs:clamp(19px,4.1vw,36px)}
+  .sheet-f{padding:8px clamp(14px,2.8vw,22px) calc(8px + env(safe-area-inset-bottom,0))}
+  .sheet-f button{font-size:clamp(12px,2.5vw,21px);padding:.45em .9em}
+  .sheet-f .pos{font-size:clamp(11px,2.2vw,19px)}
+  .nolyr{font-size:clamp(13.5px,2.8vw,24px)}
+  .srcnote{font-size:clamp(11px,2.2vw,19px)}
+  footer{font-size:clamp(11px,2.2vw,20px)}
+}
+
+@media (hover:hover) and (pointer:fine){
+  .track:hover{background:rgba(255,255,255,.045)}
+  .alb-h:hover .alb-meta h2{color:#fff}
+  .res button:hover{background:rgba(255,255,255,.05)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body data-fs="m" id="top">
+
+<header class="hero">
+  <p class="eyebrow">NELL · Discography &amp; Lyrics</p>
+  <h1>NELL</h1>
+  <p class="album-meta" id="stat">2001 — 2026 · 46 releases</p>
+  <p class="lede">넬의 인디 1집부터 정규 10집까지, <b>앨범 46장 · 전곡 가사</b>.<br>곡을 누르면 가사가 열리고, 영어 가사는 우리말 해석을 함께 볼 수 있습니다.</p>
+</header>
+
+<div class="sticky" id="bar">
+  <div class="tools">
+    <div class="search" id="searchWrap">
+      <span class="ico">⌕</span>
+      <input id="q" type="search" inputmode="search" autocomplete="off" placeholder="곡명 · 가사 검색" aria-label="곡명이나 가사로 검색">
+      <button class="clr" id="clr" type="button" aria-label="검색 지우기">✕</button>
+    </div>
+    <div class="seg" id="fsSeg" role="group" aria-label="가사 글자 크기">
+      <button type="button" data-size="s">작게</button>
+      <button type="button" data-size="m" class="on">보통</button>
+      <button type="button" data-size="l">크게</button>
+    </div>
+  </div>
+  <div class="chips" id="typeChips" role="group" aria-label="앨범 유형"></div>
+  <div class="chips" id="eraChips" role="group" aria-label="시대"></div>
+  <div class="chips" id="optChips" role="group" aria-label="보기 옵션"></div>
+</div>
+
+<main>
+  <div class="sum"><span id="sumL"></span><span class="n" id="sumR"></span></div>
+  <div id="results">
+    <p class="res-h" id="resH"></p>
+    <ul class="res" id="resList"></ul>
+    <div class="empty" id="resEmpty" hidden></div>
+  </div>
+  <div id="albums"></div>
+</main>
+
+<footer>
+  <div class="links">
+    <a href="https://heman-hiker.github.io/He-Man/nell-x/">정규 10집 《X》 전곡</a>
+    <a href="https://heman-hiker.github.io/He-Man/">히맨 아카이브</a>
+  </div>
+  <p>가사 © 김종완 / SPACE BOHEMIAN, 각 권리자. 벅스·유튜브 뮤직에 공개된 가사를 그대로 옮겼습니다.<br>이 페이지는 개인 감상용으로 만든 비공식 아카이브이며, 영어 가사 아래의 우리말은 감상을 돕기 위한 해석으로 공식 번역이 아닙니다.</p>
+  <p style="margin-top:8px">가사 출처: Bugs · YouTube Music (LyricFind) &nbsp;·&nbsp; 앨범 커버: Bugs</p>
+</footer>
+
+<button type="button" class="to-top" id="toTop" aria-label="맨 위로">↑</button>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle">
+  <div class="sheet-h">
+    <button class="x" id="sClose" type="button" aria-label="닫기">✕</button>
+    <div class="hm">
+      <h2 id="sTitle"></h2>
+      <p id="sMeta"></p>
+    </div>
+    <a class="play" id="sPlay" href="#" rel="noopener">▶ 재생</a>
+  </div>
+  <div class="sheet-b" id="sBody"></div>
+  <div class="sheet-f">
+    <button id="sPrev" type="button">← 이전</button>
+    <span class="pos" id="sPos"></span>
+    <button id="sNext" type="button">다음 →</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var DATA_URL='data.json';
+  var body=document.body;
+  var bar=document.getElementById('bar');
+  var albumsEl=document.getElementById('albums');
+  var resultsEl=document.getElementById('results');
+  var resList=document.getElementById('resList');
+  var resH=document.getElementById('resH');
+  var resEmpty=document.getElementById('resEmpty');
+  var qEl=document.getElementById('q');
+  var searchWrap=document.getElementById('searchWrap');
+  var clrBtn=document.getElementById('clr');
+  var typeChips=document.getElementById('typeChips');
+  var eraChips=document.getElementById('eraChips');
+  var optChips=document.getElementById('optChips');
+  var sumL=document.getElementById('sumL');
+  var sumR=document.getElementById('sumR');
+  var sheet=document.getElementById('sheet');
+  var sTitle=document.getElementById('sTitle');
+  var sMeta=document.getElementById('sMeta');
+  var sBody=document.getElementById('sBody');
+  var sPlay=document.getElementById('sPlay');
+  var sPrev=document.getElementById('sPrev');
+  var sNext=document.getElementById('sNext');
+  var sPos=document.getElementById('sPos');
+  var toTop=document.getElementById('toTop');
+
+  /* ── 유튜브 뮤직 링크 ──────────────────────────────────────────────
+     안드로이드(삼성 인터넷 포함)에서는 music.youtube.com 주소가 앱이 아닌
+     웹으로 열리는 경우가 있어, 유튜브 뮤직 앱이 직접 받는 커스텀 스킴
+     vnd.youtube.music:// 로 바꿉니다. 웹 fallback 이 없으므로 브라우저가
+     웹으로 대신 열 수 없습니다. iOS·PC 에서는 https 주소 그대로 둡니다. */
+  var ua=navigator.userAgent;
+  var isApple=/iPhone|iPad|iPod|Macintosh/i.test(ua);
+  var coarsePointer=!!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+  var useAppLink=/Android/i.test(ua) || (/Mobi/i.test(ua) && !isApple && coarsePointer);
+  var finePointer=!!(window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches);
+
+  function ytApp(web){ return String(web).replace(/^https?:\/\//,'vnd.youtube.music://'); }
+
+  function wireYt(root){
+    var links=Array.prototype.slice.call(root.querySelectorAll('a[href*="music.youtube.com"]'));
+    links.forEach(function(a){
+      var web=a.getAttribute('data-web')||a.getAttribute('href');
+      if(!web||web.indexOf('http')!==0||web.indexOf('music.youtube.com')<0) return;
+      a.setAttribute('data-web',web);
+      if(useAppLink){
+        a.removeAttribute('target');
+        a.setAttribute('href',ytApp(web));
+      }else{
+        a.setAttribute('href',web);
+        if(finePointer) a.setAttribute('target','_blank');
+        else a.removeAttribute('target');
+      }
+    });
+  }
+  function ytWatch(vid,list){
+    if(!vid) return null;
+    var u='https://music.youtube.com/watch?v='+vid;
+    if(list) u+='&list='+list;
+    return u;
+  }
+  function ytSearch(title){
+    return 'https://www.youtube.com/results?search_query='+encodeURIComponent('NELL 넬 '+title);
+  }
+
+  /* ── helpers ── */
+  function store(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function read(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function el(tag,cls,txt){ var e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; }
+  function hasLatin(s){ return /[A-Za-z]/.test(s) && s.replace(/[^A-Za-z]/g,'').length > s.replace(/[^가-힣]/g,'').length; }
+
+  var RELS=[], TR={};
+  var years={}, types={};
+  var st={type:'전체',era:'전체',q:''};
+
+  /* ── sticky bar height ── */
+  function setBarH(){ document.documentElement.style.setProperty('--barH', bar.offsetHeight+'px'); }
+  window.addEventListener('resize',setBarH);
+  window.addEventListener('orientationchange',function(){ setTimeout(setBarH,200); });
+  if(window.ResizeObserver) new ResizeObserver(setBarH).observe(bar);
+
+  /* ── 글자 크기 ── */
+  var sizeBtns=Array.prototype.slice.call(document.querySelectorAll('#fsSeg button'));
+  function applyFs(v){
+    body.setAttribute('data-fs',v);
+    sizeBtns.forEach(function(b){ b.classList.toggle('on',b.dataset.size===v); });
+    store('nell-fs',v);
+  }
+  sizeBtns.forEach(function(b){ b.addEventListener('click',function(){ applyFs(b.dataset.size); }); });
+  applyFs(read('nell-fs')||'m');
+
+  /* ── 영어 해석 토글 ── */
+  var trOn=read('nell-tr'); trOn=(trOn===null)?true:(trOn==='1');
+  var trChip=el('button','chip trchip');
+  trChip.type='button';
+  function paintTr(){
+    trChip.textContent='영어 해석 '+(trOn?'켬':'끔');
+    trChip.classList.toggle('on',trOn);
+    trChip.setAttribute('aria-pressed',trOn?'true':'false');
+    body.classList.toggle('show-tr',trOn);
+    store('nell-tr',trOn?'1':'0');
+  }
+  trChip.addEventListener('click',function(){ trOn=!trOn; paintTr(); });
+  optChips.appendChild(trChip);
+  paintTr();
+
+  /* ── 데이터 ── */
+  function yearOf(d){ return parseInt(String(d).slice(0,4),10); }
+  function eraOf(y){ return y<2010?'2000s':(y<2020?'2010s':'2020s'); }
+
+  function buildChips(){
+    var order=['전체','정규','EP','싱글','OST','라이브','스페셜'];
+    order.forEach(function(t){
+      if(t!=='전체' && !types[t]) return;
+      var b=el('button','chip'); b.type='button'; b.dataset.v=t;
+      b.innerHTML='';
+      b.appendChild(document.createTextNode(t));
+      var c=el('span','cnt',t==='전체'?String(RELS.length):String(types[t]));
+      b.appendChild(c);
+      if(t===st.type) b.classList.add('on');
+      b.addEventListener('click',function(){
+        st.type=t;
+        Array.prototype.forEach.call(typeChips.children,function(x){ x.classList.toggle('on',x.dataset.v===t); });
+        render();
+      });
+      typeChips.appendChild(b);
+    });
+    ['전체','2000s','2010s','2020s'].forEach(function(e){
+      var b=el('button','chip'); b.type='button'; b.dataset.v=e;
+      b.textContent=e==='전체'?'전 시대':e;
+      var c=el('span','cnt',e==='전체'?String(RELS.length):String(years[e]||0));
+      b.appendChild(c);
+      if(e===st.era) b.classList.add('on');
+      b.addEventListener('click',function(){
+        st.era=e;
+        Array.prototype.forEach.call(eraChips.children,function(x){ x.classList.toggle('on',x.dataset.v===e); });
+        render();
+      });
+      eraChips.appendChild(b);
+    });
+  }
+
+  function trackCount(rel){ return rel.tr.length; }
+
+  function makeAlbum(rel,idx){
+    var sec=el('section','alb'); sec.id='a'+rel.id;
+    sec.dataset.type=rel.ty; sec.dataset.era=eraOf(yearOf(rel.d));
+    var h=el('button','alb-h'); h.type='button'; h.setAttribute('aria-expanded','false');
+    var img=el('img','cov'); img.loading='lazy'; img.alt=rel.t+' 앨범 커버'; img.src=rel.cover;
+    img.onerror=function(){ img.style.visibility='hidden'; };
+    h.appendChild(img);
+    var m=el('div','alb-meta');
+    m.appendChild(el('h2',null,rel.t));
+    var sub=el('p','sub');
+    sub.appendChild(document.createTextNode(rel.d+' · '+rel.ty+' · '+trackCount(rel)+'곡'));
+    if(idx===0){ var tg=el('span','tag new','NEW'); sub.appendChild(tg); }
+    m.appendChild(sub);
+    h.appendChild(m);
+    h.appendChild(el('span','caret','▾'));
+    sec.appendChild(h);
+
+    var b=el('div','alb-b');
+    var play=el('a','alb-play');
+    if(rel.p){ play.href='https://music.youtube.com/playlist?list='+rel.p; play.rel='noopener'; play.textContent='▶ 앨범 전체 듣기'; }
+    else { play.href=ytSearch(rel.t); play.rel='noopener'; play.textContent='▶ 유튜브에서 찾기'; }
+    b.appendChild(play);
+
+    var ol=el('ol','tracks');
+    rel.tr.forEach(function(t,k){
+      var li=document.createElement('li');
+      var row=el('button','track'+(t.lyr.length||t.inst?'':' no')); row.type='button';
+      row.dataset.r=idx; row.dataset.t=k;
+      var n=el('span','n',(t.n?String(t.n).padStart(2,'0'):'--'));
+      row.appendChild(n);
+      row.appendChild(el('span','tt',t.title));
+      if(t.lyr.length && t.lyr.some(function(p){ return p.some(hasLatin); })) row.appendChild(el('span','en','EN'));
+      var go=el('a','go','▶');
+      go.href=ytWatch(t.vid,rel.p)||ytSearch(t.title);
+      go.rel='noopener'; go.setAttribute('aria-label',t.title+' 유튜브 뮤직에서 듣기');
+      go.addEventListener('click',function(e){ e.stopPropagation(); });
+      row.appendChild(go);
+      row.addEventListener('click',function(){ openSheet(idx,k); });
+      li.appendChild(row);
+      ol.appendChild(li);
+    });
+    b.appendChild(ol);
+    sec.appendChild(b);
+    h.addEventListener('click',function(){
+      var open=sec.classList.toggle('open');
+      h.setAttribute('aria-expanded',open?'true':'false');
+      if(open){ store('nell-open-'+rel.id,'1'); }
+      else { store('nell-open-'+rel.id,'0'); }
+    });
+    return sec;
+  }
+
+  function passes(rel){
+    if(st.type!=='전체' && rel.ty!==st.type) return false;
+    if(st.era!=='전체' && eraOf(yearOf(rel.d))!==st.era) return false;
+    return true;
+  }
+
+  function render(){
+    var shown=0, songs=0;
+    Array.prototype.forEach.call(albumsEl.children,function(sec,i){
+      var rel=RELS[parseInt(sec.dataset.i,10)];
+      var ok=passes(rel);
+      sec.hidden=!ok;
+      if(ok){ shown++; songs+=rel.tr.length; }
+    });
+    sumL.textContent=(st.type==='전체'&&st.era==='전체')?'앨범 전체':(st.type+' · '+st.era);
+    sumR.textContent=shown+'장 · '+songs+'곡';
+    if(!shown){ sumR.textContent='해당 앨범 없음'; }
+  }
+
+  /* ── 검색 ── */
+  var searchTimer=null;
+  function doSearch(q){
+    q=q.trim().toLowerCase();
+    st.q=q;
+    if(!q){
+      body.classList.remove('searching');
+      searchWrap.classList.remove('has');
+      render();
+      return;
+    }
+    searchWrap.classList.add('has');
+    body.classList.add('searching');
+    var hits=[], albs=[];
+    RELS.forEach(function(rel,ri){
+      if(!passes(rel)) return;
+      if(rel.t.toLowerCase().indexOf(q)>=0) albs.push(rel);
+      rel.tr.forEach(function(t,ti){
+        var inTitle=t.title.toLowerCase().indexOf(q)>=0;
+        var inLyr=false;
+        for(var p=0;p<t.lyr.length && !inLyr;p++){
+          for(var l=0;l<t.lyr[p].length;l++){ if(t.lyr[p][l].toLowerCase().indexOf(q)>=0){ inLyr=true; break; } }
+        }
+        if(inTitle||inLyr) hits.push({r:ri,t:ti,title:inTitle,lyr:inLyr});
+      });
+    });
+    resList.innerHTML='';
+    albs.slice(0,6).forEach(function(rel){
+      var li=document.createElement('li');
+      var b=el('button');
+      b.appendChild(el('span','rt',rel.t));
+      b.appendChild(el('span','ra',rel.d+' · '+rel.ty));
+      b.addEventListener('click',function(){ jumpAlbum(rel.id); });
+      li.appendChild(b); resList.appendChild(li);
+    });
+    hits.slice(0,300).forEach(function(h){
+      var rel=RELS[h.r], t=rel.tr[h.t];
+      var li=document.createElement('li');
+      var b=el('button');
+      b.appendChild(el('span','rt',t.title));
+      b.appendChild(el('span','ra',rel.t+' · '+rel.d.slice(0,4)));
+      b.addEventListener('click',function(){ openSheet(h.r,h.t); });
+      li.appendChild(b); resList.appendChild(li);
+    });
+    resH.innerHTML='<b>'+hits.length+'</b>곡'+(albs.length?' · 앨범 '+albs.length+'장':'')+' — “'+q.replace(/[<>&]/g,'')+'”';
+    if(!hits.length && !albs.length){
+      resEmpty.hidden=false;
+      resEmpty.innerHTML='<b>“'+q.replace(/[<>&]/g,'')+'”</b> 검색 결과가 없습니다.<br>곡명 일부나 가사 한 줄로 다시 찾아보세요.';
+      resList.style.display='none';
+    }else{
+      resEmpty.hidden=true; resList.style.display='';
+    }
+  }
+  qEl.addEventListener('input',function(){
+    var v=qEl.value;
+    clearTimeout(searchTimer);
+    searchTimer=setTimeout(function(){ doSearch(v); },140);
+  });
+  qEl.addEventListener('keydown',function(e){ if(e.key==='Escape'){ qEl.value=''; doSearch(''); qEl.blur(); } });
+  clrBtn.addEventListener('click',function(){ qEl.value=''; doSearch(''); qEl.focus(); });
+
+  /* ── 가사 시트 ── */
+  var cur={r:0,t:0};
+  function sheetMeta(rel,t){
+    var parts=[rel.t,rel.d,rel.ty];
+    return parts.join(' · ');
+  }
+  function renderLyrics(rel,t){
+    sBody.innerHTML='';
+    if(t.inst){
+      var box=el('div','nolyr');
+      box.appendChild(el('b',null,'연주곡 (Instrumental)'));
+      box.appendChild(document.createTextNode('가사가 없는 곡입니다.'));
+      sBody.appendChild(box);
+    }else if(!t.lyr.length){
+      var box2=el('div','nolyr');
+      box2.appendChild(el('b',null,'가사를 확인하지 못했습니다'));
+      box2.appendChild(document.createTextNode(t.note||'벅스·유튜브 뮤직 모두 이 곡의 가사를 제공하지 않습니다.'));
+      sBody.appendChild(box2);
+    }else{
+      t.lyr.forEach(function(para){
+        var div=el('div','stanza');
+        para.forEach(function(line){
+          var p=el('p','ln');
+          var tr=TR[line];
+          if(tr && hasLatin(line)){
+            p.className='ln has en';
+            p.appendChild(el('span','o',line));
+            p.appendChild(el('span','tr',tr));
+          }else{
+            p.textContent=line;
+          }
+          div.appendChild(p);
+        });
+        sBody.appendChild(div);
+      });
+      var note=el('p','srcnote','가사 출처: '+(t.src==='ytm'?'YouTube Music (LyricFind)':'Bugs')+' · 영어 가사 아래 우리말은 감상을 돕기 위한 해석입니다.');
+      sBody.appendChild(note);
+    }
+    sBody.scrollTop=0;
+  }
+  function openSheet(ri,ti){
+    var rel=RELS[ri], t=rel.tr[ti];
+    cur={r:ri,t:ti};
+    sTitle.textContent=t.title;
+    sMeta.textContent=sheetMeta(rel,t);
+    var u=ytWatch(t.vid,rel.p)||ytSearch(t.title);
+    sPlay.setAttribute('href',u);
+    sPlay.setAttribute('data-web',u);
+    if(u.indexOf('music.youtube.com')>=0){
+      if(useAppLink){ sPlay.setAttribute('href',ytApp(u)); sPlay.removeAttribute('target'); }
+      else { sPlay.setAttribute('href',u); if(finePointer) sPlay.setAttribute('target','_blank'); }
+    }else{
+      sPlay.setAttribute('href',u); sPlay.setAttribute('target','_blank');
+    }
+    renderLyrics(rel,t);
+    sPrev.disabled=(ti<=0); sNext.disabled=(ti>=rel.tr.length-1);
+    sPos.textContent=(ti+1)+' / '+rel.tr.length;
+    sheet.classList.add('show');
+    document.body.style.overflow='hidden';
+    try{ history.replaceState(null,'','#'+rel.id+'-'+(ti+1)); }catch(e){}
+    sClose.focus({preventScroll:true});
+  }
+  function closeSheet(){
+    sheet.classList.remove('show');
+    document.body.style.overflow='';
+    try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
+  }
+  document.getElementById('sClose').addEventListener('click',closeSheet);
+  sheet.addEventListener('click',function(e){ if(e.target===sheet) closeSheet(); });
+  document.addEventListener('keydown',function(e){
+    if(!sheet.classList.contains('show')) return;
+    if(e.key==='Escape') closeSheet();
+    if(e.key==='ArrowRight' && !sNext.disabled) sNext.click();
+    if(e.key==='ArrowLeft' && !sPrev.disabled) sPrev.click();
+  });
+  sPrev.addEventListener('click',function(){ if(cur.t>0) openSheet(cur.r,cur.t-1); });
+  sNext.addEventListener('click',function(){ var n=RELS[cur.r].tr.length; if(cur.t<n-1) openSheet(cur.r,cur.t+1); });
+
+  function jumpAlbum(id){
+    var sec=document.getElementById('a'+id);
+    if(!sec) return;
+    body.classList.remove('searching');
+    qEl.value=''; searchWrap.classList.remove('has');
+    render();
+    sec.hidden=false;
+    if(!sec.classList.contains('open')){
+      sec.classList.add('open');
+      sec.querySelector('.alb-h').setAttribute('aria-expanded','true');
+    }
+    var y=sec.getBoundingClientRect().top+window.pageYOffset-bar.offsetHeight-8;
+    window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+  }
+
+  /* ── to top ── */
+  var ticking=false;
+  window.addEventListener('scroll',function(){
+    if(ticking) return; ticking=true;
+    requestAnimationFrame(function(){
+      toTop.classList.toggle('show',window.pageYOffset>700);
+      ticking=false;
+    });
+  },{passive:true});
+  toTop.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+
+  /* ── 부트 ── */
+  fetch(DATA_URL,{cache:'no-cache'}).then(function(r){ return r.json(); }).then(function(data){
+    RELS=data.rels||data;
+    TR=data.tr||{};
+    var songs=0;
+    RELS.forEach(function(rel,i){
+      years[eraOf(yearOf(rel.d))]=(years[eraOf(yearOf(rel.d))]||0)+1;
+      types[rel.ty]=(types[rel.ty]||0)+1;
+      songs+=rel.tr.length;
+    });
+    document.getElementById('stat').textContent='2001 — 2026 · '+RELS.length+' releases · '+songs+' tracks';
+    buildChips();
+    var frag=document.createDocumentFragment();
+    RELS.forEach(function(rel,i){
+      var sec=makeAlbum(rel,i);
+      sec.dataset.i=i;
+      if(i===0){ sec.classList.add('open'); sec.querySelector('.alb-h').setAttribute('aria-expanded','true'); }
+      frag.appendChild(sec);
+    });
+    albumsEl.appendChild(frag);
+    wireYt(document);
+    setBarH();
+    render();
+    /* 해시로 들어온 경우 */
+    var h=location.hash.replace('#','');
+    if(h){
+      var m=h.match(/^(\d+)-(\d+)$/);
+      if(m){
+        var ri=-1;
+        RELS.forEach(function(r,i){ if(String(r.id)===m[1]) ri=i; });
+        if(ri>=0 && RELS[ri].tr[parseInt(m[2],10)-1]){ openSheet(ri,parseInt(m[2],10)-1); }
+      }else if(h.charAt(0)==='a'){
+        jumpAlbum(h.slice(1));
+      }
+    }
+  }).catch(function(err){
+    sumL.textContent='데이터를 불러오지 못했습니다.';
+    sumR.textContent='';
+    var box=el('div','empty');
+    box.innerHTML='<b>가사 데이터를 불러오지 못했습니다.</b><br>네트워크 상태를 확인한 뒤 새로고침해 주세요.';
+    albumsEl.appendChild(box);
+  });
+})();
+</script>
+</body>
+</html>
