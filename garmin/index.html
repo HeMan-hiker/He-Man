@@ -952,7 +952,7 @@ function renderKPI(){
     } else {
       var bits = ['회당 <b>' + f1(s.km/s.n) + ' km</b>'];
       if (s.maxKm) bits.push('최장 <b>' + f1(s.maxKm) + ' km</b>');
-      if (rhKm > 0) bits.push('거리 비중 <b>' + Math.round(s.km/rhKm*100) + '%</b>');
+      if (rhKm > 0 && R.n > 0 && H.n > 0) bits.push('거리 비중 <b>' + Math.round(s.km/rhKm*100) + '%</b>');
       sf = bits.join(' · ');
     }
     return h + '<div class="sf">' + sf + '</div></div>';
