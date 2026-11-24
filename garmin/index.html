@@ -126,9 +126,10 @@
   .spl .sh .dot{width:8px;height:8px;border-radius:3px;background:var(--c,var(--run));flex:0 0 8px}
   .spl .sh .em{font-size:12.5px;line-height:1}
   .spl .sh .n{margin-left:auto;font-size:12px;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
-  .spl .kg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px 0;margin-top:11px}
-  .spl .ki{padding:0;min-width:0}
-  .spl .ki:nth-child(2n){border-left:1px solid #eef1f6;padding-left:14px}
+  .spl .kg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px 0;margin-top:11px}
+  .spl .ki{padding:0 12px;min-width:0;border-left:1px solid #eef1f6}
+  .spl .ki:first-child{border-left:0;padding-left:0}
+  .spl .ki:last-child{padding-right:0}
   .spl .kl{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
   .spl .kv{font-size:20px;font-weight:800;letter-spacing:-.03em;margin-top:3px;font-variant-numeric:tabular-nums;line-height:1.15;white-space:nowrap}
   .spl .kv small{font-size:11px;font-weight:650;color:var(--muted);margin-left:3px;letter-spacing:0}
@@ -263,6 +264,9 @@
     .topbar{display:flex}
     .main{padding:16px 16px 40px}
     h1{font-size:21px}
+    .spl .kg{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px 0}
+    .spl .ki{padding:0 0 0 14px;border-left:1px solid #eef1f6}
+    .spl .ki:nth-child(odd){border-left:0;padding-left:0}
     .dbox{grid-template-columns:repeat(3,minmax(0,1fr))}
     .nm{max-width:200px}
   }
