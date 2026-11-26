@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0" />
+  <title>500 THAILAND · 실시간 레이스 트래커</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --bg-card: #111a2e;
+      --bg-card-2: #16223b;
+      --border: #243352;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --accent: #38bdf8;
+      --gold: #fbbf24;
+      --green: #34d399;
+      --red: #f87171;
+      --korea: #60a5fa;
+      --track-line: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      min-height: 100vh;
+      padding-bottom: 48px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .live-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
+      animation: pulse-dot 1.8s infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse-dot {
+      0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+      70% { box-shadow: 0 0 0 9px rgba(52, 211, 153, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+    }
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn {
+      background: var(--bg-card-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn:hover { background: #1e2d4d; border-color: #3b5280; }
+    .btn.active { background: #1e3a5f; border-color: var(--accent); color: #fff; }
+    .status-pill {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 10px;
+    }
+
+    /* Race Tabs & Summary */
+    .race-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tab-btn {
+      background: var(--bg-card);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 13px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #061224;
+      border-color: var(--accent);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .stat-label { font-size: 0.72rem; color: var(--text-dim); }
+    .stat-value { font-size: 1.05rem; font-weight: 800; margin-top: 2px; }
+
+    /* Track Card */
+    .track-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+    .track-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .track-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .zoom-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .zoom-btn {
+      background: var(--bg-card-2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 9px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .zoom-btn.active {
+      background: #1d4ed8;
+      color: #fff;
+      border-color: #3b82f6;
+    }
+
+    .track-scroll {
+      overflow-x: auto;
+      overflow-y: hidden;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: linear-gradient(180deg, #0d1629 0%, #09101e 100%);
+      position: relative;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .track-canvas {
+      position: relative;
+      height: 410px;
+      min-width: 100%;
+      user-select: none;
+    }
+
+    /* Ruler ticks */
+    .ruler-area {
+      position: absolute;
+      left: 36px;
+      right: 44px;
+      bottom: 58px;
+      height: 26px;
+      border-top: 2px solid #475569;
+    }
+    .tick {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tick-line {
+      width: 1px;
+      height: 6px;
+      background: #475569;
+    }
+    .tick.major .tick-line {
+      width: 2px;
+      height: 11px;
+      background: #94a3b8;
+    }
+    .tick-label {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .tick.major .tick-label {
+      color: #cbd5e1;
+      font-weight: 700;
+    }
+
+    /* Main course line */
+    .course-line-wrap {
+      position: absolute;
+      left: 36px;
+      right: 44px;
+      bottom: 84px;
+      height: 8px;
+    }
+    .course-line-bg {
+      position: absolute;
+      inset: 0;
+      background: #1e293b;
+      border-radius: 999px;
+      border: 1px solid #334155;
+    }
+    .course-line-progress {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      background: linear-gradient(90deg, #0ea5e9, #34d399);
+      border-radius: 999px;
+      transition: width 0.5s ease;
+    }
+
+    /* AP markers */
+    .ap-layer {
+      position: absolute;
+      left: 36px;
+      right: 44px;
+      bottom: 88px;
+      top: 0;
+      pointer-events: none;
+    }
+    .ap-marker {
+      position: absolute;
+      bottom: 0;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .ap-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #64748b;
+      border: 1.5px solid #0b1120;
+      z-index: 2;
+      margin-bottom: -4px;
+    }
+    .ap-marker.major .ap-dot {
+      width: 11px;
+      height: 11px;
+      background: var(--gold);
+      margin-bottom: -5px;
+    }
+    .ap-marker.projected .ap-dot {
+      background: #475569;
+      border-style: dashed;
+    }
+    .ap-stem {
+      position: absolute;
+      top: 4px;
+      width: 1px;
+      height: 44px;
+      background: rgba(148, 163, 184, 0.25);
+    }
+    .ap-tag {
+      position: absolute;
+      top: 48px;
+      transform: translateX(-50%);
+      left: 50%;
+      text-align: center;
+      white-space: nowrap;
+      font-size: 0.63rem;
+      line-height: 1.15;
+      color: #94a3b8;
+      background: rgba(11, 17, 32, 0.85);
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    .ap-marker.tier-1 .ap-stem { height: 42px; }
+    .ap-marker.tier-1 .ap-tag { top: 44px; }
+    .ap-marker.tier-2 .ap-stem { height: 64px; }
+    .ap-marker.tier-2 .ap-tag { top: 66px; }
+    .ap-marker.major .ap-tag {
+      color: var(--gold);
+      font-weight: 700;
+      border: 1px solid rgba(251, 191, 36, 0.35);
+    }
+    .ap-km {
+      display: block;
+      font-size: 0.58rem;
+      color: #64748b;
+    }
+    .ap-marker.major .ap-km { color: #fcd34d; }
+
+    /* Runners Layer */
+    .runners-layer {
+      position: absolute;
+      left: 36px;
+      right: 44px;
+      top: 12px;
+      bottom: 94px;
+    }
+    .runner-node {
+      position: absolute;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s, filter 0.2s;
+      z-index: 5;
+    }
+    .runner-node:hover, .runner-node.selected {
+      z-index: 30;
+      transform: translateX(-50%) scale(1.12);
+    }
+    .runner-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid #334155;
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.45);
+      margin-bottom: 1px;
+    }
+    .runner-node.rank-1 .runner-badge {
+      border-color: var(--gold);
+      background: rgba(45, 33, 10, 0.95);
+      color: #fde68a;
+    }
+    .runner-node.korea .runner-badge {
+      border-color: var(--korea);
+      background: rgba(15, 37, 74, 0.95);
+      color: #dbeafe;
+      box-shadow: 0 0 12px rgba(96, 165, 250, 0.45);
+    }
+    .runner-node.selected .runner-badge {
+      border-color: #fff;
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
+    }
+
+    /* Animated Little Runner SVG */
+    .runner-sprite {
+      width: 24px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: runner-bob 0.42s ease-in-out infinite alternate;
+    }
+    .runner-node.finished .runner-sprite {
+      animation: none;
+    }
+    @keyframes runner-bob {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-3px); }
+    }
+    .runner-leg-a {
+      transform-origin: 12px 15px;
+      animation: leg-swing-a 0.42s ease-in-out infinite alternate;
+    }
+    .runner-leg-b {
+      transform-origin: 12px 15px;
+      animation: leg-swing-b 0.42s ease-in-out infinite alternate;
+    }
+    .runner-arm-a {
+      transform-origin: 12px 9px;
+      animation: leg-swing-b 0.42s ease-in-out infinite alternate;
+    }
+    .runner-arm-b {
+      transform-origin: 12px 9px;
+      animation: leg-swing-a 0.42s ease-in-out infinite alternate;
+    }
+    .runner-node.finished .runner-leg-a,
+    .runner-node.finished .runner-leg-b,
+    .runner-node.finished .runner-arm-a,
+    .runner-node.finished .runner-arm-b {
+      animation: none;
+    }
+    @keyframes leg-swing-a {
+      0% { transform: rotate(-28deg); }
+      100% { transform: rotate(26deg); }
+    }
+    @keyframes leg-swing-b {
+      0% { transform: rotate(26deg); }
+      100% { transform: rotate(-28deg); }
+    }
+
+    .runner-rank-tag {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      font-weight: 700;
+    }
+    .runner-node.korea .runner-rank-tag { color: #93c5fd; }
+    .runner-node.rank-1 .runner-rank-tag { color: var(--gold); }
+
+    /* Selected Runner Detail Banner */
+    .runner-detail {
+      margin-top: 12px;
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.84rem;
+    }
+    .runner-detail a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .runner-detail a:hover { text-decoration: underline; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.74rem;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+    /* Ranking Section */
+    .ranking-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .ranking-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .filter-btn {
+      background: var(--bg-card-2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      background: rgba(56, 189, 248, 0.16);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      min-width: 680px;
+    }
+    th {
+      text-align: left;
+      padding: 9px 10px;
+      color: var(--text-dim);
+      font-size: 0.74rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 9px 10px;
+      border-bottom: 1px solid rgba(36, 51, 82, 0.65);
+      vertical-align: middle;
+    }
+    tr.runner-row {
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    tr.runner-row:hover {
+      background: rgba(56, 189, 248, 0.08);
+    }
+    tr.runner-row.korea-row {
+      background: rgba(59, 130, 246, 0.09);
+    }
+    tr.runner-row.selected-row {
+      background: rgba(56, 189, 248, 0.18);
+    }
+    .rank-num {
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+    .bib-pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 6px;
+      color: var(--text-dim);
+    }
+    .status-chip {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .status-running { background: rgba(52, 211, 153, 0.14); color: var(--green); }
+    .status-finish { background: rgba(251, 191, 36, 0.18); color: var(--gold); }
+    .status-dnf { background: rgba(248, 113, 113, 0.14); color: var(--red); }
+    .status-dns { background: rgba(148, 163, 184, 0.14); color: var(--text-dim); }
+    .progress-bar-mini {
+      width: 96px;
+      height: 5px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .progress-bar-mini > div {
+      height: 100%;
+      background: linear-gradient(90deg, #0ea5e9, #34d399);
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 12px 10px; }
+      h1 { font-size: 1.08rem; }
+      .track-canvas { height: 390px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="title-wrap">
+        <div class="live-dot" id="liveDot"></div>
+        <div>
+          <h1>🏔️ 500 THAILAND · 실시간 레이스 트래커</h1>
+          <div class="subtitle">Pai, Mae Hong Son · 공식 기록(TrailTracking) 실시간 연동 · 현지 시각(ICT, KST -2h)</div>
+        </div>
+      </div>
+      <div class="controls">
+        <span class="status-pill" id="lastUpdated">불러오는 중...</span>
+        <button class="btn active" id="autoRefreshBtn" title="60초마다 자동 새로고침">⏱ 자동갱신 ON</button>
+        <button class="btn" id="refreshBtn">🔄 새로고침</button>
+      </div>
+    </header>
+
+    <div class="race-bar">
+      <div class="tabs" id="raceTabs">
+        <button class="tab-btn active" data-race="500">THA 500 (500km)</button>
+        <button class="tab-btn" data-race="300">THA 300</button>
+        <button class="tab-btn" data-race="200A">THA 200A</button>
+        <button class="tab-btn" data-race="200B">THA 200B</button>
+        <button class="tab-btn" data-race="100">THA 100</button>
+      </div>
+      <a class="btn" href="https://www.trailtracking.run/500thailand2rd/results" target="_blank" rel="noopener">공식 페이지 ↗</a>
+    </div>
+
+    <div class="stats-row" id="statsRow"></div>
+
+    <section class="track-card">
+      <div class="track-toolbar">
+        <div class="track-title" id="trackTitle">🏁 0km ~ FINISH 직선 트랙</div>
+        <div class="zoom-group" id="zoomGroup">
+          <button class="zoom-btn" data-zoom="1">전체</button>
+          <button class="zoom-btn active" data-zoom="2.2">2x 확대</button>
+          <button class="zoom-btn" data-zoom="3.8">4x 상세</button>
+        </div>
+      </div>
+
+      <div class="track-scroll" id="trackScroll">
+        <div class="track-canvas" id="trackCanvas">
+          <div class="runners-layer" id="runnersLayer"></div>
+          <div class="ap-layer" id="apLayer"></div>
+          <div class="course-line-wrap">
+            <div class="course-line-bg"></div>
+            <div class="course-line-progress" id="courseProgress"></div>
+          </div>
+          <div class="ruler-area" id="rulerArea"></div>
+        </div>
+      </div>
+
+      <div class="runner-detail" id="runnerDetail">
+        <span>선수를 클릭하면 상세 기록과 통과 지점을 볼 수 있어요.</span>
+      </div>
+
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span> 주요 거점 / 1위</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--korea)"></span> 🇰🇷 대한민국 선수</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#64748b"></span> 실측 AP (공식 통과 확인)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#475569;border:1px dashed #94a3b8"></span> 이후 예정 AP (선두 통과 시 자동 보정)</span>
+      </div>
+    </section>
+
+    <section class="ranking-card">
+      <div class="ranking-header">
+        <div class="track-title">📋 실시간 랭킹 리스트</div>
+        <div class="filter-group" id="filterGroup">
+          <button class="filter-btn active" data-filter="all">전체</button>
+          <button class="filter-btn" data-filter="active">진행중/완주</button>
+          <button class="filter-btn" data-filter="korea">🇰🇷 한국선수</button>
+          <button class="filter-btn" data-filter="out">DNF/DNS</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>순위</th>
+              <th>배번</th>
+              <th>선수</th>
+              <th>국적</th>
+              <th>현재 위치 (AP · 거리)</th>
+              <th>진행률</th>
+              <th>레이스 타임</th>
+              <th>통과 시각 (현지)</th>
+            </tr>
+          </thead>
+          <tbody id="rankingBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Nationality to Flag & Label mapping
+    const NAT_MAP = {
+      'POLAND': { flag: '🇵🇱', code: 'POL', name: '폴란드' },
+      'VIETNAMESE': { flag: '🇻🇳', code: 'VIE', name: '베트남' },
+      'SOUTH KORE': { flag: '🇰🇷', code: 'KOR', name: '한국' },
+      'SOUTH KOREA': { flag: '🇰🇷', code: 'KOR', name: '한국' },
+      'KOREA': { flag: '🇰🇷', code: 'KOR', name: '한국' },
+      'THAI': { flag: '🇹🇭', code: 'THA', name: '태국' },
+      'THAILAND': { flag: '🇹🇭', code: 'THA', name: '태국' },
+      'MALAYSIAN': { flag: '🇲🇾', code: 'MAS', name: '말레이시아' },
+      'CZECH': { flag: '🇨🇿', code: 'CZE', name: '체코' },
+      'AMERICAN': { flag: '🇺🇸', code: 'USA', name: '미국' },
+      'SLOVAKIAN': { flag: '🇸🇰', code: 'SVK', name: '슬로바키아' },
+      'FILIPINO': { flag: '🇵🇭', code: 'PHI', name: '필리핀' },
+      'DANISH': { flag: '🇩🇰', code: 'DEN', name: '덴마크' },
+      'GERMAN': { flag: '🇩🇪', code: 'GER', name: '독일' },
+      'BRITISH': { flag: '🇬🇧', code: 'GBR', name: '영국' },
+      'BANGLADESHI': { flag: '🇧🇩', code: 'BAN', name: '방글라데시' },
+      'FRANCE': { flag: '🇫🇷', code: 'FRA', name: '프랑스' },
+      'FRENCH': { flag: '🇫🇷', code: 'FRA', name: '프랑스' },
+      'AUSTRIAN': { flag: '🇦🇹', code: 'AUT', name: '오스트리아' },
+      'IRELAND': { flag: '🇮🇪', code: 'IRL', name: '아일랜드' },
+      'IRISH': { flag: '🇮🇪', code: 'IRL', name: '아일랜드' },
+      'SINGAPOREA': { flag: '🇸🇬', code: 'SGP', name: '싱가포르' },
+      'SINGAPOREAN': { flag: '🇸🇬', code: 'SGP', name: '싱가포르' },
+      'JAPANESE': { flag: '🇯🇵', code: 'JPN', name: '일본' },
+      'CHINESE': { flag: '🇨🇳', code: 'CHN', name: '중국' },
+      'SPANISH': { flag: '🇪🇸', code: 'ESP', name: '스페인' },
+      'ITALIAN': { flag: '🇮🇹', code: 'ITA', name: '이탈리아' },
+      'SWISS': { flag: '🇨🇭', code: 'SUI', name: '스위스' },
+    };
+
+    function getNat(raw) {
+      const key = (raw || '').trim().toUpperCase();
+      if (NAT_MAP[key]) return NAT_MAP[key];
+      for (const k of Object.keys(NAT_MAP)) {
+        if (key.includes(k)) return NAT_MAP[k];
+      }
+      return { flag: '🏳️', code: key.slice(0, 3) || '-', name: raw || '-' };
+    }
+
+    // THA 500 APs: Start ~ B3 (299km) verified from 2026 live official runner 500-015,
+    // B4 ~ Finish projected with -18.7km course adjustment (auto-updated when leader reaches new APs).
+    const BASE_APS_500 = [
+      { code: 'START', label: 'Start', km: 0, major: true, verified: true },
+      { code: 'A1', label: 'A1', km: 7, verified: true },
+      { code: 'A2', label: 'A2', km: 16, verified: true },
+      { code: 'A3', label: 'A3', km: 30, verified: true },
+      { code: 'A4', label: 'A4', km: 46, verified: true },
+      { code: 'A5', label: 'A5', km: 55, verified: true },
+      { code: 'A6', label: 'A6', km: 70, verified: true },
+      { code: 'A7', label: 'A7', km: 79, verified: true },
+      { code: 'A8', label: 'A8', km: 88, verified: true },
+      { code: 'A9', label: 'A9', km: 97, verified: true },
+      { code: 'A10', label: 'A10', km: 107, major: true, verified: true },
+      { code: 'A11', label: 'A11', km: 125, verified: true },
+      { code: 'A12', label: 'A12', km: 134, verified: true },
+      { code: 'A13', label: 'A13', km: 142, verified: true },
+      { code: 'A14', label: 'A14', km: 149, verified: true },
+      { code: 'A15', label: 'A15', km: 162, verified: true },
+      { code: 'A17', label: 'A17', km: 172, verified: true },
+      { code: 'HQ', label: 'HQ', km: 183, major: true, verified: true },
+      { code: 'A17 (Return)', label: 'A17(R)', km: 194, verified: true },
+      { code: 'A15 (Return)', label: 'A15(R)', km: 205, verified: true },
+      { code: 'A14 (Return)', label: 'A14(R)', km: 217, verified: true },
+      { code: 'A13 (Return)', label: 'A13(R)', km: 224, verified: true },
+      { code: 'A12 (Return)', label: 'A12(R)', km: 232, verified: true },
+      { code: 'A11 (Return)', label: 'A11(R)', km: 242, verified: true },
+      { code: 'A10 (Return)', label: 'A10(R)', km: 260, major: true, verified: true },
+      { code: 'B3', label: 'B3', km: 299, major: true, verified: true },
+      { code: 'B4', label: 'B4', km: 312, verified: false },
+      { code: 'B5', label: 'B5', km: 322, verified: false },
+      { code: 'B6', label: 'B6', km: 330, verified: false },
+      { code: 'B7', label: 'B7', km: 343, verified: false },
+      { code: 'B8', label: 'B8', km: 354, verified: false },
+      { code: 'B9', label: 'B9', km: 371, verified: false },
+      { code: 'HQ2', label: 'HQ2', km: 379, major: true, verified: false },
+      { code: 'B9 (Return)', label: 'B9(R)', km: 388, verified: false },
+      { code: 'B8 (Return)', label: 'B8(R)', km: 404, verified: false },
+      { code: 'B7 (Return)', label: 'B7(R)', km: 415, verified: false },
+      { code: 'B6 (Return)', label: 'B6(R)', km: 428, verified: false },
+      { code: 'B5 (Return)', label: 'B5(R)', km: 436, verified: false },
+      { code: 'B4 (Return)', label: 'B4(R)', km: 446, verified: false },
+      { code: 'C1', label: 'C1', km: 457, verified: false },
+      { code: 'C2', label: 'C2', km: 467, verified: false },
+      { code: 'C3', label: 'C3', km: 476, verified: false },
+      { code: 'FINISH', label: 'FINISH', km: 486, major: true, verified: false }
+    ];
+
+    const RACE_META = {
+      '500': { name: 'THA 500', totalKm: 486, tickStep: 50, minorStep: 10 },
+      '300': { name: 'THA 300', totalKm: 300, tickStep: 50, minorStep: 10 },
+      '200A': { name: 'THA 200A', totalKm: 192, tickStep: 25, minorStep: 5 },
+      '200B': { name: 'THA 200B', totalKm: 200, tickStep: 25, minorStep: 5 },
+      '100': { name: 'THA 100', totalKm: 100, tickStep: 20, minorStep: 5 }
+    };
+
+    // Fallback snapshot in case live fetch is temporarily unreachable
+    const FALLBACK_RUNNERS = [
+      { race: '500', rankOverall: '1*', rankGender: '1*', bib: '500-015', name: 'KRYSTIAN PIETRZAK', gender: 'Male', nationality: 'POLAND', progress: 'B3 (299 Km.)', raceTime: '85:32:48', timeOfDay: '26 Nov 01:32:48' },
+      { race: '500', rankOverall: '2*', rankGender: '2*', bib: '500-002', name: 'HONG QUAN TRAN', gender: 'Male', nationality: 'VIETNAMESE', progress: 'A10 (Return) (260 Km.)', raceTime: '83:35:14', timeOfDay: '25 Nov 23:35:14' },
+      { race: '500', rankOverall: '3*', rankGender: '3*', bib: '500-013', name: 'SUKHEE PARK', gender: 'Male', nationality: 'SOUTH KORE', progress: 'A10 (Return) (260 Km.)', raceTime: '83:35:17', timeOfDay: '25 Nov 23:35:17' },
+      { race: '500', rankOverall: '4*', rankGender: '4*', bib: '500-022', name: 'KRITTHAKORN PIRAKRITPHIROM', gender: 'Male', nationality: 'THAI', progress: 'A10 (Return) (260 Km.)', raceTime: '86:16:37', timeOfDay: '26 Nov 02:16:37' },
+      { race: '500', rankOverall: '5*', rankGender: '1*', bib: '500-019', name: 'SITI HAJAR RAZALI', gender: 'Female', nationality: 'MALAYSIAN', progress: 'A10 (Return) (260 Km.)', raceTime: '87:36:27', timeOfDay: '26 Nov 03:36:27' },
+      { race: '500', rankOverall: '6*', rankGender: '5*', bib: '500-020', name: 'SANTI PHONGSRAPHANG', gender: 'Male', nationality: 'THAI', progress: 'A10 (Return) (260 Km.)', raceTime: '88:26:16', timeOfDay: '26 Nov 04:26:16' },
+      { race: '500', rankOverall: '7*', rankGender: '2*', bib: '500-008', name: 'HANG LE THI', gender: 'Female', nationality: 'VIETNAMESE', progress: 'A10 (Return) (260 Km.)', raceTime: '88:44:03', timeOfDay: '26 Nov 04:44:03' },
+      { race: '500', rankOverall: '8*', rankGender: '6*', bib: '500-010', name: 'FILHWA JUNG', gender: 'Male', nationality: 'SOUTH KORE', progress: 'A10 (Return) (260 Km.)', raceTime: '88:44:26', timeOfDay: '26 Nov 04:44:26' },
+      { race: '500', rankOverall: '9*', rankGender: '7*', bib: '500-006', name: 'LUAN DO', gender: 'Male', nationality: 'VIETNAMESE', progress: 'A10 (Return) (260 Km.)', raceTime: '88:44:36', timeOfDay: '26 Nov 04:44:36' },
+      { race: '500', rankOverall: '10*', rankGender: '8*', bib: '500-023', name: 'SURAVATH PINSUWANBUTR', gender: 'Male', nationality: 'THAI', progress: 'A10 (Return) (260 Km.)', raceTime: '89:38:22', timeOfDay: '26 Nov 05:38:22' },
+      { race: '500', rankOverall: '11*', rankGender: '9*', bib: '500-007', name: 'THÁI AN NGUYỄN', gender: 'Male', nationality: 'VIETNAMESE', progress: 'A10 (Return) (260 Km.)', raceTime: '90:06:26', timeOfDay: '26 Nov 06:06:26' },
+      { race: '500', rankOverall: '12*', rankGender: '10*', bib: '500-016', name: 'MICHAL TUREK', gender: 'Male', nationality: 'CZECH', progress: 'A11 (Return) (242 Km.)', raceTime: '85:27:18', timeOfDay: '26 Nov 01:27:18' },
+      { race: '500', rankOverall: '13*', rankGender: '11*', bib: '500-009', name: 'TRI TRAN THANH', gender: 'Male', nationality: 'VIETNAMESE', progress: 'A11 (Return) (242 Km.)', raceTime: '85:29:37', timeOfDay: '26 Nov 01:29:37' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-005', name: 'BUNDIT KANTORNVICHAIWAT', gender: 'Male', nationality: 'THAI', progress: 'DNS', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-017', name: 'SOONSENG ONG', gender: 'Male', nationality: 'MALAYSIAN', progress: 'DNS', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-001', name: 'PAUL JOHNSON', gender: 'Male', nationality: 'AMERICAN', progress: 'DNF', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-003', name: 'LUDSPUN KAEWPHIJIDT', gender: 'Male', nationality: 'THAI', progress: 'DNF', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-004', name: 'ROMAN KOVAC', gender: 'Male', nationality: 'SLOVAKIAN', progress: 'DNF', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-011', name: 'RAMIL BALAGAT', gender: 'Male', nationality: 'FILIPINO', progress: 'DNF', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-012', name: 'BORAM LEE', gender: 'Male', nationality: 'SOUTH KORE', progress: 'DNF', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-014', name: 'TOMMY JACOBSEN', gender: 'Male', nationality: 'DANISH', progress: 'DNF', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-018', name: 'RALF SERBY', gender: 'Male', nationality: 'GERMAN', progress: 'DNF', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-021', name: 'SUPAT BUNJUAR', gender: 'Male', nationality: 'THAI', progress: 'DNF', raceTime: '', timeOfDay: '-' },
+      { race: '500', rankOverall: '-', rankGender: '-', bib: '500-024', name: 'STEPHANIE ALLEN', gender: 'Female', nationality: 'BRITISH', progress: 'DNF', raceTime: '', timeOfDay: '-' }
+    ];
+
+    let state = {
+      race: '500',
+      zoom: 2.2,
+      filter: 'all',
+      autoRefresh: true,
+      selectedBib: null,
+      runners: [],
+      aps500: JSON.parse(JSON.stringify(BASE_APS_500)),
+      dynamicApsByRace: {}
+    };
+
+    function parseProgress(prog) {
+      const text = (prog || '').trim();
+      if (!text || text === '-') return { status: 'ready', ap: '-', km: 0 };
+      if (text.toUpperCase() === 'DNF') return { status: 'dnf', ap: 'DNF', km: null };
+      if (text.toUpperCase() === 'DNS') return { status: 'dns', ap: 'DNS', km: null };
+      const kmMatch = text.match(/\((\d+(?:\.\d+)?)\s*Km\.?\)/i);
+      const km = kmMatch ? parseFloat(kmMatch[1]) : 0;
+      const ap = text.replace(/\(\d+(?:\.\d+)?\s*Km\.?\)/i, '').trim() || text;
+      const isFinish = /^FINISH/i.test(ap);
+      return { status: isFinish ? 'finish' : 'running', ap, km };
+    }
+
+    function enrichRunner(r) {
+      const p = parseProgress(r.progress);
+      const nat = getNat(r.nationality);
+      const isKorea = nat.code === 'KOR';
+      return { ...r, ...p, nat, isKorea };
+    }
+
+    async function fetchLeaderStations(bib) {
+      try {
+        const res = await fetch(`https://www.trailtracking.run/500thailand2rd/${encodeURIComponent(bib)}`, { cache: 'no-store' });
+        if (!res.ok) return null;
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const rows = Array.from(doc.querySelectorAll('table tbody tr'));
+        const list = [];
+        rows.forEach(tr => {
+          const tds = tr.querySelectorAll('td');
+          if (tds.length < 2) return;
+          const stationRaw = tds[0].textContent.trim();
+          const kmRaw = tds[1].textContent.trim();
+          const km = kmRaw === '' ? 0 : parseFloat(kmRaw);
+          if (Number.isNaN(km)) return;
+          const codeMatch = stationRaw.match(/^(START|FINISH|HQ\d*|A\d+\s*(?:\(Return\))?|B\d+\s*(?:\(Return\))?|C\d+\s*(?:\(Return\))?)/i);
+          const code = codeMatch ? codeMatch[1].replace(/\s+/g, ' ').trim() : stationRaw.split(' ')[0];
+          const label = code.replace(/\s*\(Return\)/i, '(R)').replace(/^START$/i, 'Start');
+          list.push({
+            code,
+            label,
+            km,
+            major: /^(START|FINISH|A10|A10 \(Return\)|HQ|HQ2|B3)$/i.test(code),
+            verified: true
+          });
+        });
+        return list.length > 0 ? list : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function fetchLiveResults() {
+      const btn = document.getElementById('refreshBtn');
+      const updatedEl = document.getElementById('lastUpdated');
+      btn.textContent = '⏳ 갱신중...';
+      try {
+        const res = await fetch('https://www.trailtracking.run/500thailand2rd/results', { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const trs = Array.from(doc.querySelectorAll('tr[class*="bib_"]'));
+        const parsed = [];
+        trs.forEach(tr => {
+          const tds = tr.querySelectorAll('td');
+          if (tds.length < 9) return;
+          const bib = tds[2].textContent.trim();
+          const racePrefix = bib.split('-')[0];
+          const nameHtml = tds[3].innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          parsed.push(enrichRunner({
+            race: racePrefix,
+            rankOverall: tds[0].textContent.trim(),
+            rankGender: tds[1].textContent.trim(),
+            bib,
+            name: nameHtml,
+            gender: tds[4].textContent.trim(),
+            nationality: tds[5].textContent.trim(),
+            progress: tds[6].textContent.trim(),
+            raceTime: tds[7].textContent.trim(),
+            timeOfDay: tds[8].textContent.trim()
+          }));
+        });
+        if (parsed.length === 0) throw new Error('Empty rows');
+        state.runners = parsed;
+
+        // Also update verified AP distances from current leader of selected race
+        const leader500 = parsed.find(r => r.race === '500' && (r.status === 'running' || r.status === 'finish'));
+        if (leader500 && leader500.km > 299) {
+          const verifiedStations = await fetchLeaderStations(leader500.bib);
+          if (verifiedStations) {
+            const verifiedMap = new Map(verifiedStations.map(s => [s.code.toLowerCase(), s]));
+            state.aps500 = BASE_APS_500.map(ap => {
+              const hit = verifiedMap.get(ap.code.toLowerCase());
+              return hit ? { ...ap, km: hit.km, verified: true } : ap;
+            });
+            // If finish reached, update totalKm
+            const fin = verifiedStations.find(s => /^finish$/i.test(s.code));
+            if (fin && fin.km > 0) RACE_META['500'].totalKm = fin.km;
+          }
+        }
+
+        // For non-500 races, fetch leader stations dynamically if needed
+        if (state.race !== '500' && !state.dynamicApsByRace[state.race]) {
+          const leader = parsed.find(r => r.race === state.race && (r.status === 'running' || r.status === 'finish'));
+          if (leader) {
+            const st = await fetchLeaderStations(leader.bib);
+            if (st) state.dynamicApsByRace[state.race] = st;
+          }
+        }
+
+        const now = new Date();
+        updatedEl.textContent = `실시간 · ${now.toTimeString().slice(0, 8)}`;
+        document.getElementById('liveDot').style.background = 'var(--green)';
+      } catch (err) {
+        console.warn('Live fetch failed, using fallback:', err);
+        if (state.runners.length === 0) {
+          state.runners = FALLBACK_RUNNERS.map(enrichRunner);
+        }
+        updatedEl.textContent = '캐시 스냅샷 (재시도 가능)';
+        document.getElementById('liveDot').style.background = 'var(--gold)';
+      } finally {
+        btn.textContent = '🔄 새로고침';
+        render();
+      }
+    }
+
+    function getCurrentAps(runners) {
+      if (state.race === '500') return state.aps500;
+      const dyn = state.dynamicApsByRace[state.race];
+      const totalKm = RACE_META[state.race].totalKm;
+      if (dyn && dyn.length > 0) {
+        const hasFinish = dyn.some(d => d.code.toLowerCase() === 'finish');
+        return hasFinish ? dyn : [...dyn, { code: 'FINISH', label: 'FINISH', km: totalKm, major: true, verified: false }];
+      }
+      // Build from observed runner progress
+      const map = new Map();
+      map.set('START', { code: 'START', label: 'Start', km: 0, major: true, verified: true });
+      runners.filter(r => r.km !== null && r.km > 0).forEach(r => {
+        if (!map.has(r.ap)) map.set(r.ap, { code: r.ap, label: r.ap, km: r.km, major: r.status === 'finish', verified: true });
+      });
+      if (!Array.from(map.values()).some(a => a.code.toUpperCase() === 'FINISH')) {
+        map.set('FINISH', { code: 'FINISH', label: 'FINISH', km: totalKm, major: true, verified: false });
+      }
+      return Array.from(map.values()).sort((a, b) => a.km - b.km);
+    }
+
+    function runnerSvg(color) {
+      return `
+        <svg viewBox="0 0 24 26" width="22" height="24" aria-hidden="true">
+          <circle cx="13" cy="4.2" r="2.6" fill="${color}" />
+          <path d="M12.5 7.5 L11.5 15" stroke="${color}" stroke-width="2.5" stroke-linecap="round"/>
+          <path class="runner-arm-a" d="M12 9.2 L7.5 12" stroke="${color}" stroke-width="2.1" stroke-linecap="round"/>
+          <path class="runner-arm-b" d="M12 9.2 L16.8 11.4" stroke="${color}" stroke-width="2.1" stroke-linecap="round"/>
+          <path class="runner-leg-a" d="M11.6 15 L7.5 22.5" stroke="${color}" stroke-width="2.3" stroke-linecap="round"/>
+          <path class="runner-leg-b" d="M11.6 15 L16.2 21.8" stroke="${color}" stroke-width="2.3" stroke-linecap="round"/>
+        </svg>`;
+    }
+
+    function render() {
+      const meta = RACE_META[state.race];
+      const raceRunners = state.runners.filter(r => r.race === state.race);
+      const activeRunners = raceRunners.filter(r => r.status === 'running' || r.status === 'finish');
+      const dnfCount = raceRunners.filter(r => r.status === 'dnf').length;
+      const dnsCount = raceRunners.filter(r => r.status === 'dns').length;
+      const korActive = activeRunners.filter(r => r.isKorea);
+      const leader = activeRunners[0];
+
+      // Stats
+      document.getElementById('statsRow').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">진행중 / 완주</div>
+          <div class="stat-value">${activeRunners.length}명 <span style="font-size:0.75rem;color:var(--text-dim);font-weight:500">/ 총 ${raceRunners.length}명</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">현재 선두</div>
+          <div class="stat-value" style="font-size:0.95rem">${leader ? `${leader.nat.flag} ${leader.name.split(' ').slice(-1)[0]} (${leader.km}km)` : '-'}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">🇰🇷 한국 선수 (진행중)</div>
+          <div class="stat-value" style="color:var(--korea)">${korActive.length > 0 ? korActive.map(k => `${k.rankOverall.replace('*','')}위 ${k.name.split(' ').slice(-1)[0]}`).join(' · ') : '0명'}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">DNF / DNS</div>
+          <div class="stat-value"><span style="color:var(--red)">${dnfCount}</span> / <span style="color:var(--text-dim)">${dnsCount}</span></div>
+        </div>
+      `;
+
+      // Canvas width based on zoom
+      const canvas = document.getElementById('trackCanvas');
+      const scrollWrap = document.getElementById('trackScroll');
+      const baseW = Math.max(scrollWrap.clientWidth || 900, 760);
+      const targetW = state.zoom <= 1 ? '100%' : `${Math.round(baseW * state.zoom)}px`;
+      canvas.style.width = targetW;
+
+      document.getElementById('trackTitle').textContent = `🏁 ${meta.name} · 0km ~ ${meta.totalKm}km 직선 트랙`;
+
+      // Leader progress line
+      const maxKm = leader ? Math.min(leader.km || 0, meta.totalKm) : 0;
+      document.getElementById('courseProgress').style.width = `${(maxKm / meta.totalKm) * 100}%`;
+
+      // Ruler ticks
+      const rulerEl = document.getElementById('rulerArea');
+      let ticksHtml = '';
+      for (let km = 0; km <= meta.totalKm; km += meta.minorStep) {
+        const isMajor = km % meta.tickStep === 0 || km === meta.totalKm;
+        const pct = (km / meta.totalKm) * 100;
+        ticksHtml += `
+          <div class="tick ${isMajor ? 'major' : ''}" style="left:${pct}%">
+            <div class="tick-line"></div>
+            ${isMajor ? `<span class="tick-label">${km}km</span>` : ''}
+          </div>
+        `;
+      }
+      rulerEl.innerHTML = ticksHtml;
+
+      // AP markers
+      const aps = getCurrentAps(raceRunners);
+      const apEl = document.getElementById('apLayer');
+      let apHtml = '';
+      aps.forEach((ap, idx) => {
+        const pct = Math.min((ap.km / meta.totalKm) * 100, 100);
+        const tier = idx % 2 === 0 ? 'tier-1' : 'tier-2';
+        apHtml += `
+          <div class="ap-marker ${ap.major ? 'major' : ''} ${ap.verified ? '' : 'projected'} ${tier}" style="left:${pct}%">
+            <div class="ap-dot"></div>
+            <div class="ap-stem"></div>
+            <div class="ap-tag">${ap.label}<span class="ap-km">${ap.km}k</span></div>
+          </div>
+        `;
+      });
+      apEl.innerHTML = apHtml;
+
+      // Runners on track (group by km to stack cleanly without overlap)
+      const runnersLayer = document.getElementById('runnersLayer');
+      const groups = new Map();
+      activeRunners.forEach(r => {
+        const key = String(r.km ?? 0);
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(r);
+      });
+
+      let runnersHtml = '';
+      groups.forEach((group, kmKey) => {
+        const km = parseFloat(kmKey);
+        const pct = Math.min((km / meta.totalKm) * 100, 100);
+        group.forEach((r, i) => {
+          // Stack vertically (max 6 rows, if more wrap horizontally slightly)
+          const row = i % 5;
+          const colShift = Math.floor(i / 5);
+          const bottomPx = row * 50;
+          const leftOffset = (colShift - (Math.ceil(group.length / 5) - 1) / 2) * 34;
+          const shortName = r.name.split(' ').slice(-1)[0];
+          const isRank1 = r.rankOverall.replace('*', '') === '1';
+          const isSelected = state.selectedBib === r.bib;
+          const color = r.isKorea ? '#60a5fa' : (isRank1 ? '#fbbf24' : '#34d399');
+
+          runnersHtml += `
+            <div class="runner-node ${isRank1 ? 'rank-1' : ''} ${r.isKorea ? 'korea' : ''} ${r.status === 'finish' ? 'finished' : ''} ${isSelected ? 'selected' : ''}"
+                 data-bib="${r.bib}"
+                 style="left: calc(${pct}% + ${leftOffset}px); bottom: ${bottomPx}px;">
+              <div class="runner-badge">
+                <span>${r.nat.flag}</span>
+                <span>${shortName}</span>
+              </div>
+              <div class="runner-sprite">${runnerSvg(color)}</div>
+              <div class="runner-rank-tag">${r.rankOverall.replace('*', '')}위</div>
+            </div>
+          `;
+        });
+      });
+      runnersLayer.innerHTML = runnersHtml;
+
+      // Detail bar
+      const sel = raceRunners.find(r => r.bib === state.selectedBib) || leader;
+      if (sel) {
+        document.getElementById('runnerDetail').innerHTML = `
+          <div>
+            <strong>${sel.nat.flag} ${sel.name}</strong>
+            <span class="bib-pill" style="margin-left:6px">${sel.bib}</span>
+            <span style="margin-left:8px;color:var(--text-dim)">
+              전체 ${sel.rankOverall}위 (${sel.gender} ${sel.rankGender}위) ·
+              <strong style="color:var(--text)">${sel.progress}</strong> ·
+              레이스타임 ${sel.raceTime || '-'} (${sel.timeOfDay})
+            </span>
+          </div>
+          <a href="https://www.trailtracking.run/500thailand2rd/${encodeURIComponent(sel.bib)}" target="_blank" rel="noopener">구간별 기록 보기 ↗</a>
+        `;
+      }
+
+      // Ranking table
+      let filtered = raceRunners;
+      if (state.filter === 'active') filtered = raceRunners.filter(r => r.status === 'running' || r.status === 'finish');
+      else if (state.filter === 'korea') filtered = raceRunners.filter(r => r.isKorea);
+      else if (state.filter === 'out') filtered = raceRunners.filter(r => r.status === 'dnf' || r.status === 'dns');
+
+      const tbody = document.getElementById('rankingBody');
+      tbody.innerHTML = filtered.map(r => {
+        const pct = r.km !== null ? Math.min(Math.round((r.km / meta.totalKm) * 100), 100) : 0;
+        let statusHtml = '';
+        if (r.status === 'finish') statusHtml = `<span class="status-chip status-finish">🏁 FINISH (${r.km}km)</span>`;
+        else if (r.status === 'running') statusHtml = `<span class="status-chip status-running">${r.ap} · ${r.km}km</span>`;
+        else if (r.status === 'dnf') statusHtml = `<span class="status-chip status-dnf">DNF</span>`;
+        else if (r.status === 'dns') statusHtml = `<span class="status-chip status-dns">DNS</span>`;
+        else statusHtml = `<span class="status-chip status-dns">대기</span>`;
+
+        return `
+          <tr class="runner-row ${r.isKorea ? 'korea-row' : ''} ${state.selectedBib === r.bib ? 'selected-row' : ''}" data-bib="${r.bib}">
+            <td class="rank-num">${r.rankOverall} <span style="font-size:0.72rem;color:var(--text-dim);font-weight:500">(${r.rankGender})</span></td>
+            <td><span class="bib-pill">${r.bib}</span></td>
+            <td><strong>${r.name}</strong> <span style="font-size:0.72rem;color:var(--text-dim)">${r.gender === 'Female' ? '여' : '남'}</span></td>
+            <td>${r.nat.flag} ${r.nat.name}</td>
+            <td>${statusHtml}</td>
+            <td>
+              ${r.km !== null ? `<span style="font-size:0.75rem;color:var(--text-dim)">${pct}%</span><div class="progress-bar-mini"><div style="width:${pct}%"></div></div>` : '-'}
+            </td>
+            <td style="font-variant-numeric:tabular-nums;font-weight:700">${r.raceTime || '-'}</td>
+            <td style="font-size:0.78rem;color:var(--text-dim)">${r.timeOfDay || '-'}</td>
+          </tr>
+        `;
+      }).join('') || `<tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:20px">표시할 선수가 없습니다.</td></tr>`;
+
+      // Bind clicks on runners & rows
+      document.querySelectorAll('.runner-node, .runner-row').forEach(el => {
+        el.addEventListener('click', () => {
+          state.selectedBib = el.dataset.bib;
+          render();
+          // Scroll track to selected runner
+          const targetNode = document.querySelector(`.runner-node[data-bib="${state.selectedBib}"]`);
+          if (targetNode) {
+            targetNode.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          }
+        });
+      });
+    }
+
+    // Event listeners
+    document.getElementById('raceTabs').addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.race = btn.dataset.race;
+      state.selectedBib = null;
+      if (state.race !== '500' && !state.dynamicApsByRace[state.race]) {
+        fetchLiveResults();
+      } else {
+        render();
+      }
+    });
+
+    document.getElementById('zoomGroup').addEventListener('click', e => {
+      const btn = e.target.closest('.zoom-btn');
+      if (!btn) return;
+      document.querySelectorAll('.zoom-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.zoom = parseFloat(btn.dataset.zoom);
+      render();
+    });
+
+    document.getElementById('filterGroup').addEventListener('click', e => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.filter = btn.dataset.filter;
+      render();
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', fetchLiveResults);
+
+    document.getElementById('autoRefreshBtn').addEventListener('click', e => {
+      state.autoRefresh = !state.autoRefresh;
+      e.currentTarget.classList.toggle('active', state.autoRefresh);
+      e.currentTarget.textContent = state.autoRefresh ? '⏱ 자동갱신 ON' : '⏸ 자동갱신 OFF';
+    });
+
+    window.addEventListener('resize', render);
+
+    // Init
+    fetchLiveResults();
+    setInterval(() => {
+      if (state.autoRefresh) fetchLiveResults();
+    }, 60000);
+  </script>
+</body>
+</html>
