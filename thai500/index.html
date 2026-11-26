@@ -376,13 +376,16 @@
       display: inline-flex;
       align-items: center;
       gap: 3px;
-      background: rgba(15, 23, 42, 0.92);
+      background: rgba(15, 23, 42, 0.94);
       border: 1px solid #334155;
       border-radius: 999px;
       padding: 2px 6px;
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       font-weight: 700;
       white-space: nowrap;
+      max-width: 82px;
+      overflow: hidden;
+      text-overflow: ellipsis;
       box-shadow: 0 3px 10px rgba(0,0,0,0.45);
       margin-bottom: 1px;
     }
@@ -640,8 +643,8 @@
       <div class="track-toolbar">
         <div class="track-title" id="trackTitle">🏁 0km ~ FINISH 직선 트랙</div>
         <div class="zoom-group" id="zoomGroup">
-          <button class="zoom-btn" data-zoom="1">전체</button>
-          <button class="zoom-btn active" data-zoom="2.2">2x 확대</button>
+          <button class="zoom-btn active" data-zoom="1">전체</button>
+          <button class="zoom-btn" data-zoom="2.2">2x 확대</button>
           <button class="zoom-btn" data-zoom="3.8">4x 상세</button>
         </div>
       </div>
@@ -828,7 +831,7 @@
 
     let state = {
       race: '500',
-      zoom: 2.2,
+      zoom: 1,
       filter: 'all',
       autoRefresh: true,
       selectedBib: null,
@@ -904,18 +907,18 @@
           if (tds.length < 9) return;
           const bib = tds[2].textContent.trim();
           const racePrefix = bib.split('-')[0];
-          const nameHtml = tds[3].innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          const cleanCell = el => el.innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
           parsed.push(enrichRunner({
             race: racePrefix,
             rankOverall: tds[0].textContent.trim(),
             rankGender: tds[1].textContent.trim(),
             bib,
-            name: nameHtml,
+            name: cleanCell(tds[3]),
             gender: tds[4].textContent.trim(),
             nationality: tds[5].textContent.trim(),
-            progress: tds[6].textContent.trim(),
-            raceTime: tds[7].textContent.trim(),
-            timeOfDay: tds[8].textContent.trim()
+            progress: cleanCell(tds[6]),
+            raceTime: cleanCell(tds[7]),
+            timeOfDay: cleanCell(tds[8])
           }));
         });
         if (parsed.length === 0) throw new Error('Empty rows');
@@ -1081,13 +1084,14 @@
       groups.forEach((group, kmKey) => {
         const km = parseFloat(kmKey);
         const pct = Math.min((km / meta.totalKm) * 100, 100);
+        const rowsPerCol = 6;
+        const totalCols = Math.ceil(group.length / rowsPerCol);
         group.forEach((r, i) => {
-          // Stack vertically (max 6 rows, if more wrap horizontally slightly)
-          const row = i % 5;
-          const colShift = Math.floor(i / 5);
-          const bottomPx = row * 50;
-          const leftOffset = (colShift - (Math.ceil(group.length / 5) - 1) / 2) * 34;
-          const shortName = r.name.split(' ').slice(-1)[0];
+          const row = i % rowsPerCol;
+          const colShift = Math.floor(i / rowsPerCol);
+          const bottomPx = row * 48;
+          const leftOffset = (colShift - (totalCols - 1) / 2) * 78;
+          const shortName = r.name.split(' ').slice(-1)[0].slice(0, 9);
           const isRank1 = r.rankOverall.replace('*', '') === '1';
           const isSelected = state.selectedBib === r.bib;
           const color = r.isKorea ? '#60a5fa' : (isRank1 ? '#fbbf24' : '#34d399');
@@ -1193,6 +1197,10 @@
       btn.classList.add('active');
       state.zoom = parseFloat(btn.dataset.zoom);
       render();
+      if (state.zoom > 1) {
+        const leaderNode = document.querySelector('.runner-node.rank-1') || document.querySelector('.runner-node');
+        if (leaderNode) leaderNode.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
     });
 
     document.getElementById('filterGroup').addEventListener('click', e => {
