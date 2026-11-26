@@ -1079,46 +1079,58 @@
       });
       apEl.innerHTML = apHtml;
 
-      // Runners on track (group by km to stack cleanly without overlap)
+      // Runners on track (collision-free stacking by actual pixel X)
       const runnersLayer = document.getElementById('runnersLayer');
-      const groups = new Map();
-      activeRunners.forEach(r => {
-        const key = String(r.km ?? 0);
-        if (!groups.has(key)) groups.set(key, []);
-        groups.get(key).push(r);
+      const trackCanvas = document.getElementById('trackCanvas');
+      const trackW = Math.max((trackCanvas ? trackCanvas.clientWidth : 900) - 80, 320);
+      const placed = [];
+      const rowStep = 56;
+      const minGapPx = 98;
+      let maxRow = 0;
+
+      // Sort by km desc, then overall rank asc so leaders sit near the track line
+      const sortedForTrack = [...activeRunners].sort((a, b) => {
+        if ((b.km ?? 0) !== (a.km ?? 0)) return (b.km ?? 0) - (a.km ?? 0);
+        return a.rankNum - b.rankNum;
       });
 
       let runnersHtml = '';
-      groups.forEach((group, kmKey) => {
-        const km = parseFloat(kmKey);
+      sortedForTrack.forEach(r => {
+        const km = r.km ?? 0;
         const pct = Math.min((km / meta.totalKm) * 100, 100);
-        const rowsPerCol = 6;
-        const totalCols = Math.ceil(group.length / rowsPerCol);
-        group.forEach((r, i) => {
-          const row = i % rowsPerCol;
-          const colShift = Math.floor(i / rowsPerCol);
-          const bottomPx = row * 56;
-          const leftOffset = (colShift - (totalCols - 1) / 2) * 96;
-          const shortName = r.name.split(' ').slice(-1)[0].slice(0, 9);
-          const rankNum = r.rankOverall.replace('*', '');
-          const isRank1 = rankNum === '1';
-          const isSelected = state.selectedBib === r.bib;
-          const color = r.isKorea ? '#60a5fa' : (isRank1 ? '#fbbf24' : '#34d399');
+        const xPx = (pct / 100) * trackW;
 
-          runnersHtml += `
-            <div class="runner-node ${isRank1 ? 'rank-1' : ''} ${r.isKorea ? 'korea' : ''} ${r.status === 'finish' ? 'finished' : ''} ${isSelected ? 'selected' : ''}"
-                 data-bib="${r.bib}"
-                 style="left: calc(${pct}% + ${leftOffset}px); bottom: ${bottomPx}px;">
-              <div class="runner-badge">
-                <span class="runner-rank-inline">${rankNum}위</span>
-                <span>${r.nat.flag}</span>
-                <span>${shortName}</span>
-              </div>
-              <div class="runner-sprite">${runnerSvg(color)}</div>
+        let row = 0;
+        while (placed.some(p => p.row === row && Math.abs(p.xPx - xPx) < minGapPx)) {
+          row++;
+        }
+        placed.push({ xPx, row });
+        if (row > maxRow) maxRow = row;
+
+        const bottomPx = row * rowStep;
+        const shortName = r.name.split(' ').slice(-1)[0].slice(0, 9);
+        const rankNum = r.rankOverall.replace('*', '');
+        const isRank1 = rankNum === '1';
+        const isSelected = state.selectedBib === r.bib;
+        const color = r.isKorea ? '#60a5fa' : (isRank1 ? '#fbbf24' : '#34d399');
+
+        runnersHtml += `
+          <div class="runner-node ${isRank1 ? 'rank-1' : ''} ${r.isKorea ? 'korea' : ''} ${r.status === 'finish' ? 'finished' : ''} ${isSelected ? 'selected' : ''}"
+               data-bib="${r.bib}"
+               style="left: ${pct}%; bottom: ${bottomPx}px;">
+            <div class="runner-badge">
+              <span class="runner-rank-inline">${rankNum}위</span>
+              <span>${r.nat.flag}</span>
+              <span>${shortName}</span>
             </div>
-          `;
-        });
+            <div class="runner-sprite">${runnerSvg(color)}</div>
+          </div>
+        `;
       });
+      if (trackCanvas) {
+        const neededH = Math.max(440, (maxRow + 1) * rowStep + 125);
+        trackCanvas.style.height = `${neededH}px`;
+      }
       runnersLayer.innerHTML = runnersHtml;
 
       // Detail bar
