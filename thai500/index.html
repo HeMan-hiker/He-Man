@@ -17,6 +17,8 @@
       --green: #34d399;
       --red: #f87171;
       --korea: #60a5fa;
+      --female: #f472b6;
+      --male: #7dd3fc;
       --track-line: #334155;
     }
 
@@ -383,11 +385,79 @@
       font-size: 0.66rem;
       font-weight: 700;
       white-space: nowrap;
-      max-width: 108px;
+      max-width: 124px;
       overflow: hidden;
       text-overflow: ellipsis;
       box-shadow: 0 3px 10px rgba(0,0,0,0.45);
       margin-bottom: 1px;
+    }
+    .runner-node.female .runner-badge {
+      border-color: rgba(244, 114, 182, 0.55);
+    }
+    .gender-mark {
+      font-size: 0.68rem;
+      font-weight: 900;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .gender-mark.male { color: var(--male); }
+    .gender-mark.female { color: var(--female); }
+    .gender-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+    .gender-pill.male {
+      background: rgba(125, 211, 252, 0.14);
+      color: var(--male);
+      border: 1px solid rgba(125, 211, 252, 0.28);
+    }
+    .gender-pill.female {
+      background: rgba(244, 114, 182, 0.15);
+      color: var(--female);
+      border: 1px solid rgba(244, 114, 182, 0.35);
+    }
+    .toolbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .gender-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .gender-btn {
+      background: var(--bg-card-2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 9px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .gender-btn.active {
+      background: rgba(56, 189, 248, 0.18);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .gender-btn[data-gender="F"].active {
+      background: rgba(244, 114, 182, 0.2);
+      color: #fbcfe8;
+      border-color: var(--female);
+    }
+    .gender-btn[data-gender="M"].active {
+      background: rgba(125, 211, 252, 0.2);
+      color: #bae6fd;
+      border-color: var(--male);
     }
     .runner-rank-inline {
       color: var(--text-dim);
@@ -650,10 +720,17 @@
     <section class="track-card">
       <div class="track-toolbar">
         <div class="track-title" id="trackTitle">🏁 0km ~ FINISH 직선 트랙</div>
-        <div class="zoom-group" id="zoomGroup">
-          <button class="zoom-btn active" data-zoom="1">전체</button>
-          <button class="zoom-btn" data-zoom="2.2">2x 확대</button>
-          <button class="zoom-btn" data-zoom="3.8">4x 상세</button>
+        <div class="toolbar-right">
+          <div class="gender-group" data-gender-sync>
+            <button class="gender-btn active" data-gender="all">남녀 전체</button>
+            <button class="gender-btn" data-gender="M">♂ 남자</button>
+            <button class="gender-btn" data-gender="F">♀ 여자</button>
+          </div>
+          <div class="zoom-group" id="zoomGroup">
+            <button class="zoom-btn active" data-zoom="1">전체</button>
+            <button class="zoom-btn" data-zoom="2.2">2x 확대</button>
+            <button class="zoom-btn" data-zoom="3.8">4x 상세</button>
+          </div>
         </div>
       </div>
 
@@ -675,20 +752,28 @@
 
       <div class="legend">
         <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span> 주요 거점 / 1위</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--korea)"></span> 🇰🇷 대한민국 선수</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#64748b"></span> 실측 AP (공식 통과 확인)</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#475569;border:1px dashed #94a3b8"></span> 이후 예정 AP (선두 통과 시 자동 보정)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--korea)"></span> 🇰🇷 한국 선수</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--female)"></span> ♀ 여성 선수</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#64748b"></span> 실측 AP</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#475569;border:1px dashed #94a3b8"></span> 예정 AP</span>
       </div>
     </section>
 
     <section class="ranking-card">
       <div class="ranking-header">
         <div class="track-title">📋 실시간 랭킹 리스트</div>
-        <div class="filter-group" id="filterGroup">
-          <button class="filter-btn active" data-filter="all">전체</button>
-          <button class="filter-btn" data-filter="active">진행중/완주</button>
-          <button class="filter-btn" data-filter="korea">🇰🇷 한국선수</button>
-          <button class="filter-btn" data-filter="out">DNF/DNS</button>
+        <div class="toolbar-right">
+          <div class="gender-group" data-gender-sync>
+            <button class="gender-btn active" data-gender="all">남녀 전체</button>
+            <button class="gender-btn" data-gender="M">♂ 남자</button>
+            <button class="gender-btn" data-gender="F">♀ 여자</button>
+          </div>
+          <div class="filter-group" id="filterGroup">
+            <button class="filter-btn active" data-filter="all">전체</button>
+            <button class="filter-btn" data-filter="active">진행중/완주</button>
+            <button class="filter-btn" data-filter="korea">🇰🇷 한국선수</button>
+            <button class="filter-btn" data-filter="out">DNF/DNS</button>
+          </div>
         </div>
       </div>
       <div class="table-wrap">
@@ -841,12 +926,19 @@
       race: '500',
       zoom: 1,
       filter: 'all',
+      genderFilter: 'all',
       autoRefresh: true,
       selectedBib: null,
       runners: [],
       aps500: JSON.parse(JSON.stringify(BASE_APS_500)),
       dynamicApsByRace: {}
     };
+
+    function matchesGender(r) {
+      if (state.genderFilter === 'all') return true;
+      const isF = r.gender === 'Female';
+      return state.genderFilter === 'F' ? isF : !isF;
+    }
 
     function parseProgress(prog) {
       const text = (prog || '').trim();
@@ -1007,22 +1099,25 @@
 
     function render() {
       const meta = RACE_META[state.race];
-      const raceRunners = state.runners.filter(r => r.race === state.race);
+      const allRaceRunners = state.runners.filter(r => r.race === state.race);
+      const raceRunners = allRaceRunners.filter(matchesGender);
       const activeRunners = raceRunners.filter(r => r.status === 'running' || r.status === 'finish');
       const dnfCount = raceRunners.filter(r => r.status === 'dnf').length;
       const dnsCount = raceRunners.filter(r => r.status === 'dns').length;
       const korActive = activeRunners.filter(r => r.isKorea);
       const leader = activeRunners[0];
+      const maleActiveCount = allRaceRunners.filter(r => (r.status === 'running' || r.status === 'finish') && r.gender !== 'Female').length;
+      const femaleActiveCount = allRaceRunners.filter(r => (r.status === 'running' || r.status === 'finish') && r.gender === 'Female').length;
 
       // Stats
       document.getElementById('statsRow').innerHTML = `
         <div class="stat-card">
-          <div class="stat-label">진행중 / 완주</div>
-          <div class="stat-value">${activeRunners.length}명 <span style="font-size:0.75rem;color:var(--text-dim);font-weight:500">/ 총 ${raceRunners.length}명</span></div>
+          <div class="stat-label">진행중 / 완주 ${state.genderFilter === 'all' ? '' : (state.genderFilter === 'F' ? '(여자)' : '(남자)')}</div>
+          <div class="stat-value">${activeRunners.length}명 <span style="font-size:0.75rem;color:var(--text-dim);font-weight:500">/ ${raceRunners.length}명 (♂${maleActiveCount} · ♀${femaleActiveCount})</span></div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">현재 선두</div>
-          <div class="stat-value" style="font-size:0.95rem">${leader ? `${leader.nat.flag} ${leader.name.split(' ').slice(-1)[0]} (${leader.km}km)` : '-'}</div>
+          <div class="stat-label">${state.genderFilter === 'F' ? '여자 선두' : (state.genderFilter === 'M' ? '남자 선두' : '현재 선두')}</div>
+          <div class="stat-value" style="font-size:0.95rem">${leader ? `${leader.nat.flag} ${leader.gender === 'Female' ? '♀' : '♂'} ${leader.name.split(' ').slice(-1)[0]} (${leader.km}km)` : '-'}</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">🇰🇷 한국 선수 (진행중)</div>
@@ -1085,13 +1180,13 @@
       const trackW = Math.max((trackCanvas ? trackCanvas.clientWidth : 900) - 80, 320);
       const placed = [];
       const rowStep = 56;
-      const minGapPx = 98;
+      const minGapPx = 112;
       let maxRow = 0;
 
       // Sort by km desc, then overall rank asc so leaders sit near the track line
       const sortedForTrack = [...activeRunners].sort((a, b) => {
         if ((b.km ?? 0) !== (a.km ?? 0)) return (b.km ?? 0) - (a.km ?? 0);
-        return a.rankNum - b.rankNum;
+        return parseInt(a.rankOverall, 10) - parseInt(b.rankOverall, 10);
       });
 
       let runnersHtml = '';
@@ -1109,18 +1204,20 @@
 
         const bottomPx = row * rowStep;
         const shortName = r.name.split(' ').slice(-1)[0].slice(0, 9);
-        const rankNum = r.rankOverall.replace('*', '');
-        const isRank1 = rankNum === '1';
+        const isFemale = r.gender === 'Female';
+        const displayRank = state.genderFilter === 'all' ? r.rankOverall.replace('*', '') : r.rankGender.replace('*', '');
+        const isRank1 = displayRank === '1';
         const isSelected = state.selectedBib === r.bib;
-        const color = r.isKorea ? '#60a5fa' : (isRank1 ? '#fbbf24' : '#34d399');
+        const color = r.isKorea ? '#60a5fa' : (isRank1 ? '#fbbf24' : (isFemale ? '#f472b6' : '#34d399'));
 
         runnersHtml += `
-          <div class="runner-node ${isRank1 ? 'rank-1' : ''} ${r.isKorea ? 'korea' : ''} ${r.status === 'finish' ? 'finished' : ''} ${isSelected ? 'selected' : ''}"
+          <div class="runner-node ${isRank1 ? 'rank-1' : ''} ${r.isKorea ? 'korea' : ''} ${isFemale ? 'female' : 'male'} ${r.status === 'finish' ? 'finished' : ''} ${isSelected ? 'selected' : ''}"
                data-bib="${r.bib}"
                style="left: ${pct}%; bottom: ${bottomPx}px;">
             <div class="runner-badge">
-              <span class="runner-rank-inline">${rankNum}위</span>
+              <span class="runner-rank-inline">${displayRank}위</span>
               <span>${r.nat.flag}</span>
+              <span class="gender-mark ${isFemale ? 'female' : 'male'}">${isFemale ? '♀' : '♂'}</span>
               <span>${shortName}</span>
             </div>
             <div class="runner-sprite">${runnerSvg(color)}</div>
@@ -1136,12 +1233,14 @@
       // Detail bar
       const sel = raceRunners.find(r => r.bib === state.selectedBib) || leader;
       if (sel) {
+        const isSelF = sel.gender === 'Female';
         document.getElementById('runnerDetail').innerHTML = `
           <div>
             <strong>${sel.nat.flag} ${sel.name}</strong>
+            <span class="gender-pill ${isSelF ? 'female' : 'male'}">${isSelF ? '♀ 여' : '♂ 남'}</span>
             <span class="bib-pill" style="margin-left:6px">${sel.bib}</span>
             <span style="margin-left:8px;color:var(--text-dim)">
-              전체 ${sel.rankOverall}위 (${sel.gender} ${sel.rankGender}위) ·
+              전체 ${sel.rankOverall}위 (${isSelF ? '여자' : '남자'} ${sel.rankGender}위) ·
               <strong style="color:var(--text)">${sel.progress}</strong> ·
               레이스타임 ${sel.raceTime || '-'} (${sel.timeOfDay})
             </span>
@@ -1166,11 +1265,12 @@
         else if (r.status === 'dns') statusHtml = `<span class="status-chip status-dns">DNS</span>`;
         else statusHtml = `<span class="status-chip status-dns">대기</span>`;
 
+        const isF = r.gender === 'Female';
         return `
           <tr class="runner-row ${r.isKorea ? 'korea-row' : ''} ${state.selectedBib === r.bib ? 'selected-row' : ''}" data-bib="${r.bib}">
-            <td class="rank-num">${r.rankOverall} <span style="font-size:0.72rem;color:var(--text-dim);font-weight:500">(${r.rankGender})</span></td>
+            <td class="rank-num">${r.rankOverall} <span style="font-size:0.72rem;color:var(--text-dim);font-weight:500">(${isF ? '여' : '남'}${r.rankGender})</span></td>
             <td><span class="bib-pill">${r.bib}</span></td>
-            <td><strong>${r.name}</strong> <span style="font-size:0.72rem;color:var(--text-dim)">${r.gender === 'Female' ? '여' : '남'}</span></td>
+            <td><strong>${r.name}</strong><span class="gender-pill ${isF ? 'female' : 'male'}">${isF ? '♀ 여' : '♂ 남'}</span></td>
             <td>${r.nat.flag} ${r.nat.name}</td>
             <td>${statusHtml}</td>
             <td>
@@ -1231,6 +1331,19 @@
       btn.classList.add('active');
       state.filter = btn.dataset.filter;
       render();
+    });
+
+    document.querySelectorAll('[data-gender-sync]').forEach(group => {
+      group.addEventListener('click', e => {
+        const btn = e.target.closest('.gender-btn');
+        if (!btn) return;
+        const g = btn.dataset.gender;
+        state.genderFilter = g;
+        document.querySelectorAll('.gender-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.gender === g);
+        });
+        render();
+      });
     });
 
     document.getElementById('refreshBtn').addEventListener('click', fetchLiveResults);
