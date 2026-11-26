@@ -208,7 +208,7 @@
 
     .track-canvas {
       position: relative;
-      height: 410px;
+      height: 445px;
       min-width: 100%;
       user-select: none;
     }
@@ -379,16 +379,24 @@
       background: rgba(15, 23, 42, 0.94);
       border: 1px solid #334155;
       border-radius: 999px;
-      padding: 2px 6px;
+      padding: 2px 7px;
       font-size: 0.66rem;
       font-weight: 700;
       white-space: nowrap;
-      max-width: 82px;
+      max-width: 108px;
       overflow: hidden;
       text-overflow: ellipsis;
       box-shadow: 0 3px 10px rgba(0,0,0,0.45);
       margin-bottom: 1px;
     }
+    .runner-rank-inline {
+      color: var(--text-dim);
+      font-size: 0.62rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .runner-node.korea .runner-rank-inline { color: #93c5fd; }
+    .runner-node.rank-1 .runner-rank-inline { color: var(--gold); }
     .runner-node.rank-1 .runner-badge {
       border-color: var(--gold);
       background: rgba(45, 33, 10, 0.95);
@@ -1089,10 +1097,11 @@
         group.forEach((r, i) => {
           const row = i % rowsPerCol;
           const colShift = Math.floor(i / rowsPerCol);
-          const bottomPx = row * 48;
-          const leftOffset = (colShift - (totalCols - 1) / 2) * 78;
+          const bottomPx = row * 56;
+          const leftOffset = (colShift - (totalCols - 1) / 2) * 96;
           const shortName = r.name.split(' ').slice(-1)[0].slice(0, 9);
-          const isRank1 = r.rankOverall.replace('*', '') === '1';
+          const rankNum = r.rankOverall.replace('*', '');
+          const isRank1 = rankNum === '1';
           const isSelected = state.selectedBib === r.bib;
           const color = r.isKorea ? '#60a5fa' : (isRank1 ? '#fbbf24' : '#34d399');
 
@@ -1101,11 +1110,11 @@
                  data-bib="${r.bib}"
                  style="left: calc(${pct}% + ${leftOffset}px); bottom: ${bottomPx}px;">
               <div class="runner-badge">
+                <span class="runner-rank-inline">${rankNum}위</span>
                 <span>${r.nat.flag}</span>
                 <span>${shortName}</span>
               </div>
               <div class="runner-sprite">${runnerSvg(color)}</div>
-              <div class="runner-rank-tag">${r.rankOverall.replace('*', '')}위</div>
             </div>
           `;
         });
