@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0e0c">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>해피데이 2026 출석체크</title>
+<meta name="description" content="해피데이 2026 겨울(서산) 현장 출석체크 — 이름을 탭하면 체크되고 이 기기에 자동 저장됩니다.">
+<meta property="og:title" content="해피데이 2026 출석체크">
+<meta property="og:description" content="탭해서 체크, 자동 저장. 13명 체크리스트.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://heman-hiker.github.io/He-Man/happyday-checkin/">
+<meta name="twitter:card" content="summary">
+<style>
+:root{
+  --bg:#0a0e0c;
+  --bg-deep:#070a09;
+  --card:#121a16;
+  --card-hi:#17211b;
+  --line:#26312a;
+  --line-2:#33413a;
+  --ink:#eef3ef;
+  --muted:#9caaa2;
+  --dim:#6d7c74;
+  --amber:#f3b73f;
+  --ok:#45d69b;
+  --ok-dim:#2a7d5e;
+  --warn:#ff8f5e;
+  --r:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;padding:0;overflow-x:hidden}
+body{
+  min-height:100vh; min-height:100dvh;
+  background:
+    radial-gradient(820px 420px at 8% -10%, #16241c 0%, rgba(22,36,28,0) 62%),
+    radial-gradient(700px 380px at 100% 0%, #221a12 0%, rgba(34,26,18,0) 58%),
+    var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Malgun Gothic","Segoe UI",system-ui,sans-serif;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  display:flex; flex-direction:column;
+  padding-bottom:env(safe-area-inset-bottom,0);
+}
+
+/* ── head ── */
+.top{
+  position:sticky; top:0; z-index:30;
+  background:linear-gradient(180deg,rgba(10,14,12,.97) 0%,rgba(10,14,12,.93) 72%,rgba(10,14,12,0) 100%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  backdrop-filter:blur(18px) saturate(140%);
+  padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 12px;
+}
+.top-in{max-width:640px;margin:0 auto}
+.eyebrow{
+  display:flex; align-items:center; gap:8px; margin:0;
+  font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--dim);
+  font-variant-numeric:tabular-nums;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px rgba(243,183,63,.8);flex:0 0 auto}
+h1{
+  margin:7px 0 0; font-size:22px; line-height:1.2; font-weight:800; letter-spacing:-.02em;
+  color:#fff;
+}
+h1 em{font-style:normal;color:var(--amber)}
+
+/* counter */
+.count{
+  display:flex; align-items:flex-end; gap:8px; margin-top:12px;
+}
+.count .num{
+  font-size:40px; line-height:.9; font-weight:800; letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums; color:#fff;
+}
+.count .of{font-size:13px; color:var(--muted); padding-bottom:4px; font-variant-numeric:tabular-nums}
+.count .left{margin-left:auto; font-size:12.5px; color:var(--muted); padding-bottom:5px; font-variant-numeric:tabular-nums}
+.count .left b{color:var(--warn); font-weight:700}
+.bar{
+  height:9px; margin-top:10px; border-radius:999px; background:#1b241f;
+  overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,.5);
+}
+.bar i{
+  display:block; height:100%; width:0%; border-radius:999px;
+  background:linear-gradient(90deg,#2f9d74,var(--ok));
+  transition:width .35s cubic-bezier(.3,.9,.3,1);
+  box-shadow:0 0 14px rgba(69,214,155,.45);
+}
+
+/* controls */
+.tools{display:flex; align-items:center; gap:8px; margin-top:12px}
+.seg{display:flex; flex:1; background:#141c18; border:1px solid var(--line); border-radius:12px; padding:3px; gap:3px}
+.seg button{
+  flex:1; appearance:none; border:0; background:transparent; color:var(--muted);
+  font:inherit; font-size:12.5px; font-weight:700; letter-spacing:-.01em;
+  padding:8px 6px; border-radius:9px; cursor:pointer; white-space:nowrap;
+  transition:background .15s,color .15s;
+}
+.seg button.on{background:#25332b; color:var(--ink); box-shadow:0 1px 0 rgba(255,255,255,.05) inset}
+.seg button .n{font-variant-numeric:tabular-nums; color:var(--dim); font-weight:600; margin-left:3px}
+.seg button.on .n{color:var(--ok)}
+.iconbtn{
+  appearance:none; background:#141c18; border:1px solid var(--line); color:var(--muted);
+  font:inherit; font-size:12.5px; font-weight:700; letter-spacing:-.01em;
+  border-radius:12px; padding:11px 12px; cursor:pointer; white-space:nowrap;
+  display:inline-flex; align-items:center; gap:5px;
+  transition:background .15s,color .15s,border-color .15s,transform .1s;
+}
+.iconbtn:active{transform:scale(.97)}
+.iconbtn.ok{color:var(--ok); border-color:rgba(69,214,155,.5)}
+.iconbtn.danger:active{color:var(--warn); border-color:rgba(255,143,94,.5)}
+
+/* list */
+main{flex:1; padding:6px 16px 28px}
+.list{max-width:640px; margin:0 auto; display:flex; flex-direction:column; gap:9px}
+.hint{
+  max-width:640px; margin:2px auto 10px; font-size:11.5px; color:var(--dim);
+  display:flex; align-items:center; gap:6px;
+}
+
+.p{
+  display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+  appearance:none; font:inherit; color:var(--ink); cursor:pointer;
+  background:linear-gradient(180deg,var(--card-hi),var(--card));
+  border:1px solid var(--line); border-radius:var(--r);
+  padding:14px 14px 14px 13px; min-height:68px;
+  transition:background .18s, border-color .18s, transform .09s, opacity .2s;
+  touch-action:manipulation; user-select:none; -webkit-user-select:none;
+}
+.p:active{transform:scale(.985)}
+.p .box{
+  flex:0 0 auto; width:30px; height:30px; border-radius:10px;
+  border:2px solid var(--line-2); background:#0d1310;
+  display:grid; place-items:center;
+  transition:background .18s,border-color .18s,box-shadow .18s;
+}
+.p .box::after{
+  content:""; width:13px; height:7px; margin-top:-2px;
+  border-left:3px solid #05251c; border-bottom:3px solid #05251c;
+  transform:rotate(-45deg) scale(.6); opacity:0;
+  transition:opacity .16s,transform .16s;
+}
+.p .who{display:flex; flex-direction:column; gap:4px; min-width:0}
+.p .nm{font-size:17.5px; font-weight:800; letter-spacing:-.015em; line-height:1.15}
+.p .tags{display:flex; align-items:center; gap:5px; flex-wrap:wrap}
+.tag{
+  font-size:10.5px; font-weight:600; letter-spacing:-.005em; color:var(--muted);
+  background:#1a2320; border:1px solid #26312a; border-radius:6px; padding:1.5px 6px;
+  white-space:nowrap;
+}
+.tag.unpaid{
+  color:#160800; font-weight:800; border-color:transparent;
+  background:linear-gradient(180deg,#ffa871,#ff8452);
+  box-shadow:0 0 0 1px rgba(255,143,94,.25), 0 2px 10px rgba(255,122,60,.18);
+}
+.p .tm{
+  margin-left:auto; font-size:11.5px; color:var(--dim); font-variant-numeric:tabular-nums;
+  flex:0 0 auto; padding-left:6px;
+}
+.p[aria-pressed="true"]{
+  background:linear-gradient(180deg,#182a21,#13211a);
+  border-color:rgba(69,214,155,.45);
+  box-shadow:0 0 0 1px rgba(69,214,155,.12) inset;
+}
+.p[aria-pressed="true"] .box{
+  background:var(--ok); border-color:var(--ok);
+  box-shadow:0 0 16px rgba(69,214,155,.35);
+}
+.p[aria-pressed="true"] .box::after{opacity:1; transform:rotate(-45deg) scale(1)}
+.p[aria-pressed="true"] .nm{color:#d8f7e9}
+.p[aria-pressed="true"] .tm{color:var(--ok-dim)}
+.p.gone{display:none}
+
+.empty{
+  text-align:center; color:var(--dim); font-size:13.5px; padding:38px 10px;
+}
+.empty b{color:var(--ok); display:block; font-size:15px; margin-bottom:4px}
+
+footer{
+  max-width:640px; margin:0 auto; padding:0 2px 8px;
+  font-size:10.5px; color:#4e5c55; line-height:1.7;
+}
+footer code{font-family:inherit; color:#5f6f67}
+
+/* toast */
+.toast{
+  position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 22px);
+  transform:translate(-50%,14px); opacity:0; pointer-events:none;
+  background:rgba(30,44,37,.97); border:1px solid rgba(69,214,155,.4);
+  color:#dff7ea; font-size:13px; font-weight:700; letter-spacing:-.01em;
+  padding:11px 18px; border-radius:999px; z-index:60;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
+  transition:opacity .2s, transform .2s; max-width:88vw; text-align:center;
+}
+.toast.show{opacity:1; transform:translate(-50%,0)}
+
+@media (min-width:700px){
+  .p{min-height:72px}
+  main{padding-left:20px; padding-right:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <p class="eyebrow"><span class="dot"></span><span id="today">HAPPY DAY 2026 · 서산</span></p>
+    <h1>해피데이 <em>2026</em> 출석체크</h1>
+
+    <div class="count">
+      <span class="num" id="cnt">0</span>
+      <span class="of">/ <span id="total">13</span>명</span>
+      <span class="left" id="left"></span>
+    </div>
+    <div class="bar"><i id="fill"></i></div>
+
+    <div class="tools">
+      <div class="seg" role="tablist" aria-label="보기">
+        <button type="button" id="tabAll" class="on" role="tab" aria-selected="true">전체 <span class="n" id="nAll">13</span></button>
+        <button type="button" id="tabTodo" role="tab" aria-selected="false">미출석 <span class="n" id="nTodo">13</span></button>
+      </div>
+      <button type="button" class="iconbtn" id="copy" aria-label="출석 현황 복사">📋 복사</button>
+      <button type="button" class="iconbtn danger" id="reset" aria-label="출석 체크 초기화">초기화</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <p class="hint" id="hint">이름을 탭하면 바로 체크됩니다 · 이 기기에 자동 저장</p>
+  <div class="list" id="list"></div>
+  <div class="empty" id="empty" hidden><b>전원 출석 완료 🎉</b>미출석자가 없습니다.</div>
+  <footer>
+    해피데이 2026 겨울 · 11.28(토)–11.29(일) · 동서트레일 5구간 서산 대피소<br>
+    출석 상태는 <code>이 브라우저(기기)</code>에만 저장됩니다. 다른 기기와 공유되지 않습니다.
+  </footer>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var PARTICIPANTS = [
+    {name:"권혁민", type:"일반 참가",        paid:true},
+    {name:"김유지", type:"일반 참가",        paid:true},
+    {name:"김은경", type:"기존 장거리하이커", paid:false},
+    {name:"박용주", type:"일반 참가",        paid:true},
+    {name:"오현석", type:"기존 장거리하이커", paid:false},
+    {name:"이주현", type:"일반 참가",        paid:false},
+    {name:"이진우", type:"기존 장거리하이커", paid:false},
+    {name:"임희은", type:"2027 예비 하이커",  paid:true},
+    {name:"정민혜", type:"기존 장거리하이커", paid:true},
+    {name:"정호영", type:"일반 참가",        paid:true},
+    {name:"조아라", type:"기존 장거리하이커", paid:true},
+    {name:"최한수", type:"기존 장거리하이커", paid:true},
+    {name:"황민아", type:"기존 장거리하이커", paid:true}
+  ];
+
+  var KEY = "happyday2026.checkin.v1";
+  var store = {};          // name -> timestamp(ms)
+  var filter = "all";      // "all" | "todo"
+  var cards = {};
+
+  var $ = function(id){ return document.getElementById(id); };
+  var listEl = $("list"), emptyEl = $("empty"), hintEl = $("hint");
+  var cntEl = $("cnt"), totalEl = $("total"), leftEl = $("left"), fillEl = $("fill");
+  var nAllEl = $("nAll"), nTodoEl = $("nTodo");
+  var tabAll = $("tabAll"), tabTodo = $("tabTodo");
+  var toastEl = $("toast");
+
+  /* ── 저장소 ── */
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(!raw) return;
+      var o = JSON.parse(raw);
+      if(o && typeof o === "object" && !Array.isArray(o)){
+        Object.keys(o).forEach(function(k){
+          if(typeof o[k] === "number" && o[k] > 0) store[k] = o[k];
+        });
+      }
+    }catch(e){ store = {}; }
+  }
+  function save(){
+    try{
+      if(Object.keys(store).length) localStorage.setItem(KEY, JSON.stringify(store));
+      else localStorage.removeItem(KEY);
+    }catch(e){ /* 사생활 보호 모드 등에서 저장 실패 — 화면은 그대로 동작 */ }
+  }
+
+  function hhmm(ts){
+    var d = new Date(ts);
+    var h = d.getHours(), m = d.getMinutes();
+    return (h < 10 ? "0" + h : h) + ":" + (m < 10 ? "0" + m : m);
+  }
+
+  /* ── 렌더 ── */
+  function build(){
+    var frag = document.createDocumentFragment();
+    PARTICIPANTS.forEach(function(p){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "p";
+      b.setAttribute("aria-pressed", "false");
+      b.setAttribute("role", "checkbox");
+      b.setAttribute("aria-label", p.name + " " + p.type + (p.paid ? "" : " 미입금") + " 출석");
+      b.dataset.name = p.name;
+      b.innerHTML =
+        '<span class="box" aria-hidden="true"></span>' +
+        '<span class="who">' +
+          '<span class="nm"></span>' +
+          '<span class="tags">' +
+            '<span class="tag"></span>' +
+            (p.paid ? '' : '<span class="tag unpaid">미입금</span>') +
+          '</span>' +
+        '</span>' +
+        '<span class="tm" aria-hidden="true"></span>';
+      b.querySelector(".nm").textContent = p.name;
+      b.querySelector(".tag").textContent = p.type;
+      b.addEventListener("click", function(){ toggle(p.name); });
+      cards[p.name] = b;
+      frag.appendChild(b);
+    });
+    listEl.appendChild(frag);
+  }
+
+  function toggle(name){
+    var now = Date.now();
+    if(store[name]) delete store[name];
+    else store[name] = now;
+    save();
+    paint();
+    if(store[name]) vibrate(12);
+  }
+
+  function paint(){
+    var done = 0;
+    PARTICIPANTS.forEach(function(p){
+      var b = cards[p.name];
+      var on = !!store[p.name];
+      if(on) done++;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      var tm = b.querySelector(".tm");
+      tm.textContent = on ? hhmm(store[p.name]) : "";
+    });
+
+    var total = PARTICIPANTS.length;
+    var left = total - done;
+
+    cntEl.textContent = String(done);
+    totalEl.textContent = String(total);
+    leftEl.innerHTML = left > 0 ? '남은 <b>' + left + '</b>명' : '<b>전원 출석</b>';
+    fillEl.style.width = (total ? (done / total * 100) : 0) + "%";
+    nAllEl.textContent = String(total);
+    nTodoEl.textContent = String(left);
+
+    // 필터
+    var shown = 0;
+    PARTICIPANTS.forEach(function(p){
+      var b = cards[p.name];
+      var hide = (filter === "todo" && !!store[p.name]);
+      b.classList.toggle("gone", hide);
+      if(!hide) shown++;
+    });
+    emptyEl.hidden = !(filter === "todo" && shown === 0);
+
+    tabAll.classList.toggle("on", filter === "all");
+    tabTodo.classList.toggle("on", filter === "todo");
+    tabAll.setAttribute("aria-selected", filter === "all" ? "true" : "false");
+    tabTodo.setAttribute("aria-selected", filter === "todo" ? "true" : "false");
+    hintEl.textContent = filter === "todo"
+      ? "체크하면 목록에서 빠집니다 · 체크를 해제하려면 ‘전체’로"
+      : "이름을 탭하면 바로 체크됩니다 · 이 기기에 자동 저장";
+  }
+
+  function vibrate(ms){
+    try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
+  }
+
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1900);
+  }
+
+  /* ── 복사 ── */
+  function summary(){
+    var yes = [], no = [];
+    PARTICIPANTS.forEach(function(p){
+      (store[p.name] ? yes : no).push(p.name);
+    });
+    var lines = [];
+    lines.push("해피데이 2026 출석 " + yes.length + "/" + PARTICIPANTS.length);
+    lines.push("출석: " + (yes.length ? yes.join(", ") : "없음"));
+    if(no.length) lines.push("미출석: " + no.join(", "));
+    var unpaid = no.filter(function(n){
+      for(var i=0;i<PARTICIPANTS.length;i++) if(PARTICIPANTS[i].name===n) return !PARTICIPANTS[i].paid;
+    });
+    if(unpaid.length) lines.push("미입금: " + unpaid.join(", "));
+    return lines.join("\n");
+  }
+
+  function copyText(text, done){
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-1000px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+      document.body.removeChild(ta);
+      done(ok);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, fallback);
+    } else fallback();
+  }
+
+  /* ── 이벤트 ── */
+  tabAll.addEventListener("click", function(){ filter = "all"; paint(); });
+  tabTodo.addEventListener("click", function(){ filter = "todo"; paint(); });
+
+  $("copy").addEventListener("click", function(){
+    var btn = this;
+    copyText(summary(), function(ok){
+      if(ok){
+        toast("출석 현황을 복사했어요");
+        btn.classList.add("ok");
+        var old = btn.innerHTML;
+        btn.innerHTML = "✓ 복사됨";
+        setTimeout(function(){ btn.innerHTML = old; btn.classList.remove("ok"); }, 1600);
+      } else {
+        toast("복사가 안 되면 화면을 길게 눌러 복사해 주세요");
+      }
+    });
+  });
+
+  $("reset").addEventListener("click", function(){
+    if(!Object.keys(store).length){ toast("초기화할 체크가 없어요"); return; }
+    var n = Object.keys(store).length;
+    if(confirm("출석 체크 " + n + "건을 모두 지울까요?\n지우면 되돌릴 수 없습니다.")){
+      store = {};
+      save();
+      paint();
+      toast("출석 체크를 모두 지웠어요");
+      vibrate([10, 40, 10]);
+    }
+  });
+
+  // 오늘 날짜 (헤더 eyebrow)
+  (function(){
+    var d = new Date();
+    var w = ["일","월","화","수","목","금","토"][d.getDay()];
+    var t = (d.getMonth()+1) + "." + d.getDate() + "(" + w + ")";
+    $("today").textContent = "HAPPY DAY 2026 · " + t;
+  })();
+
+  load();
+  build();
+  paint();
+})();
+</script>
+</body>
+</html>
