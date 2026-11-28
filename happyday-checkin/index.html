@@ -94,7 +94,7 @@ h1 em{font-style:normal;color:var(--amber)}
 
 /* controls */
 .tools{display:flex; align-items:center; gap:8px; margin-top:12px}
-.seg{display:flex; flex:1; background:#141c18; border:1px solid var(--line); border-radius:12px; padding:3px; gap:3px}
+.seg{display:flex; flex:1; min-width:0; background:#141c18; border:1px solid var(--line); border-radius:12px; padding:3px; gap:3px}
 .seg button{
   flex:1; appearance:none; border:0; background:transparent; color:var(--muted);
   font:inherit; font-size:12.5px; font-weight:700; letter-spacing:-.01em;
@@ -162,18 +162,18 @@ main{flex:1; padding:6px 16px 28px}
   margin-left:auto; font-size:11.5px; color:var(--dim); font-variant-numeric:tabular-nums;
   flex:0 0 auto; padding-left:6px;
 }
-.p[aria-pressed="true"]{
+.p[aria-checked="true"]{
   background:linear-gradient(180deg,#182a21,#13211a);
   border-color:rgba(69,214,155,.45);
   box-shadow:0 0 0 1px rgba(69,214,155,.12) inset;
 }
-.p[aria-pressed="true"] .box{
+.p[aria-checked="true"] .box{
   background:var(--ok); border-color:var(--ok);
   box-shadow:0 0 16px rgba(69,214,155,.35);
 }
-.p[aria-pressed="true"] .box::after{opacity:1; transform:rotate(-45deg) scale(1)}
-.p[aria-pressed="true"] .nm{color:#d8f7e9}
-.p[aria-pressed="true"] .tm{color:var(--ok-dim)}
+.p[aria-checked="true"] .box::after{opacity:1; transform:rotate(-45deg) scale(1)}
+.p[aria-checked="true"] .nm{color:#d8f7e9}
+.p[aria-checked="true"] .tm{color:var(--ok-dim)}
 .p.gone{display:none}
 
 .empty{
@@ -199,6 +199,13 @@ footer code{font-family:inherit; color:#5f6f67}
 }
 .toast.show{opacity:1; transform:translate(-50%,0)}
 
+@media (max-width:359px){
+  .top{padding-left:12px; padding-right:12px}
+  main{padding-left:12px; padding-right:12px}
+  .iconbtn{padding:11px 9px; font-size:12px}
+  .seg button{padding:8px 4px; font-size:12px}
+  h1{font-size:20px}
+}
 @media (min-width:700px){
   .p{min-height:72px}
   main{padding-left:20px; padding-right:20px}
@@ -310,7 +317,7 @@ footer code{font-family:inherit; color:#5f6f67}
       var b = document.createElement("button");
       b.type = "button";
       b.className = "p";
-      b.setAttribute("aria-pressed", "false");
+      b.setAttribute("aria-checked", "false");
       b.setAttribute("role", "checkbox");
       b.setAttribute("aria-label", p.name + " " + p.type + (p.paid ? "" : " 미입금") + " 출석");
       b.dataset.name = p.name;
@@ -348,7 +355,7 @@ footer code{font-family:inherit; color:#5f6f67}
       var b = cards[p.name];
       var on = !!store[p.name];
       if(on) done++;
-      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.setAttribute("aria-checked", on ? "true" : "false");
       var tm = b.querySelector(".tm");
       tm.textContent = on ? hhmm(store[p.name]) : "";
     });
